@@ -1,19 +1,51 @@
 package com.management.jupiter.models;
 
-import com.management.jupiter.models.enums.Clan;
 import com.management.jupiter.models.enums.Role;
+import com.management.jupiter.models.enums.TlType;
 
-//Place where you create the class of Tl.
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Un TL puede pertenecer a múltiples clanes simultáneamente (US-04).
+ * Se elimina el atributo Clan fijo y se agrega TlType para distinguir
+ * entre TL de programación y TL de inglés (necesario para validar límites).
+ */
 public class Tl extends User {
-    private final Clan clan;
 
-    public Tl(String username, String email, String password, Role role, Clan clan) {
-        super(username, email , password, role);
-        this.clan = clan;
+    private final TlType tlType;
+    private List<Clan> clans;
+
+    public Tl(String username, String email, String password, Role role, TlType tlType) {
+        super(username, email, password, role);
+        this.tlType = tlType;
+        this.clans = new ArrayList<>();
+    }
+
+    public TlType getTlType() {
+        return tlType;
+    }
+
+    public List<Clan> getClans() {
+        return clans;
+    }
+
+    public void addClan(Clan clan) {
+        if (clan != null && !clans.contains(clan)) {
+            clans.add(clan);
+        }
+    }
+
+    public void removeClan(Clan clan) {
+        clans.remove(clan);
+    }
+
+    public boolean isAssignedToClan(Clan clan) {
+        return clans.contains(clan);
     }
 
     @Override
     public String toString() {
-        return "id->[" + getId() + "] " + getUsername() + " (" + getRole() + ") " + clan;
+        return "id->[" + getId() + "] " + getUsername() + " (" + getRole() + " / " + tlType + ")";
     }
 }
