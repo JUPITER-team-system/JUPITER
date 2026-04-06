@@ -1,13 +1,15 @@
 package com.management.jupiter;
 
+import com.management.jupiter.controllers.UserController;
 import com.management.jupiter.views.AdminView;
 import com.management.jupiter.views.CoderView;
 import com.management.jupiter.views.LoginView;
 import com.management.jupiter.views.TLView;
 
 public class Main {
-    public static void main(String[] args) {
-        LoginView loginView = new LoginView();
+    public static void main(String[] args) throws Exception {
+        UserController.LoginController();
+/*        LoginView loginView = new LoginView();
 
         String loginSuccess = loginView.viewLogin();
 
@@ -25,7 +27,8 @@ public class Main {
             adminView.close();
         }
 
-        loginView.closeScanner();
+        loginView.closeScanner();*/
 
     }
 }
+

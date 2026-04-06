@@ -24,7 +24,8 @@ public class User {
     public int getId()           { return id; }
     public String getUsername()  { return username; }
     public String getPassword()  { return password; }
-    public Role getRole()        { return role; }
+    public String getEmail() {return email;}
+    public Role getRole() { return role; }
 
     @Override
     public String toString() {

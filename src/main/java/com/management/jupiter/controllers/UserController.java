@@ -1,41 +1,69 @@
 package com.management.jupiter.controllers;
 
+import com.management.jupiter.models.Attempts;
 import com.management.jupiter.models.User;
 import com.management.jupiter.services.UserServices;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class UserController {
+    private static final int MAX_ATTEMPTS = 3;
+    private static final int SECONDS_BLOCK = 30;
+
+    // State per user (email)
+    private static final Map<String, Attempts> attemptsPerUser = new HashMap<>();
+
     public static void LoginController() throws Exception {
         var scanner = new Scanner(System.in);
-        System.out.println("=== SISTEMA DE LOGIN JUPITER ===");
+        System.out.println("=== LOGIN JUPITER ===");
 
-
-        // 2. DELEGAR AL SERVICE (No al Repository directamente)
         User loggedUser = null;
 
-        for (var i = 0; i<3; i++){
-            try {
-                // 1. CAPTURAR DATOS
-                System.out.print("Email: ");
-                String email = scanner.nextLine();
+        while (true) {
+            System.out.print("Email: ");
+            String email = scanner.nextLine();
 
-                System.out.print("Password: ");
-                String password = scanner.nextLine();
+            // get or create user state
+            Attempts attempts = attemptsPerUser.getOrDefault(email, new Attempts());
+
+            // check if is blocked
+            if (System.currentTimeMillis() < attempts.blockedUntil) {
+                long secondsRemaining = (attempts.blockedUntil - System.currentTimeMillis()) / 1000;
+                System.out.println("User blocked. Try again in " + secondsRemaining + " seconds.");
+                continue;
+            }
+
+            System.out.print("Password: ");
+            String password = scanner.nextLine();
+
+            try {
                 loggedUser = UserServices.LoginService(email, password);
+
                 if (loggedUser != null) {
+                    System.out.println("\nAccess Successfully. " + loggedUser);
+
+                    // reset attempts
+                    attempts.reset();
+                    attemptsPerUser.put(email, attempts);
                     break;
                 }
-            }catch (Exception e){
+
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-        }
 
-        // 3. DECIDIR QUÉ MOSTRAR
-        if (loggedUser != null) {
-            System.out.println("\n Access Successfully." + loggedUser);
-        } else {
-            System.out.println("\n Error: Access Deny.");
+            // Login failed
+            attempts.increase();
+
+            if (attempts.failedAttempts >= MAX_ATTEMPTS) {
+                attempts.block(SECONDS_BLOCK);
+                System.out.println("Many attempts. User blocked for 30 seconds.");
+            }
+
+            attemptsPerUser.put(email, attempts);
         }
     }
+
 }

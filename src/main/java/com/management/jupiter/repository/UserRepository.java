@@ -16,7 +16,7 @@ public class UserRepository {
 
     public static User findByEmail(String email) {
         List<User> users = new ArrayList<>(); //Create a user array variable
-        try (BufferedReader br = new BufferedReader(new FileReader("app/com/jupiter/users.csv"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("src/main/java/com/management/jupiter/persistance/users.csv"))) {
             String line; //Variable to store the data for each line
             while ((line = br.readLine()) != null) {
                 if (line.isBlank()) continue; //Ignore empty lines
