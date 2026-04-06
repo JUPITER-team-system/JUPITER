@@ -14,6 +14,7 @@ public class UserServices {
             return user;
         }
 
-        return null;
+        throw new Exception("Some of the fields do not match");
+
     }
 }
