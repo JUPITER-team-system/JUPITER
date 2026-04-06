@@ -2,7 +2,7 @@ Feature: Login
   The login service should validate registered users against the persisted data.
 
   Scenario: Successful login with valid credentials
-    Given the user enters the email "juan@gmail.com"
+    Given the user enters the email "jua@gmail.com"
     And the user enters the password "12345"
     When the login is submitted
     Then the login should authenticate the user
