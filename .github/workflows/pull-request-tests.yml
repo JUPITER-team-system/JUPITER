@@ -26,4 +26,4 @@ jobs:
           cache: maven
 
       - name: Run unit and cucumber tests
-        run: mvn --batch-mode --update-snapshots test
+        run: mvn --batch-mode --update-snapshots verify
