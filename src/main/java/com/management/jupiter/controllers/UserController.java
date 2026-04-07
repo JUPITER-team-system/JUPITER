@@ -1,41 +1,64 @@
 package com.management.jupiter.controllers;
 
+import com.management.jupiter.models.Attempts;
 import com.management.jupiter.models.User;
 import com.management.jupiter.services.UserServices;
+import com.management.jupiter.views.LoginView;
 
-import java.util.Scanner;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UserController {
-    public static void LoginController() throws Exception {
-        var scanner = new Scanner(System.in);
-        System.out.println("=== SISTEMA DE LOGIN JUPITER ===");
+    private static final int MAX_ATTEMPTS = 3;
+    private static final int SECONDS_BLOCK = 30;
 
+    // State per user (email)
+    private static final Map<String, Attempts> attemptsPerUser = new HashMap<>();
 
-        // 2. DELEGAR AL SERVICE (No al Repository directamente)
-        User loggedUser = null;
+    public static User login() {
+        LoginView loginView = new LoginView();
 
-        for (var i = 0; i<3; i++){
-            try {
-                // 1. CAPTURAR DATOS
-                System.out.print("Email: ");
-                String email = scanner.nextLine();
+        while (true) {
+            LoginView.LoginRequest request = loginView.promptCredentials();
+            String email = request.email();
 
-                System.out.print("Password: ");
-                String password = scanner.nextLine();
-                loggedUser = UserServices.LoginService(email, password);
-                if (loggedUser != null) {
-                    break;
+            // get or create user state
+            Attempts attempts = attemptsPerUser.getOrDefault(email, new Attempts());
+
+            // check if is blocked
+            if (System.currentTimeMillis() < attempts.blockedUntil) {
+                long secondsRemaining = (attempts.blockedUntil - System.currentTimeMillis()) / 1000;
+                loginView.showBlocked(secondsRemaining);
+                if (!loginView.askRetry()) {
+                    return null;
                 }
-            }catch (Exception e){
-                System.out.println(e.getMessage());
+                continue;
+            }
+
+            try {
+                User loggedUser = UserServices.LoginService(request.email(), request.password());
+                attempts.reset();
+                attemptsPerUser.put(email, attempts);
+                loginView.showLoginSuccess(loggedUser);
+                return loggedUser;
+            } catch (Exception e) {
+                loginView.showLoginError(e.getMessage());
+            }
+
+            // Login failed
+            attempts.increase();
+
+            if (attempts.failedAttempts >= MAX_ATTEMPTS) {
+                attempts.block(SECONDS_BLOCK);
+                loginView.showBlockedForSeconds(SECONDS_BLOCK);
+            }
+
+            attemptsPerUser.put(email, attempts);
+
+            if (!loginView.askRetry()) {
+                return null;
             }
         }
-
-        // 3. DECIDIR QUÉ MOSTRAR
-        if (loggedUser != null) {
-            System.out.println("\n Access Successfully." + loggedUser);
-        } else {
-            System.out.println("\n Error: Access Deny.");
-        }
     }
+
 }

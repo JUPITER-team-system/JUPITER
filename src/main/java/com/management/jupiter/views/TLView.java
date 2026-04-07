@@ -20,7 +20,7 @@ public class TLView {
     private Tl                   tlSesion; // TL autenticado en sesión
 
     public TLView(AssignmentService assignmentService) {
-        this.scanner            = new Scanner(System.in);
+        this.scanner            = InputView.getScanner();
         this.assignmentService  = assignmentService;
         this.clanDetailView     = new ClanDetailView(assignmentService);
     }
@@ -101,6 +101,5 @@ public class TLView {
     }
 
     public void close() {
-        scanner.close();
     }
 }

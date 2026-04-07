@@ -21,7 +21,7 @@ public class AdminView {
     private final AssignmentService assignmentService;
 
     public AdminView(ClanService clanService, AssignmentService assignmentService) {
-        this.scanner           = new Scanner(System.in);
+        this.scanner           = InputView.getScanner();
         this.clanService       = clanService;
         this.assignmentService = assignmentService;
     }
@@ -219,6 +219,5 @@ public class AdminView {
     }
 
     public void close() {
-        scanner.close();
     }
 }

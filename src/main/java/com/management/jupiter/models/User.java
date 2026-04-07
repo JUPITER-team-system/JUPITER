@@ -19,11 +19,11 @@ public class User {
         this.role     = role;
     }
 
-    public int    getId()       { return id; }
-    public String getUsername() { return username; }
-    public String getEmail()    { return email; }      // requerido por ClanDetailView (US-09)
-    public String getPassword() { return password; }
-    public Role   getRole()     { return role; }
+    public int getId()           { return id; }
+    public String getUsername()  { return username; }
+    public String getPassword()  { return password; }
+    public String getEmail() {return email;}
+    public Role getRole() { return role; }
 
     @Override
     public String toString() {

@@ -7,15 +7,17 @@ import com.management.jupiter.repository.ClanRepository;
 import com.management.jupiter.repository.TeamLeaderRepository;
 import com.management.jupiter.repository.CoderRepository;
 
+import com.management.jupiter.controllers.UserController;
+import com.management.jupiter.models.Tl;
+import com.management.jupiter.models.User;
 import com.management.jupiter.views.AdminView;
 import com.management.jupiter.views.CoderView;
-import com.management.jupiter.views.LoginView;
 import com.management.jupiter.views.TLView;
+import com.management.jupiter.models.enums.Role;
 
 public class Main {
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws Exception {
         // 🔹 Repositorios (acceso a datos)
         ClanRepository clanRepository = new ClanRepository();
         TeamLeaderRepository teamLeaderRepository = new TeamLeaderRepository();
@@ -29,30 +31,27 @@ public class Main {
                 coderRepository
         );
 
-        // 🔹 Vista de login
-        LoginView loginView = new LoginView();
-        String loginSuccess = loginView.viewLogin();
+        User loggedUser = UserController.login();
+        if (loggedUser == null) {
+            return;
+        }
 
         // 🔹 Flujo por roles
-        if (loginSuccess.equals("coder")) {
-
+        if (loggedUser.getRole() == Role.CODER) {
             CoderView coderView = new CoderView();
             coderView.menuCoder();
             coderView.close();
-
-        } else if (loginSuccess.equals("tl")) {
-
+        } else if (loggedUser.getRole() == Role.TL) {
             TLView tlView = new TLView(assignmentService);
+            if (loggedUser instanceof Tl tl) {
+                tlView.setTlSesion(tl);
+            }
             tlView.menuTL();
             tlView.close();
-
-        } else if (loginSuccess.equals("admin")) {
-
+        } else if (loggedUser.getRole() == Role.ADMIN) {
             AdminView adminView = new AdminView(clanService, assignmentService);
             adminView.menuAdmin();
             adminView.close();
         }
-
-        loginView.closeScanner();
     }
 }
