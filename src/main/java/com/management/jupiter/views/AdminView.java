@@ -1,13 +1,15 @@
 package com.management.jupiter.views;
+import com.management.jupiter.controllers.AdminController;
+
 import java.util.Scanner;
 
 
 public class AdminView {
 
-    private  Scanner scanner;
+    private final Scanner scanner;
 
     public AdminView(){
-        scanner = new Scanner(System.in);
+        scanner = InputView.getScanner();
     }
 
     public void menuAdmin(){
@@ -26,8 +28,12 @@ public class AdminView {
             System.out.println("0. Exit");
             System.out.println("Select a option");
 
-            option = scanner.nextInt();
-            scanner.nextLine();
+            String optionInput = scanner.nextLine();
+            try {
+                option = Integer.parseInt(optionInput);
+            } catch (NumberFormatException e) {
+                option = -1;
+            }
 
             switch (option){
                 case 1:
@@ -43,7 +49,7 @@ public class AdminView {
                     System.out.println("DELETE USER");
                     break;
                 case 5:
-                    System.out.println("CREATE USER");
+                    AdminController.createUser();
                     break;
                 case 6:
                     System.out.println("DELETE CLAN");
@@ -64,7 +70,6 @@ public class AdminView {
     }
 
     public void close(){
-        scanner.close();
     }
 
 }

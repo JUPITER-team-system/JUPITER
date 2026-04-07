@@ -11,6 +11,8 @@ public class Coder extends User {
         this.clan = clan;
     }
 
+    public Clan getClan() { return clan; }
+
     @Override
     public String toString() {
         return "id->[" + getId() + "] " + getUsername() + " (" + getRole() + ") " + clan;

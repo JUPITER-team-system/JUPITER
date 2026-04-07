@@ -3,6 +3,7 @@ package com.management.jupiter.repository;
 
 import com.management.jupiter.models.Admin;
 import com.management.jupiter.models.Coder;
+import com.management.jupiter.models.Tl;
 import com.management.jupiter.models.User;
 import com.management.jupiter.models.enums.Clan;
 import com.management.jupiter.models.enums.Role;
@@ -12,11 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserRepository {
-    private final String FILE_PATH = "users.csv";
+    private static final String FILE_PATH = "src/main/java/com/management/jupiter/persistance/users.csv";
 
     public static User findByEmail(String email) {
         List<User> users = new ArrayList<>(); //Create a user array variable
-        try (BufferedReader br = new BufferedReader(new FileReader("src/main/java/com/management/jupiter/persistance/users.csv"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
             String line; //Variable to store the data for each line
             while ((line = br.readLine()) != null) {
                 if (line.isBlank()) continue; //Ignore empty lines
@@ -27,11 +28,13 @@ public class UserRepository {
                     var role = Role.valueOf(rolestr);
 
                     //validate role and create object
-                    //Coder
                     if (data.length == 5 && (role == Role.CODER || role == Role.TL)) {
                         try {
                             String clanstr = data[4].trim().toUpperCase(); // get clan, delete space and convert to UpperCase
                             var clan = Clan.valueOf(clanstr);
+                            if (role == Role.TL) {
+                                return new Tl(data[0], data[1], data[2], role, clan);
+                            }
                             return new Coder(data[0], data[1], data[2], role, clan);
                         } catch (IllegalArgumentException e) {
                             System.out.println("Error: This clan doesn't exist");

@@ -3,10 +3,10 @@ import java.util.Scanner;
 
 public class TLView {
 
-    private  Scanner scanner;
+    private final Scanner scanner;
 
     public TLView(){
-        scanner = new Scanner(System.in);
+        scanner = InputView.getScanner();
     }
 
     public void menuTL(){
@@ -22,8 +22,12 @@ public class TLView {
             System.out.println("0. Exit");
             System.out.println("Select a option");
 
-            option = scanner.nextInt();
-            scanner.nextLine();
+            String optionInput = scanner.nextLine();
+            try {
+                option = Integer.parseInt(optionInput);
+            } catch (NumberFormatException e) {
+                option = -1;
+            }
 
             switch (option){
                 case 1:
@@ -51,7 +55,6 @@ public class TLView {
     }
 
     public void close(){
-        scanner.close();
     }
 
 }

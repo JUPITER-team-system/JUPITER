@@ -3,6 +3,7 @@ package com.management.jupiter.controllers;
 import com.management.jupiter.models.Attempts;
 import com.management.jupiter.models.User;
 import com.management.jupiter.services.UserServices;
+import com.management.jupiter.views.InputView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +16,8 @@ public class UserController {
     // State per user (email)
     private static final Map<String, Attempts> attemptsPerUser = new HashMap<>();
 
-    public static void LoginController() throws Exception {
-        var scanner = new Scanner(System.in);
+    public static User LoginController() throws Exception {
+        Scanner scanner = InputView.getScanner();
         System.out.println("=== LOGIN JUPITER ===");
 
         User loggedUser = null;
@@ -47,7 +48,7 @@ public class UserController {
                     // reset attempts
                     attempts.reset();
                     attemptsPerUser.put(email, attempts);
-                    break;
+                    return loggedUser;
                 }
 
             } catch (Exception e) {
