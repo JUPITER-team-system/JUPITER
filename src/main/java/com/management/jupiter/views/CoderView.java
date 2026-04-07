@@ -4,10 +4,10 @@ import java.util.Scanner;
 
 public class CoderView {
 
-    private Scanner scanner;
+    private final Scanner scanner;
 
     public CoderView(){
-        scanner = new Scanner(System.in);
+        scanner = InputView.getScanner();
     }
 
     public void menuCoder(){
@@ -40,7 +40,6 @@ public class CoderView {
     }
 
     public void close(){
-        scanner.close();
     }
 
 }

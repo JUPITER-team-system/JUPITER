@@ -3,10 +3,10 @@ package com.management.jupiter.controllers;
 import com.management.jupiter.models.Attempts;
 import com.management.jupiter.models.User;
 import com.management.jupiter.services.UserServices;
+import com.management.jupiter.views.LoginView;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 public class UserController {
     private static final int MAX_ATTEMPTS = 3;
@@ -15,15 +15,12 @@ public class UserController {
     // State per user (email)
     private static final Map<String, Attempts> attemptsPerUser = new HashMap<>();
 
-    public static void LoginController() throws Exception {
-        var scanner = new Scanner(System.in);
-        System.out.println("=== LOGIN JUPITER ===");
-
-        User loggedUser = null;
+    public static User login() {
+        LoginView loginView = new LoginView();
 
         while (true) {
-            System.out.print("Email: ");
-            String email = scanner.nextLine();
+            LoginView.LoginRequest request = loginView.promptCredentials();
+            String email = request.email();
 
             // get or create user state
             Attempts attempts = attemptsPerUser.getOrDefault(email, new Attempts());
@@ -31,27 +28,21 @@ public class UserController {
             // check if is blocked
             if (System.currentTimeMillis() < attempts.blockedUntil) {
                 long secondsRemaining = (attempts.blockedUntil - System.currentTimeMillis()) / 1000;
-                System.out.println("User blocked. Try again in " + secondsRemaining + " seconds.");
+                loginView.showBlocked(secondsRemaining);
+                if (!loginView.askRetry()) {
+                    return null;
+                }
                 continue;
             }
 
-            System.out.print("Password: ");
-            String password = scanner.nextLine();
-
             try {
-                loggedUser = UserServices.LoginService(email, password);
-
-                if (loggedUser != null) {
-                    System.out.println("\nAccess Successfully. " + loggedUser);
-
-                    // reset attempts
-                    attempts.reset();
-                    attemptsPerUser.put(email, attempts);
-                    break;
-                }
-
+                User loggedUser = UserServices.LoginService(request.email(), request.password());
+                attempts.reset();
+                attemptsPerUser.put(email, attempts);
+                loginView.showLoginSuccess(loggedUser);
+                return loggedUser;
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                loginView.showLoginError(e.getMessage());
             }
 
             // Login failed
@@ -59,10 +50,14 @@ public class UserController {
 
             if (attempts.failedAttempts >= MAX_ATTEMPTS) {
                 attempts.block(SECONDS_BLOCK);
-                System.out.println("Many attempts. User blocked for 30 seconds.");
+                loginView.showBlockedForSeconds(SECONDS_BLOCK);
             }
 
             attemptsPerUser.put(email, attempts);
+
+            if (!loginView.askRetry()) {
+                return null;
+            }
         }
     }
 
