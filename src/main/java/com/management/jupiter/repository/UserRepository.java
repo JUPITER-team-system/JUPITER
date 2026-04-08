@@ -1,51 +1,105 @@
 package com.management.jupiter.repository;
 
-
 import com.management.jupiter.models.Admin;
 import com.management.jupiter.models.Coder;
 import com.management.jupiter.models.Tl;
 import com.management.jupiter.models.User;
-import com.management.jupiter.models.enums.Clan;
 import com.management.jupiter.models.enums.Role;
+import com.management.jupiter.models.enums.TlType;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class UserRepository {
+
     private static final String FILE_PATH = "src/main/java/com/management/jupiter/persistance/users.csv";
 
     public static User findByEmail(String email) {
-        List<User> users = new ArrayList<>(); //Create a user array variable
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
-            String line; //Variable to store the data for each line
+            String line;
             while ((line = br.readLine()) != null) {
-                if (line.isBlank()) continue; //Ignore empty lines
+                if (line.isBlank()) {
+                    continue;
+                }
 
                 String[] data = line.split(",");
-                if (data.length >= 4 && data[1].equals(email)) {// validate that it meets the fields and that the email exists
-                    String rolestr = data[3].trim().toUpperCase(); // get role, delete space and convert to UpperCase
-                    var role = Role.valueOf(rolestr);
-
-                    //validate role and create object
-                    if (data.length == 5 && (role == Role.CODER || role == Role.TL)) {
-                        try {
-                            String clanstr = data[4].trim().toUpperCase(); // get clan, delete space and convert to UpperCase
-                            var clan = Clan.valueOf(clanstr);
-                            if (role == Role.TL) {
-                                return new Tl(data[0], data[1], data[2], role, clan);
-                            }
-                            return new Coder(data[0], data[1], data[2], role, clan);
-                        } catch (IllegalArgumentException e) {
-                            System.out.println("Error: This clan doesn't exist");
-                        }
-                    }
-                    return new Admin(data[0], data[1], data[2], role);
+                User user = mapLineToUser(data);
+                if (user != null && user.getEmail().equalsIgnoreCase(email.trim())) {
+                    return user;
                 }
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-        return null; // returns null if the user does not match
+        return null;
+    }
+
+    public static int nextId() {
+        int maxId = 0;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.isBlank()) {
+                    continue;
+                }
+
+                String[] data = line.split(",");
+                if (data.length == 0) {
+                    continue;
+                }
+
+                try {
+                    int id = Integer.parseInt(data[0].trim());
+                    if (id > maxId) {
+                        maxId = id;
+                    }
+                } catch (NumberFormatException ignored) {
+                    // Compatibilidad con filas viejas sin ID al inicio.
+                }
+            }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return maxId + 1;
+    }
+
+    private static User mapLineToUser(String[] data) {
+        if (data.length < 5) {
+            return null;
+        }
+
+        try {
+            int id = Integer.parseInt(data[0].trim());
+            String username = data[1].trim();
+            String email = data[2].trim();
+            String password = data[3].trim();
+            Role role = Role.valueOf(data[4].trim().toUpperCase());
+
+            if (role == Role.TL) {
+                TlType tlType = parseTlType(data);
+                return new Tl(id, username, email, password, role, tlType);
+            }
+
+            if (role == Role.CODER) {
+                return new Coder(id, username, email, password, role);
+            }
+
+            return new Admin(id, username, email, password, role);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    private static TlType parseTlType(String[] data) {
+        if (data.length >= 7 && !data[6].trim().isEmpty()) {
+            return TlType.valueOf(data[6].trim().toUpperCase());
+        }
+        if (data.length >= 6 && !data[5].trim().isEmpty()) {
+            return TlType.valueOf(data[5].trim().toUpperCase());
+        }
+        return TlType.PROGRAMACION;
     }
 }

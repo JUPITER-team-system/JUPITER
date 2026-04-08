@@ -1,77 +1,65 @@
 package com.management.jupiter.views;
+
+import com.management.jupiter.models.User;
+
 import java.util.Scanner;
 
 public class LoginView {
+    private final Scanner scanner;
 
-    private Scanner scanner;
-
-    public LoginView(){
-        scanner = new Scanner(System.in);
+    public LoginView() {
+        this.scanner = InputView.getScanner();
     }
 
-    public String viewLogin(){
+    public LoginRequest promptCredentials() {
+        System.out.println("========= LOGIN ==========");
+        System.out.print("Email: ");
+        String email = scanner.nextLine().trim();
 
-    int option = 1;
+        System.out.print("Password: ");
+        String password = scanner.nextLine();
 
-        do{
+        return new LoginRequest(email, password);
+    }
 
-            System.out.println("========= LOGIN ==========");
+    public void showLoginSuccess(User user) {
+        System.out.println("Login success! " + user);
+    }
 
-            System.out.println("Email: ");
-            String email = scanner.nextLine();
+    public void showLoginError(String message) {
+        System.out.println(message);
+    }
 
-            System.out.println("Password: ");
-            String password = scanner.nextLine();
+    public void showBlocked(long secondsRemaining) {
+        System.out.println("User blocked. Try again in " + secondsRemaining + " seconds.");
+    }
 
-            if(email.equals("coder@gmail.com") && password.equals("123456")){
-                System.out.println("Login success!");
-                return "coder";
+    public void showBlockedForSeconds(int seconds) {
+        System.out.println("Many attempts. User blocked for " + seconds + " seconds.");
+    }
+
+    public boolean askRetry() {
+        while (true) {
+            System.out.println("1. Try again");
+            System.out.println("0. Exit");
+            System.out.print("Select an option: ");
+
+            String option = scanner.nextLine().trim();
+
+            if ("1".equals(option)) {
+                return true;
             }
-            else if(email.equals("tl@gmail.com") && password.equals("123456")){
-                System.out.println("Login success!");
-                return "tl";
-            }else if(email.equals("admin@gmail.com") && password.equals("123456")){
-                System.out.println("Login success!");
-                return "admin";
-            }else{
-
-                boolean again = true;
-
-                while(again){
-
-                    System.out.println("email or password incorrect ... ");
-
-                    System.out.println("1. Try again");
-                    System.out.println("0. Exit");
-
-                    option = scanner.nextInt();
-                    scanner.nextLine();
-
-                    switch (option){
-                        case 1:
-                            again = false;
-                            break;
-
-                        case 0:
-                            System.out.println("Exit ...");
-                            again = false;
-                            option = 0;
-                            break;
-                        default:
-                            System.out.println("Incorrect option ...");
-                    }
-                }
-
-
+            if ("0".equals(option)) {
+                System.out.println("Exit ...");
+                return false;
             }
-
-        }while(option != 0);
-
-        return "exit";
+            System.out.println("Incorrect option ...");
+        }
     }
 
     public void closeScanner(){
-        scanner.close();
     }
 
+    public record LoginRequest(String email, String password) {
+    }
 }

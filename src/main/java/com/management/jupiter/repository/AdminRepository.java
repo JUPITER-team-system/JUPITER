@@ -59,24 +59,22 @@ public class AdminRepository {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
 
             String line = mapToLine(user);
-            bw.write(line);
             bw.newLine();
+            bw.write(line);
 
         } catch (IOException e) {
             throw new RuntimeException("Error saving user", e);
         }
     }
     private static String mapToLine(User user) {
-        String base = user.getUsername() + "," +
+        String base = user.getId() + "," +
+                user.getUsername() + "," +
                 user.getEmail() + "," +
                 user.getPassword() + "," +
                 user.getRole();
 
-        if (user instanceof Coder coder) {
-            return base + "," + coder.getClan();
-        }
         if (user instanceof Tl tl) {
-            return base + "," + tl.getClan();
+            return base + ",," + tl.getTlType();
         }
 
         return base;
