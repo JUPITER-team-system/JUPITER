@@ -15,7 +15,16 @@ import java.util.Map;
  */
 public class ClanRepository {
 
-    private final Map<Integer, Clan> clans = new HashMap<>();
+    public final Map<Integer, Clan> clans = new HashMap<>();
+
+    @Override
+    public String toString() {
+        return "ClanRepository{" +
+                "clans=" + clans +
+                ", currentId=" + currentId +
+                '}';
+    }
+
     private int currentId = 1;
 
     public ClanRepository() {

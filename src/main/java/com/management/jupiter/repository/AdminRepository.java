@@ -16,7 +16,7 @@ public class AdminRepository {
     private Handler handler;
 
     public AdminRepository() {
-        handler = new Handler("./app/com/jupiter/src/persistance");
+        handler = new Handler("src/main/java/com/management/jupiter/persistance");
     }
 
     public void getAllUsers() {

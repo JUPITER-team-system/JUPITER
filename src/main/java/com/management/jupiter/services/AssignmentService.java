@@ -74,6 +74,7 @@ public class AssignmentService {
         // Realizar asignación (bidireccional)
         clan.addTl(tl);
         tl.addClan(clan);
+        tlRepository.save(tl);
     }
 
     /**
@@ -90,6 +91,7 @@ public class AssignmentService {
 
         clan.removeTl(tl);
         tl.removeClan(clan);
+        tlRepository.save(tl);
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -124,7 +126,10 @@ public class AssignmentService {
      * Retorna la lista de TLs asignados a un clan.
      */
     public List<Tl> obtenerTlsDeClan(int clanId) {
-        return buscarClanOFallar(clanId).getTls();
+        Clan clan = buscarClanOFallar(clanId);
+        return tlRepository.findAll().stream()
+                .filter(tl -> tl.isAssignedToClan(clan))
+                .collect(Collectors.toList());
     }
 
     /**

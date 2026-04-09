@@ -1,14 +1,19 @@
 package com.management.jupiter.repository;
 
 import com.management.jupiter.models.Tl;
+import com.management.jupiter.models.Clan;
 import com.management.jupiter.models.enums.Role;
 import com.management.jupiter.models.enums.TlType;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Repositorio respaldado por users.csv para TLs.
@@ -18,6 +23,37 @@ public class TeamLeaderRepository {
     private static final String FILE_PATH = "src/main/java/com/management/jupiter/persistance/users.csv";
 
     public void save(Tl tl) {
+        Path path = Path.of(FILE_PATH);
+
+        try {
+            List<String> lines = Files.exists(path)
+                    ? Files.readAllLines(path)
+                    : new ArrayList<>();
+            boolean updated = false;
+
+            for (int i = 0; i < lines.size(); i++) {
+                String line = lines.get(i);
+                if (line == null || line.isBlank()) {
+                    continue;
+                }
+
+                String[] data = line.split(",", -1);
+                Tl existingTl = mapLineToTl(data);
+                if (existingTl != null && existingTl.getId() == tl.getId()) {
+                    lines.set(i, mapTlToLine(tl));
+                    updated = true;
+                    break;
+                }
+            }
+
+            if (!updated) {
+                lines.add(mapTlToLine(tl));
+            }
+
+            Files.write(path, lines);
+        } catch (IOException e) {
+            throw new RuntimeException("Error saving TL to CSV", e);
+        }
     }
 
     public List<Tl> findAll() {
@@ -88,9 +124,45 @@ public class TeamLeaderRepository {
                 tlType = TlType.valueOf(data[5].trim().toUpperCase());
             }
 
-            return new Tl(id, username, email, password, role, tlType);
+            Tl tl = new Tl(id, username, email, password, role, tlType);
+            loadAssignedClans(tl, data);
+            return tl;
         } catch (IllegalArgumentException e) {
             return null;
         }
+    }
+
+    private void loadAssignedClans(Tl tl, String[] data) {
+        if (data.length < 6 || data[5].trim().isEmpty()) {
+            return;
+        }
+
+        Arrays.stream(data[5].split("\\|"))
+                .map(String::trim)
+                .filter(name -> !name.isEmpty())
+                .forEach(name -> tl.addClan(new Clan(resolveClanId(name), name)));
+    }
+
+    private int resolveClanId(String clanName) {
+        try {
+            return com.management.jupiter.models.enums.Clan.valueOf(clanName.toUpperCase()).ordinal() + 1;
+        } catch (IllegalArgumentException e) {
+            return -1;
+        }
+    }
+
+    private String mapTlToLine(Tl tl) {
+        String clans = tl.getClans().stream()
+                .map(Clan::getName)
+                .distinct()
+                .collect(Collectors.joining("|"));
+
+        return tl.getId() + "," +
+                tl.getUsername() + "," +
+                tl.getEmail() + "," +
+                tl.getPassword() + "," +
+                tl.getRole() + "," +
+                clans + "," +
+                tl.getTlType();
     }
 }
