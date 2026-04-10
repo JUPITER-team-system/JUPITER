@@ -1,15 +1,15 @@
 package com.management.jupiter.repository;
+
 import com.management.jupiter.persistance.Handler;
 
 import java.util.List;
-
 
 public class AdminRepository {
 
     private Handler handler;
 
     public AdminRepository() {
-        handler = new Handler("./app/com/jupiter/src/persistance");
+        handler = new Handler();
     }
 
     public void getAllUsers() {
@@ -19,31 +19,37 @@ public class AdminRepository {
             System.out.println("Name: " + user[0] + " Email: " + user[1] + " Rol: " + user[2]);
         }
     }
+
     public void insertUser(String name, String email, String password, String role){
-        //Creo el array que los va a contener.
+        //Lee existentes
         List<String[]> users = handler.read("info.csv");
 
-        //lo construyo
         String[] newUser = new String[]{name, email, password, role};
 
-        //Crear nuevo usuario - fila
-        users.add(new String[]{name, email, password, role});
+        users.add(newUser);
 
-        //Lo añadimos al archivo para la persistencia
         handler.write("info.csv", users);
     }
+
     public void deleteUser(String email){
-        //Leemos todos los usuarios.
         List<String[]> users = handler.read("info.csv");
 
-        //Filtramos los que no coincidan con el email para eliminar
         boolean removed = users.removeIf(user -> user[1].equalsIgnoreCase(email));
         if (removed){
-            //Reescribo el CSV sin el usuario eliminado.
             handler.write("info.csv", users);
-            System.out.println("El usuario eliminado fue: " + email);
-        }else {
-            System.out.println("Ese usuario no existe");
+            System.out.println("User delete is: " + email);
+        } else {
+            System.out.println("User not exist.");
         }
     }
+    //Create clan
+    public void insertClan(int id, String clanName,String teamLeader, String members){
+        List<String[]> clans = handler.read("clans.csv");
+
+        String[] newClan = new String[]{(String.valueOf(id)) , clanName,teamLeader, members}; //Con el valueOf convertimos a String.
+
+        clans.add(newClan);
+
+        handler.write("clans.csv", clans);
+}
 }
