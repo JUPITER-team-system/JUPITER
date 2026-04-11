@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  */
 public class TeamLeaderRepository {
 
-    private static final String FILE_PATH = "src/main/java/com/management/jupiter/persistance/users.csv";
+    public static final String FILE_PATH = "src/main/java/com/management/jupiter/persistance/users.csv";
 
     public void save(Tl tl) {
         Path path = Path.of(FILE_PATH);
