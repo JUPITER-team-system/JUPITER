@@ -6,6 +6,7 @@ import com.management.jupiter.models.Clan;
 import com.management.jupiter.models.Tl;
 import com.management.jupiter.models.Coder;
 import com.management.jupiter.models.enums.TlType;
+import com.management.jupiter.services.AdminService;
 import com.management.jupiter.services.AssignmentService;
 import com.management.jupiter.services.ClanService;
 
@@ -57,10 +58,12 @@ public class AdminView {
             switch (option) {
                 case 1:
                     System.out.println("VIEW CODERS");
+                    AdminService.getUsersByRol("CODER");
                     break;
 
                 case 2:
                     System.out.println("VIEW TLS");
+                    AdminService.getUsersByRol("TL");
                     break;
 
                 case 3:

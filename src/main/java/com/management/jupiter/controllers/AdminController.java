@@ -47,4 +47,17 @@ public class AdminController {
         }
     }
 
+//    public static void getUsersByRol(){
+//        Scanner scanner = InputView.getScanner();
+//        try{
+//            System.out.println("Filtrar por:");
+//            System.out.println("1.Admins");
+//            System.out.println("2.Coders");
+//            System.out.println("3.TLs");
+//            System.out.println("0.Salir");
+//
+//        }catch (Exception e){
+//            System.out.println(e.getMessage());
+//        }
+//    }
 }

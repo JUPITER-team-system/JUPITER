@@ -7,8 +7,11 @@ import com.management.jupiter.models.User;
 import com.management.jupiter.models.enums.Clan;
 import com.management.jupiter.models.enums.Role;
 import com.management.jupiter.models.enums.TlType;
+import com.management.jupiter.persistance.Handler;
 import com.management.jupiter.repository.AdminRepository;
 import com.management.jupiter.repository.UserRepository;
+
+import java.util.List;
 
 public class AdminService {
     public static User createUser(String username, String email, String password, Role role, Clan clan, TlType tlType) throws Exception {
@@ -41,5 +44,15 @@ public class AdminService {
 
         AdminRepository.save(user);
         return user;
+    }
+
+    public static void getUsersByRol(String role) {
+        var handler = new Handler();
+        List<String[]> users = handler.read("users.csv");
+        users.stream()
+                .filter(user -> user.length > 0 && user[4].equals(role))
+                .forEach(user -> {
+                    System.out.println("Name: " + user[1] + " Email: " + user[2] + " Rol: " + user[4]);
+                });
     }
 }
