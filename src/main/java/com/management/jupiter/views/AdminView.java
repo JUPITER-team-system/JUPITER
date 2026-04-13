@@ -6,6 +6,7 @@ import com.management.jupiter.models.Clan;
 import com.management.jupiter.models.Tl;
 import com.management.jupiter.models.Coder;
 import com.management.jupiter.models.enums.TlType;
+import com.management.jupiter.repository.AdminRepository;
 import com.management.jupiter.services.AdminService;
 import com.management.jupiter.services.AssignmentService;
 import com.management.jupiter.services.ClanService;
@@ -73,6 +74,7 @@ public class AdminView {
 
                 case 4:
                     System.out.println("DELETE USER");
+                    AdminController.deleteUser();
                     break;
 
                 case 5:

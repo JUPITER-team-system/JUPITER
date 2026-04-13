@@ -5,14 +5,14 @@ import com.management.jupiter.models.enums.Clan;
 import com.management.jupiter.models.enums.Role;
 import com.management.jupiter.models.enums.TlType;
 import com.management.jupiter.services.AdminService;
+import com.management.jupiter.services.UserServices;
 import com.management.jupiter.views.InputView;
 
 import java.util.Scanner;
 
 public class AdminController {
-
+    static Scanner scanner = InputView.getScanner();
     public static void createUser() {
-        Scanner scanner = InputView.getScanner();
         try {
             System.out.println("===== CREATE USER =====");
             System.out.print("Username: ");
@@ -45,6 +45,12 @@ public class AdminController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public static void deleteUser(){
+        System.out.println("Ingresa el id o email del usuario que deseas eliminar");
+        String value = scanner.nextLine();
+        AdminService.deleteUser(value);
     }
 
 //    public static void getUsersByRol(){

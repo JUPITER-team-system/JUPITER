@@ -14,6 +14,8 @@ import com.management.jupiter.repository.UserRepository;
 import java.util.List;
 
 public class AdminService {
+    private static AdminRepository adminRepository = new AdminRepository();
+
     public static User createUser(String username, String email, String password, Role role, Clan clan, TlType tlType) throws Exception {
         if (username == null || username.isBlank() ||
                 email == null || email.isBlank() ||
@@ -54,5 +56,13 @@ public class AdminService {
                 .forEach(user -> {
                     System.out.println("Name: " + user[1] + " Email: " + user[2] + " Rol: " + user[4]);
                 });
+    }
+
+    public static void deleteUser(String value){
+        try {
+            adminRepository.deleteUser(value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

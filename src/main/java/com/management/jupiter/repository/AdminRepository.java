@@ -41,17 +41,20 @@ public class AdminRepository {
         handler.write("info.csv", users);
     }
 
-    public void deleteUser(String email) {
+    public void deleteUser(String value) {
         //Leemos todos los usuarios.
-        List<String[]> users = handler.read("info.csv");
+        List<String[]> users = handler.read("users.csv");
 
         //Filtramos los que no coincidan con el email para eliminar
-        boolean removed = users.removeIf(user -> user[1].equalsIgnoreCase(email));
+        boolean removed = users.removeIf(user -> user[2].equalsIgnoreCase(value) || user[0].equalsIgnoreCase(value));
         if (removed) {
-            handler.write("info.csv", users);
-            System.out.println("User delete is: " + email);
+            handler.write("users.csv", users);
+            System.out.println("User delete is: " + value);
         } else {
             System.out.println("User not exist.");
+        }
+        for(String[] user : users){
+            System.out.println("id" + user[0] + "Nombre" + user[1]);
         }
     }
 
@@ -81,11 +84,7 @@ public class AdminRepository {
     }
 
     private static String mapToLine(User user) {
-        String base = user.getId() + "," +
-                user.getUsername() + "," +
-                user.getEmail() + "," +
-                user.getPassword() + "," +
-                user.getRole();
+        String base = user.getId() + "," + user.getUsername() + "," + user.getEmail() + "," + user.getPassword() + "," + user.getRole();
 
         if (user instanceof Tl tl) {
             return base + ",," + tl.getTlType();
