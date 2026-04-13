@@ -33,7 +33,7 @@ public class AdminController {
                 clan = Clan.valueOf(scanner.nextLine().trim().toUpperCase());
             }
             TlType tlType = null;
-            if (role == Role.TL || role == Role.CODER) {
+            if (role == Role.TL) {
                 System.out.print("TL type (PROGRAMACION, INGLES): ");
                 tlType = TlType.valueOf(scanner.nextLine().trim().toUpperCase());
             }
