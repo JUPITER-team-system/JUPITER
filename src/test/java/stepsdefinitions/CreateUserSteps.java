@@ -51,7 +51,7 @@ public class CreateUserSteps {
 
 
     @Given("an administrator is authenticated")
-    public void an_administrator_is_authenticated() throws Exception {
+    public void anAdministratorIsAuthenticated() throws Exception {
         UserServices.LoginService("juan@gmail.com", "12345");
     }
 
