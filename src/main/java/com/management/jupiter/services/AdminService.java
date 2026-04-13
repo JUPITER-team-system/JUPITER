@@ -24,7 +24,7 @@ public class AdminService {
             throw new Exception("All fields are required");
         }
 
-        if (UserRepository.findByEmail(email.trim()) != null) {
+        if (UserRepository.findByIdOrEmail(email.trim()) != null) {
             throw new Exception("Email already exists");
         }
 

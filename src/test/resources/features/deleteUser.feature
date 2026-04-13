@@ -9,5 +9,5 @@ Feature: Delete user
     Then the user should be deleted successfully
     Examples:
       | value              |
-      | 1                  |
+      | 2                  |
       | emmanuel@gmail.com |

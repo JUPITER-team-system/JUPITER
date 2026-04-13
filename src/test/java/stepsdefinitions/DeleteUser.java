@@ -1,14 +1,24 @@
 package stepsdefinitions;
 
+import com.management.jupiter.models.User;
+import com.management.jupiter.repository.AdminRepository;
+import com.management.jupiter.repository.UserRepository;
+import com.management.jupiter.services.AdminService;
 import com.management.jupiter.services.UserServices;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 
 public class DeleteUser {
     private String originalCsvContent;
@@ -16,7 +26,7 @@ public class DeleteUser {
 
 
     private static final Path USERS_CSV =
-            Path.of("src/main/java/com/management/jupiter/persistance/users.csv");
+            Path.of("data/users.csv");
 
     @Before("@delete-user")
     public void saveData() throws IOException {
@@ -27,8 +37,8 @@ public class DeleteUser {
         Files.writeString(USERS_CSV, originalCsvContent);
     }
 
-    @Given("an administrator is authenticated")
-    public void anAdministratorIsAuthenticated() throws Exception {
+    @Given("an administrator is authenticate")
+    public void anAdministratorIsAuthenticate() throws Exception {
         UserServices.LoginService("juan@gmail.com", "12345");
     }
 
@@ -39,6 +49,12 @@ public class DeleteUser {
 
     @When("the administrator submits the user deletion request")
     public void submitDeleteRequest(){
+        AdminService.deleteUser(idOrEmail);
+    }
 
+    @Then("the user should be deleted successfully")
+    public void userDeleted(){
+        User user = UserRepository.findByIdOrEmail(idOrEmail);
+        assertNull(user);
     }
 }

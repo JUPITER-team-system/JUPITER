@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class UserRepository {
 
-    private static final String FILE_PATH = "src/main/java/com/management/jupiter/persistance/users.csv";
+    private static final String FILE_PATH = "data/users.csv";
 
     public static User findByEmail(String email) {
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
@@ -32,6 +32,31 @@ public class UserRepository {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+        return null;
+    }
+
+    public static User findByIdOrEmail(String value) {
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                if (line.isBlank()) continue;
+
+                String[] data = line.split(",");
+                User user = mapLineToUser(data);
+
+                if (user != null &&
+                        (user.getEmail().equalsIgnoreCase(value.trim()) ||
+                                String.valueOf(user.getId()).equals(value.trim()))) {
+
+                    return user;
+                }
+            }
+
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+
         return null;
     }
 

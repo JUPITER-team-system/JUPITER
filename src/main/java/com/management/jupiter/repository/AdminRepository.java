@@ -53,9 +53,6 @@ public class AdminRepository {
         } else {
             System.out.println("User not exist.");
         }
-        for(String[] user : users){
-            System.out.println("id" + user[0] + "Nombre" + user[1]);
-        }
     }
 
     //Create clan
