@@ -65,4 +65,8 @@ public class AdminService {
             throw new RuntimeException(e);
         }
     }
+
+    public void updateUser(){
+
+    }
 }

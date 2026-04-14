@@ -53,6 +53,9 @@ public class AdminController {
         AdminService.deleteUser(value);
     }
 
+    public void updateUser(){
+
+    }
 //    public static void getUsersByRol(){
 //        Scanner scanner = InputView.getScanner();
 //        try{

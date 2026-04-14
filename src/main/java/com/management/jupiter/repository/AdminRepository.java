@@ -80,6 +80,20 @@ public class AdminRepository {
         }
     }
 
+    public void updateUser(String idOrEmail){
+        List<String[]> users = handler.read("users.csv");
+
+        for (String[] user : users){
+            if(user[2].equalsIgnoreCase(idOrEmail) ||  user[0].equalsIgnoreCase(idOrEmail)){
+                //TODO
+                //act nombre
+                //act email
+                //act pass
+                //act role
+            }
+        }
+    }
+
     private static String mapToLine(User user) {
         String base = user.getId() + "," + user.getUsername() + "," + user.getEmail() + "," + user.getPassword() + "," + user.getRole();
 

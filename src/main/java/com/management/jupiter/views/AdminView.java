@@ -46,6 +46,7 @@ public class AdminView {
             System.out.println("9.  Assign TL to a clan");
             System.out.println("10. Assign Coder to a clan");
             System.out.println("11. View clan members");
+            System.out.println("12. Actualizar user");
             System.out.println("0.  Exit");
             System.out.println("Select a option");
 
@@ -112,6 +113,11 @@ public class AdminView {
                     verMiembrosDeClan();
                     break;
 
+                case 12:
+                    //Actualizar user
+                    AdminRepository adminRepository = new AdminRepository();
+                    adminRepository.updateUser("juan@gmail.com");
+                    break;
                 case 0:
                     System.out.println("Cerrando...");
                     break;
