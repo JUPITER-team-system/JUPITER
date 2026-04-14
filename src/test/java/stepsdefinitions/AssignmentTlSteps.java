@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class AssignmentTlSteps {
 
     private static final Path USERS_CSV =
-            Path.of("src/main/java/com/management/jupiter/persistance/users.csv");
+            Path.of("data/users.csv");
 
     private String originalCsvContent;
     private AssignmentService assignmentService;

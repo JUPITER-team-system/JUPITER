@@ -37,7 +37,7 @@ public class CreateUserSteps {
 
     private Exception exception;
     private static final Path USERS_CSV =
-            Path.of("src/main/java/com/management/jupiter/persistance/users.csv");
+            Path.of("data/users.csv");
 
     @Before("@create-user")
     public void saveData() throws IOException {

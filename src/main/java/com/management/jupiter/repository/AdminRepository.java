@@ -30,7 +30,7 @@ public class AdminRepository {
 
     public void insertUser(String name, String email, String password, String role) {
         //Creo el array que los va a contener.
-        List<String[]> users = handler.read("info.csv");
+        List<String[]> users = handler.read("data/users.csv");
 
         //lo construyo
         String[] newUser = new String[]{name, email, password, role};
@@ -38,7 +38,7 @@ public class AdminRepository {
         users.add(newUser);
 
         //Lo añadimos al archivo para la persistencia
-        handler.write("info.csv", users);
+        handler.write("data/users.csv", users);
     }
 
     public void deleteUser(String value) {
