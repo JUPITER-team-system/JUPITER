@@ -1,45 +1,45 @@
 package com.management.jupiter.views;
-import java.util.Scanner;
 
+import com.management.jupiter.controllers.AdminController;
+import com.management.jupiter.models.Coder;
+import com.management.jupiter.ui.users.CoderUI;
+import com.management.jupiter.util.scanner.ScannerUtil;
 
 public class CoderView {
 
-    private final Scanner scanner;
+    private final ScannerUtil input;
+    private final AdminController controller;
 
-    public CoderView(){
-        scanner = InputView.getScanner();
+    public CoderView (ScannerUtil input, AdminController controller) {
+        this.input = input;
+        this.controller = controller;
     }
 
-    public void menuCoder(){
-        int option;
+    public void show (Coder coder) {
 
-        do{
-            System.out.println("===== MENU CODER =====");
-            System.out.println("1. View News");
-            System.out.println("2. View Team");
-            System.out.println("0. Exit");
-            System.out.println("Select a option");
+        CoderUI.coder(coder);
+        CoderUI.coderDec();
 
-            option = scanner.nextInt();
-            scanner.nextLine(); //clean buffer
+        int dec;
 
-            switch (option){
+        do {
+
+            dec = input.readInt("Which is your decision?: ");
+
+            switch (dec) {
                 case 1:
-                    System.out.println("NEWS");
+                    //Add Soon...
                     break;
                 case 2:
-                    System.out.println("TEAM");
+                    //Add Soon...
                     break;
-                case 0:
-                    System.out.println("Closing ...");
+                case 3:
+                    //Add Soon...
                     break;
-                default:
-                    System.out.println("Invalid option ");
             }
-        }while(option!=0);
-    }
 
-    public void close(){
+        } while (dec != 0);
+
     }
 
 }
