@@ -29,7 +29,7 @@ public class LoginView {
 
             try{
 
-                User user = controller.login(email, password);
+                return controller.login(email, password);
 
             }catch (UserBlockedException err){
 
