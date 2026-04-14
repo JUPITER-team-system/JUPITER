@@ -2,8 +2,6 @@ package com.management.jupiter.views;
 
 import com.management.jupiter.controllers.AdminController;
 import com.management.jupiter.models.Admin;
-import com.management.jupiter.models.enums.*;
-import com.management.jupiter.security.LoginSession;
 import com.management.jupiter.ui.users.AdminUI;
 import com.management.jupiter.util.scanner.ScannerUtil;
 
@@ -11,12 +9,10 @@ public class AdminView {
 
     private final ScannerUtil input;
     private final AdminController controller;
-    private final LoginSession session;
 
-    public AdminView (ScannerUtil input, AdminController controller, LoginSession session) {
+    public AdminView (ScannerUtil input, AdminController controller) {
         this.input = input;
         this.controller = controller;
-        this.session = session;
     }
 
     public void show (Admin admin) {
@@ -102,130 +98,19 @@ public class AdminView {
             switch (dec) {
 
                 case 1:
-                    addUser();
+                    //Add Soon...
                     break;
                 case 2:
-                    deleteUser();
+                    //Add Soon...
                     break;
                 case 3:
-                    editUser();
+                    //Add Soon...
                     break;
+
             }
 
         } while (dec != 0);
 
     }
 
-    private void addUser() {
-
-        while (true) {
-
-            String name = input.readString("What's his/her name? (or 'exit' to quit): ");
-            if (name.equalsIgnoreCase("exit")) break;
-
-            String email = input.readString("What's his/her email?: ");
-            String password = input.readString("What's his/her password?: ");
-
-            Role role;
-
-            try{
-
-                role = Role.valueOf(input.readString("what's her/his role? (Coder/Tl): ").toUpperCase());
-
-            }catch (IllegalArgumentException err) {
-
-                System.out.println("Invalid type");
-                continue;
-
-            }
-
-            TlType tl = null;
-
-            if(role == Role.TL) {
-
-                try {
-
-                    tl = TlType.valueOf(input.readString("TL Type (PROGRAMACION/INGLES): ").toUpperCase());
-
-                } catch (IllegalArgumentException err) {
-
-                    System.out.println("Invalid type");
-                    continue;
-
-                }
-            }
-
-            controller.createUser(name, email, password, role, null ,tl);
-
-        }
-
-    }
-
-    private void deleteUser () {
-
-        String value = input.readString("Which is her/his email or id: ");
-
-        if (value.equals(session.loggedUser().getId()) || value.equals(session.loggedUser().getEmail())){
-
-            System.out.println("You can't delete yourself!");
-            return;
-
-        }
-
-        controller.deleteUser(value);
-
-    }
-
-    private void editUser () {
-
-        String idOrEmail = input.readString("Enter the user id or email: ");
-
-        if (idOrEmail.equals(session.loggedUser().getId()) || idOrEmail.equals(session.loggedUser().getEmail())){
-
-            System.out.println("You can't modify yourself!");
-            return;
-
-        }
-
-        AdminUI.userOptions();
-
-        int dec = input.readInt("What's your decision?: ");
-        String fieldName = "";
-
-        switch (dec) {
-
-            case 1 -> fieldName = "name";
-            case 2 -> fieldName = "email";
-            case 3 -> fieldName = "password";
-            case 4 -> fieldName = "role";
-            case 5 -> {
-
-                System.out.println("Operation Cancelled");
-                return;
-
-            }
-            default -> {
-
-                System.out.println("Invalid option");
-                return;
-
-            }
-
-        }
-
-        String newValue = input.readString("Enter the new value of " + fieldName + ": ");
-
-        try {
-
-            controller.updateUser(idOrEmail, newValue, fieldName);
-            System.out.println("User updated correctly");
-
-        }catch (RuntimeException err){
-
-            System.err.println("Error to update user" + err.getMessage());
-
-        }
-
-
-    }
 }
