@@ -4,7 +4,6 @@ import com.management.jupiter.models.Clan;
 import com.management.jupiter.models.Coder;
 import com.management.jupiter.models.Tl;
 import com.management.jupiter.services.AssignmentService;
-import com.management.jupiter.views.InputView;
 
 import java.util.List;
 import java.util.Scanner;
