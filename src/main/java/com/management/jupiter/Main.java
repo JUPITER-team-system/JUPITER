@@ -1,57 +1,47 @@
 package com.management.jupiter;
 
-import com.management.jupiter.services.ClanService;
-import com.management.jupiter.services.AssignmentService;
-
-import com.management.jupiter.repository.ClanRepository;
-import com.management.jupiter.repository.TeamLeaderRepository;
-import com.management.jupiter.repository.CoderRepository;
-
+import com.management.jupiter.controllers.AdminController;
+import com.management.jupiter.controllers.CoderController;
+import com.management.jupiter.controllers.TlController;
 import com.management.jupiter.controllers.UserController;
+import com.management.jupiter.models.Admin;
+import com.management.jupiter.models.Coder;
 import com.management.jupiter.models.Tl;
 import com.management.jupiter.models.User;
+import com.management.jupiter.util.scanner.ScannerUtil;
 import com.management.jupiter.views.AdminView;
 import com.management.jupiter.views.CoderView;
-import com.management.jupiter.views.TLView;
-import com.management.jupiter.models.enums.Role;
+import com.management.jupiter.views.LoginView;
+import com.management.jupiter.views.TlView;
+
+import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) throws Exception {
-        // 🔹 Repositorios (acceso a datos)
-        ClanRepository clanRepository = new ClanRepository();
-        TeamLeaderRepository teamLeaderRepository = new TeamLeaderRepository();
-        CoderRepository coderRepository = new CoderRepository();
+    public static void main (String[] args){
 
-        // 🔹 Servicios (lógica de negocio)
-        ClanService clanService = new ClanService();
-        AssignmentService assignmentService = new AssignmentService(
-                clanRepository,
-                teamLeaderRepository,
-                coderRepository
-        );
+        Scanner scanner = new Scanner(System.in);
+        ScannerUtil input = new ScannerUtil(scanner);
 
-        User loggedUser = UserController.login();
-        if (loggedUser == null) {
-            return;
+        UserController userController = new UserController();
+        AdminController adminController = new AdminController();
+        TlController tlController = new TlController();
+        CoderController coderController = new CoderController();
+
+        LoginView login = new LoginView(input, userController);
+        AdminView admin = new AdminView(input, adminController);
+        TlView tl = new TlView(input, tlController);
+        CoderView coder = new CoderView(input, coderController);
+
+        User user = login.login();
+
+        if(user instanceof Admin loggedAdmin){
+            admin.show(loggedAdmin);
+        } else if (user instanceof Tl loggedTl) {
+            tl.show(loggedTl);
+        } else if (user instanceof Coder loggedCoder){
+            coder.show(loggedCoder);
         }
 
-        // 🔹 Flujo por roles
-        if (loggedUser.getRole() == Role.CODER) {
-            CoderView coderView = new CoderView();
-            coderView.menuCoder();
-            coderView.close();
-        } else if (loggedUser.getRole() == Role.TL) {
-            TLView tlView = new TLView(assignmentService);
-            if (loggedUser instanceof Tl tl) {
-                tlView.setTlSesion(tl);
-            }
-            tlView.menuTL();
-            tlView.close();
-        } else if (loggedUser.getRole() == Role.ADMIN) {
-            AdminView adminView = new AdminView(clanService, assignmentService);
-            adminView.menuAdmin();
-            adminView.close();
-        }
     }
 }
