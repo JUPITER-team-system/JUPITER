@@ -1,106 +1,116 @@
 package com.management.jupiter.views;
 
-import com.management.jupiter.models.Clan;
-import com.management.jupiter.models.Tl;
-import com.management.jupiter.models.Coder;
-import com.management.jupiter.models.enums.TlType;
-import com.management.jupiter.services.AssignmentService;
-import com.management.jupiter.services.ClanService;
+import com.management.jupiter.controllers.AdminController;
+import com.management.jupiter.models.Admin;
+import com.management.jupiter.ui.users.AdminUI;
+import com.management.jupiter.util.scanner.ScannerUtil;
 
-import java.util.List;
-import java.util.Scanner;
-
-/**
- * Vista del menú principal del Administrador.
- * Integra ClanService (US-02) y AssignmentService (US-04).
- */
 public class AdminView {
 
-    private final Scanner           scanner;
-    private final ClanService       clanService;
-    private final AssignmentService assignmentService;
+    private final ScannerUtil input;
+    private final AdminController controller;
 
-    public AdminView(ClanService clanService, AssignmentService assignmentService) {
-        this.scanner           = InputView.getScanner();
-        this.clanService       = clanService;
-        this.assignmentService = assignmentService;
+    public AdminView (ScannerUtil input, AdminController controller) {
+        this.input = input;
+        this.controller = controller;
     }
 
-    public void menuAdmin() {
-        int option;
+    public void show (Admin admin) {
+
+        AdminUI.admin(admin);
+        AdminUI.adminDec();
+
+        int dec;
 
         do {
-            System.out.println(" ===== MENU ADMIN =====");
-            System.out.println("1.  Ver Coders");
-            System.out.println("2.  Ver TLs");
-            System.out.println("3.  Ver Clanes");
-            System.out.println("4.  Eliminar usuario");
-            System.out.println("5.  Crear usuario");
-            System.out.println("6.  Eliminar clan");
-            System.out.println("7.  Crear clan");
-            System.out.println("8.  Actualizar nombre de clan");
-            System.out.println("9.  Asignar TL a clan");
-            System.out.println("10. Asignar Coder a clan");
-            System.out.println("11. Ver miembros de un clan");
-            System.out.println("0.  Salir");
-            System.out.print("Seleccione una opción: ");
 
-            option = scanner.nextInt();
-            scanner.nextLine();
+            dec = input.readInt("Which is your decision?: ");
 
-            switch (option) {
+            switch (dec) {
                 case 1:
-                    System.out.println("VIEW CODERS");
+                    //Add Soon...
                     break;
-
                 case 2:
-                    System.out.println("VIEW TLS");
+                    //Add Soon...
                     break;
-
                 case 3:
-
+                    //Add Soon...
                     break;
-
-                case 4:
-                    System.out.println("DELETE USER");
+                case  4:
+                    clanManagement(admin);
                     break;
-
                 case 5:
-                    System.out.println("CREATE USER");
+                    userManagement(admin);
                     break;
-
-                case 6:
-
-                    break;
-
-                case 7:
-
-                    break;
-
-                case 8:
-
-                    break;
-
-                case 9:
-
-                    break;
-
-                case 10:
-
-                    break;
-
-                case 11:
-
-                    break;
-
-                case 0:
-                    System.out.println("Cerrando...");
-                    break;
-
-                default:
-                    System.out.println("Opción inválida.");
             }
 
-        } while (option != 0);
+        } while (dec != 0);
+
     }
 
+    public void clanManagement(Admin admin){
+
+        AdminUI.admin(admin);
+        AdminUI.clanManage();
+
+        int dec;
+
+        do {
+
+            dec = input.readInt("Which is your decision?: ");
+
+            switch (dec) {
+                case 1:
+                    //Add Soon...
+                    break;
+                case 2:
+                    //Add Soon...
+                    break;
+                case 3:
+                    //Add Soon...
+                    break;
+                case  4:
+                    //Add Soon...
+                    break;
+                case 5:
+                    //Add Soon...
+                    break;
+                case 6:
+                    //Add Soon...
+                    break;
+            }
+
+        } while (dec != 0);
+
+    }
+
+    public void userManagement(Admin admin){
+
+        AdminUI.admin(admin);
+        AdminUI.userManage();
+
+        int dec;
+
+        do {
+
+            dec = input.readInt("Which is your decision?: ");
+
+            switch (dec) {
+
+                case 1:
+                    //Add Soon...
+                    break;
+                case 2:
+                    //Add Soon...
+                    break;
+                case 3:
+                    //Add Soon...
+                    break;
+
+            }
+
+        } while (dec != 0);
+
+    }
+
+}
