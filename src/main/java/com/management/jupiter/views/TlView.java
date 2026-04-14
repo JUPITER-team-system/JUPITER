@@ -1,105 +1,75 @@
 package com.management.jupiter.views;
-
-import com.management.jupiter.models.Clan;
+import com.management.jupiter.controllers.TlController;
 import com.management.jupiter.models.Tl;
-import com.management.jupiter.services.AssignmentService;
-import com.management.jupiter.ui.tl.ClanDetailView;
+import com.management.jupiter.ui.users.TeamLeaderUI;
+import com.management.jupiter.util.scanner.ScannerUtil;
 
-import java.util.List;
-import java.util.Scanner;
+public class TlView {
 
-/**
- * Vista del menú principal del TL.
- * Integra ClanDetailView para la US-09.
- */
-public class TLView {
+    private final ScannerUtil input;
+    private final TlController controller;
 
-    private final Scanner        scanner;
-    private final ClanDetailView clanDetailView;
-    private final AssignmentService assignmentService;
-    private Tl                   tlSesion; // TL autenticado en sesión
-
-    public TLView(AssignmentService assignmentService) {
-        this.scanner            = InputView.getScanner();
-        this.assignmentService  = assignmentService;
-        this.clanDetailView     = new ClanDetailView(assignmentService);
+    public TlView(ScannerUtil input, TlController controller){
+        this.input = input;
+        this.controller = controller;
     }
 
-    /** Establece el TL de sesión después del login. */
-    public void setTlSesion(Tl tl) {
-        this.tlSesion = tl;
-    }
+    public void show (Tl tl){
 
-    public void menuTL() {
-        int option;
+        int dec;
 
-        do {
-            System.out.println(" ===== MENU TL =====");
-            System.out.println("1. Ver noticias");
-            System.out.println("2. Ver mis clanes y coders");
-            System.out.println("3. Ver detalle de un clan");
-            System.out.println("4. Agregar coder");
-            System.out.println("5. Eliminar coder");
-            System.out.println("0. Salir");
-            System.out.print("Seleccione una opción: ");
+        do{
 
-            option = leerEntero();
+            TeamLeaderUI.teamLeader(tl);
+            TeamLeaderUI.tlDec();
+            dec = input.readInt("Which is your decision");
 
-            switch (option) {
+            switch (dec){
                 case 1:
-                    System.out.println("NEWS");
+                    //Add Soon...
                     break;
-
                 case 2:
-                    // US-09: ver todos los clanes del TL con su lista de coders
-                    if (tlSesion != null) {
-                        clanDetailView.mostrarMisClanes(tlSesion);
-                    } else {
-                        System.out.println("[ERROR] No hay TL en sesión.");
-                    }
+                    //Add Soon...
                     break;
-
                 case 3:
-                    // US-09: seleccionar y ver detalle de una célula específica
-                    if (tlSesion != null) {
-                        clanDetailView.seleccionarYVerDetalleClan(tlSesion);
-                    } else {
-                        System.out.println("[ERROR] No hay TL en sesión.");
-                    }
+                    //Add Soon...
                     break;
-
                 case 4:
-                    System.out.println("ADD CODER");
+                    coderManagement(tl);
                     break;
-
-                case 5:
-                    System.out.println("DELETE CODER");
-                    break;
-
-                case 0:
-                    System.out.println("Cerrando...");
-                    break;
-
-                default:
-                    System.out.println("Opción inválida.");
             }
 
-        } while (option != 0);
+        }while (dec != 0);
+
     }
 
-    /**
-     * Lee un entero desde consola con manejo seguro de errores.
-     * Si el input no es numérico retorna -1 para que el switch caiga en default.
-     */
-    private int leerEntero() {
-        try {
-            return Integer.parseInt(scanner.nextLine().trim());
-        } catch (NumberFormatException e) {
-            System.out.println("[ERROR] Ingresa un número válido.");
-            return -1;
-        }
+    public void coderManagement(Tl tl){
+
+        int dec;
+
+        do{
+
+            TeamLeaderUI.teamLeader(tl);
+            TeamLeaderUI.tlCoder();
+            dec = input.readInt("Which is your decision");
+
+            switch (dec){
+                case 1:
+                    //Add Soon...
+                    break;
+                case 2:
+                    //Add Soon...
+                    break;
+                case 3:
+                    //Add Soon...
+                    break;
+                case 4:
+                    //Add Soon...
+                    break;
+            }
+
+        }while (dec != 0);
+
     }
 
-    public void close() {
-    }
 }
