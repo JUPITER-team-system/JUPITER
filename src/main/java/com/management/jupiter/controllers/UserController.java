@@ -48,6 +48,11 @@ public class UserController {
 
     }
 
+    public int getLeftAttempts(String email) {
 
+        Attempts attempts = attemptsPerUser.get(email);
+        return (attempts == null) ? MAX_ATTEMPTS : (MAX_ATTEMPTS - attempts.failedAttempts);
+
+    }
 
 }
