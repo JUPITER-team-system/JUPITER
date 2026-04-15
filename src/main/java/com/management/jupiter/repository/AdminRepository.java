@@ -80,19 +80,61 @@ public class AdminRepository {
         }
     }
 
-    public void updateUser(String idOrEmail){
+    public void updateUser(String idOrEmail, String newValue, String fieldName) {
         List<String[]> users = handler.read("users.csv");
 
-        for (String[] user : users){
-            if(user[2].equalsIgnoreCase(idOrEmail) ||  user[0].equalsIgnoreCase(idOrEmail)){
-                //TODO
-                //act nombre
-                //act email
-                //act pass
-                //act role
+        for (String[] user : users) {
+            if (user[2].equalsIgnoreCase(idOrEmail) || user[0].equalsIgnoreCase(idOrEmail)) {
+
+                // user[0] = id
+                // user[1] = name
+                // user[2] = email
+                // user[3] = password
+                // user[4] = role
+
+                switch (fieldName){
+                    case "name": user[1] = newValue; break;
+                    case "email": user[2] = newValue; break;
+                    case "password": user[3] = newValue; break;
+                    case "role" : user[4] = newValue; break;
+                }
             }
         }
+
+        handler.write("users.csv", users); // guardar cambios
     }
+//    public void updateUser(String idOrEmail, String newName, String newEmail, String newPassword, String newRole) {
+//        List<String[]> users = handler.read("users.csv");
+//
+//        for (String[] user : users) {
+//            if (user[2].equalsIgnoreCase(idOrEmail) || user[0].equalsIgnoreCase(idOrEmail)) {
+//
+//                // user[0] = id
+//                // user[1] = name
+//                // user[2] = email
+//                // user[3] = password
+//                // user[4] = role
+//
+//                if (newName != null && !newName.isEmpty()) {
+//                    user[1] = newName;
+//                }
+//
+//                if (newEmail != null && !newEmail.isEmpty()) {
+//                    user[2] = newEmail;
+//                }
+//
+//                if (newPassword != null && !newPassword.isEmpty()) {
+//                    user[3] = newPassword;
+//                }
+//
+//                if (newRole != null && !newRole.isEmpty()) {
+//                    user[4] = newRole;
+//                }
+//            }
+//        }
+//
+//        handler.write("users.csv", users); // guardar cambios
+//    }
 
     private static String mapToLine(User user) {
         String base = user.getId() + "," + user.getUsername() + "," + user.getEmail() + "," + user.getPassword() + "," + user.getRole();

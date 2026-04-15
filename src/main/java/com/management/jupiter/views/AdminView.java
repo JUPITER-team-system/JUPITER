@@ -115,8 +115,7 @@ public class AdminView {
 
                 case 12:
                     //Actualizar user
-                    AdminRepository adminRepository = new AdminRepository();
-                    adminRepository.updateUser("juan@gmail.com");
+                    AdminController.updateUser();
                     break;
                 case 0:
                     System.out.println("Cerrando...");

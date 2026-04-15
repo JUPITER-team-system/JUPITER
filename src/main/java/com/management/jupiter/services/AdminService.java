@@ -58,7 +58,7 @@ public class AdminService {
                 });
     }
 
-    public static void deleteUser(String value){
+    public static void deleteUser(String value) {
         try {
             adminRepository.deleteUser(value);
         } catch (Exception e) {
@@ -66,7 +66,7 @@ public class AdminService {
         }
     }
 
-    public void updateUser(){
-
+    public static void updateUser(String idOrEmail, String newValue, String fieldName) {
+        adminRepository.updateUser(idOrEmail, newValue, fieldName);
     }
 }
