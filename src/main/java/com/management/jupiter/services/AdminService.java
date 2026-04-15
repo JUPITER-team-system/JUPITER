@@ -17,7 +17,16 @@ public class AdminService {
     private static final AdminRepository adminRepository = new AdminRepository();
 
     public static User createUser(String username, String email, String password, Role role, TlType tlType) throws Exception {
+        if (username == null || username.isBlank() ||
+                email == null || email.isBlank() ||
+                password == null || password.isBlank() ||
+                role == null) {
+            throw new Exception("All fields are required");
+        }
 
+        if (UserRepository.findByIdOrEmail(email.trim()) != null) {
+            throw new Exception("Email already exists");
+        }
         User user;
         int nextId = UserRepository.nextId();
         if (role == Role.ADMIN) {
