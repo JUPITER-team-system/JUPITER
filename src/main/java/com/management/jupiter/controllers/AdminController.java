@@ -4,7 +4,6 @@ import com.management.jupiter.models.User;
 import com.management.jupiter.models.enums.Clan;
 import com.management.jupiter.models.enums.Role;
 import com.management.jupiter.models.enums.TlType;
-import com.management.jupiter.repository.UserRepository;
 import com.management.jupiter.services.AdminService;
 import com.management.jupiter.services.UserServices;
 import com.management.jupiter.ui.admin.UpdateUserView;
@@ -17,36 +16,6 @@ public class AdminController {
 
     public static void createUser(String username, String email, String password, Role role, TlType tlType) {
         try {
-            if (username == null || username.isBlank() ||
-                    email == null || email.isBlank() ||
-                    password == null || password.isBlank() ||
-                    role == null) {
-                throw new Exception("All fields are required");
-            }
-
-            if (UserRepository.findByIdOrEmail(email.trim()) != null) {
-                throw new Exception("Email already exists");
-            }
-
-//            System.out.println("===== CREATE USER =====");
-//            System.out.print("Username: ");
-//            String username = scanner.nextLine();
-
-//            System.out.print("Email: ");
-//            String email = scanner.nextLine();
-
-//            System.out.print("Password: ");
-//            String password = scanner.nextLine();
-
-//            System.out.print("Role (ADMIN, TL, CODER): ");
-//            Role role = Role.valueOf(scanner.nextLine().trim().toUpperCase());
-
-//            TlType tlType = null;
-//            if (role == Role.TL) {
-//                System.out.print("TL type (PROGRAMACION, INGLES): ");
-//                tlType = TlType.valueOf(scanner.nextLine().trim().toUpperCase());
-//            }
-
             User createdUser = AdminService.createUser(username, email, password, role, tlType);
             System.out.println("User created successfully: " + createdUser);
         } catch (IllegalArgumentException e) {

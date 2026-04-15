@@ -1,5 +1,6 @@
 package stepsdefinitions;
 
+import com.management.jupiter.controllers.AdminController;
 import com.management.jupiter.models.User;
 import com.management.jupiter.models.enums.Clan;
 import com.management.jupiter.models.enums.Role;
@@ -84,13 +85,12 @@ public class CreateUserSteps {
                     email,
                     password,
                     type,
-                    Clan.HAMILTON,
                     TlType.PROGRAMACION
             );
             System.out.println(userCreated);
         } catch (Exception e) {
             exception = e;
-            System.out.println(e.getMessage());
+            System.out.println(e);
         }
     }
 

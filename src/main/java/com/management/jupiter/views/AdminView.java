@@ -80,7 +80,6 @@ public class AdminView {
 
                 case 5:
                     System.out.println("CREATE USER");
-                    AdminController.createUser("create test", "create@test.com" ,"12345", Role.ADMIN,null);
                     break;
 
                 case 6:
