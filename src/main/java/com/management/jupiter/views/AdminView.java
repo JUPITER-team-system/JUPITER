@@ -5,6 +5,7 @@ import com.management.jupiter.controllers.AdminController;
 import com.management.jupiter.models.Clan;
 import com.management.jupiter.models.Tl;
 import com.management.jupiter.models.Coder;
+import com.management.jupiter.models.enums.Role;
 import com.management.jupiter.models.enums.TlType;
 import com.management.jupiter.repository.AdminRepository;
 import com.management.jupiter.services.AdminService;
@@ -79,7 +80,6 @@ public class AdminView {
 
                 case 5:
                     System.out.println("CREATE USER");
-                    AdminController.createUser();
                     break;
 
                 case 6:

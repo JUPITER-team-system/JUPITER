@@ -14,9 +14,9 @@ import com.management.jupiter.repository.UserRepository;
 import java.util.List;
 
 public class AdminService {
-    private static AdminRepository adminRepository = new AdminRepository();
+    private static final AdminRepository adminRepository = new AdminRepository();
 
-    public static User createUser(String username, String email, String password, Role role, Clan clan, TlType tlType) throws Exception {
+    public static User createUser(String username, String email, String password, Role role, TlType tlType) throws Exception {
         if (username == null || username.isBlank() ||
                 email == null || email.isBlank() ||
                 password == null || password.isBlank() ||
@@ -27,16 +27,11 @@ public class AdminService {
         if (UserRepository.findByIdOrEmail(email.trim()) != null) {
             throw new Exception("Email already exists");
         }
-
         User user;
         int nextId = UserRepository.nextId();
         if (role == Role.ADMIN) {
             user = new Admin(nextId, username.trim(), email.trim(), password.trim(), role);
         } else {
-            if (clan == null) {
-                throw new Exception("Clan is required for TL and CODER");
-            }
-
             if (role == Role.TL) {
                 user = new Tl(nextId, username.trim(), email.trim(), password.trim(), role, tlType);
             } else {
