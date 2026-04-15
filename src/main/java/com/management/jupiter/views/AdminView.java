@@ -1,9 +1,13 @@
 package com.management.jupiter.views;
+import com.management.jupiter.controllers.AdminController;
+
 
 import com.management.jupiter.models.Clan;
 import com.management.jupiter.models.Tl;
 import com.management.jupiter.models.Coder;
 import com.management.jupiter.models.enums.TlType;
+import com.management.jupiter.repository.AdminRepository;
+import com.management.jupiter.services.AdminService;
 import com.management.jupiter.services.AssignmentService;
 import com.management.jupiter.services.ClanService;
 
@@ -26,35 +30,41 @@ public class AdminView {
         this.assignmentService = assignmentService;
     }
 
-    public void menuAdmin() {
+    public void menuAdmin(){
         int option;
 
-        do {
+        do{
             System.out.println(" ===== MENU ADMIN =====");
-            System.out.println("1.  Ver Coders");
-            System.out.println("2.  Ver TLs");
-            System.out.println("3.  Ver Clanes");
-            System.out.println("4.  Eliminar usuario");
-            System.out.println("5.  Crear usuario");
-            System.out.println("6.  Eliminar clan");
-            System.out.println("7.  Crear clan");
-            System.out.println("8.  Actualizar nombre de clan");
-            System.out.println("9.  Asignar TL a clan");
-            System.out.println("10. Asignar Coder a clan");
-            System.out.println("11. Ver miembros de un clan");
-            System.out.println("0.  Salir");
-            System.out.print("Seleccione una opción: ");
+            System.out.println("1. View Coders");
+            System.out.println("2. View Tls");
+            System.out.println("3. View Clanes");
+            System.out.println("4. Delete user");
+            System.out.println("5. Create user");
+            System.out.println("6. Delete clan");
+            System.out.println("7. Create clan");
+            System.out.println("8. Add user into clan");
+            System.out.println("9.  Assign TL to a clan");
+            System.out.println("10. Assign Coder to a clan");
+            System.out.println("11. View clan members");
+            System.out.println("0.  Exit");
+            System.out.println("Select a option");
 
-            option = scanner.nextInt();
-            scanner.nextLine();
+            String optionInput = scanner.nextLine();
+            try {
+                option = Integer.parseInt(optionInput);
+            } catch (NumberFormatException e) {
+                option = -1;
+            }
 
             switch (option) {
                 case 1:
                     System.out.println("VIEW CODERS");
+                    AdminService.getUsersByRol("CODER");
                     break;
 
                 case 2:
                     System.out.println("VIEW TLS");
+                    AdminService.getUsersByRol("TL");
                     break;
 
                 case 3:
@@ -64,10 +74,12 @@ public class AdminView {
 
                 case 4:
                     System.out.println("DELETE USER");
+                    AdminController.deleteUser();
                     break;
 
                 case 5:
                     System.out.println("CREATE USER");
+                    AdminController.createUser();
                     break;
 
                 case 6:
@@ -99,7 +111,6 @@ public class AdminView {
                     // US-04 – Ver miembros de un clan
                     verMiembrosDeClan();
                     break;
-
                 case 0:
                     System.out.println("Cerrando...");
                     break;
@@ -107,8 +118,7 @@ public class AdminView {
                 default:
                     System.out.println("Opción inválida.");
             }
-
-        } while (option != 0);
+        }while (option != 0);
     }
 
     // ── US-02: CRUD de Clanes ────────────────────────────────────────────────
@@ -137,9 +147,10 @@ public class AdminView {
     }
 
     private void actualizarClan() {
-        System.out.print("ID del clan a actualizar: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
+        Integer id = leerEntero("ID del clan a actualizar: ");
+        if (id == null) {
+            return;
+        }
         System.out.print("Nuevo nombre: ");
         String nuevoNombre = scanner.nextLine();
         try {
@@ -151,9 +162,10 @@ public class AdminView {
     }
 
     private void eliminarClan() {
-        System.out.print("ID del clan a eliminar: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
+        Integer id = leerEntero("ID del clan a eliminar: ");
+        if (id == null) {
+            return;
+        }
         try {
             clanService.eliminarClan(id);
             System.out.println("Clan eliminado correctamente.");
@@ -165,11 +177,14 @@ public class AdminView {
     // ── US-04: Asignaciones ──────────────────────────────────────────────────
 
     private void asignarTlAClan() {
-        System.out.print("ID del TL: ");
-        int tlId = scanner.nextInt();
-        System.out.print("ID del clan: ");
-        int clanId = scanner.nextInt();
-        scanner.nextLine();
+        Integer tlId = leerEntero("ID del TL: ");
+        if (tlId == null) {
+            return;
+        }
+        Integer clanId = leerIdDeClan("ID o nombre del clan: ");
+        if (clanId == null) {
+            return;
+        }
         try {
             assignmentService.asignarTlAClan(tlId, clanId);
             System.out.println("TL asignado al clan correctamente.");
@@ -179,11 +194,14 @@ public class AdminView {
     }
 
     private void asignarCoderAClan() {
-        System.out.print("ID del Coder: ");
-        int coderId = scanner.nextInt();
-        System.out.print("ID del clan: ");
-        int clanId = scanner.nextInt();
-        scanner.nextLine();
+        Integer coderId = leerEntero("ID del Coder: ");
+        if (coderId == null) {
+            return;
+        }
+        Integer clanId = leerIdDeClan("ID o nombre del clan: ");
+        if (clanId == null) {
+            return;
+        }
         try {
             assignmentService.asignarCoderAClan(coderId, clanId);
             System.out.println("Coder asignado al clan correctamente.");
@@ -193,9 +211,10 @@ public class AdminView {
     }
 
     private void verMiembrosDeClan() {
-        System.out.print("ID del clan: ");
-        int clanId = scanner.nextInt();
-        scanner.nextLine();
+        Integer clanId = leerIdDeClan("ID o nombre del clan: ");
+        if (clanId == null) {
+            return;
+        }
         try {
             List<Tl> tls = assignmentService.obtenerTlsDeClan(clanId);
             List<Coder> coders = assignmentService.obtenerCodersDeClan(clanId);
@@ -220,4 +239,39 @@ public class AdminView {
 
     public void close() {
     }
+
+    private Integer leerEntero(String mensaje) {
+        System.out.print(mensaje);
+        String input = scanner.nextLine().trim();
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            System.out.println("[ERROR] Debes ingresar un ID numérico.");
+            return null;
+        }
+    }
+
+    private Integer leerIdDeClan(String mensaje) {
+        System.out.print(mensaje);
+        String input = scanner.nextLine().trim();
+
+        if (input.isEmpty()) {
+            System.out.println("[ERROR] Debes ingresar un ID o nombre de clan.");
+            return null;
+        }
+
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException ignored) {
+            try {
+                com.management.jupiter.models.enums.Clan clanEnum =
+                        com.management.jupiter.models.enums.Clan.valueOf(input.toUpperCase());
+                return clanEnum.ordinal() + 1;
+            } catch (IllegalArgumentException e) {
+                System.out.println("[ERROR] Clan inválido. Usa uno de estos valores: HAMILTON, THOMPSON, TESLA, NAKAMOTO.");
+                return null;
+            }
+        }
+    }
+
 }

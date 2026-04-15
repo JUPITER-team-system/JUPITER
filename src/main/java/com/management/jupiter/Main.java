@@ -1,5 +1,6 @@
 package com.management.jupiter;
 
+import com.management.jupiter.repository.AdminRepository;
 import com.management.jupiter.services.ClanService;
 import com.management.jupiter.services.AssignmentService;
 
@@ -12,11 +13,11 @@ import com.management.jupiter.models.Tl;
 import com.management.jupiter.models.User;
 import com.management.jupiter.views.AdminView;
 import com.management.jupiter.views.CoderView;
+import com.management.jupiter.views.LoginView;
 import com.management.jupiter.views.TLView;
 import com.management.jupiter.models.enums.Role;
 
 public class Main {
-
     public static void main(String[] args) throws Exception {
         // 🔹 Repositorios (acceso a datos)
         ClanRepository clanRepository = new ClanRepository();
@@ -24,7 +25,7 @@ public class Main {
         CoderRepository coderRepository = new CoderRepository();
 
         // 🔹 Servicios (lógica de negocio)
-        ClanService clanService = new ClanService();
+        ClanService clanService = new ClanService(clanRepository);
         AssignmentService assignmentService = new AssignmentService(
                 clanRepository,
                 teamLeaderRepository,

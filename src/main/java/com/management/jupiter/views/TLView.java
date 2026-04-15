@@ -30,26 +30,25 @@ public class TLView {
         this.tlSesion = tl;
     }
 
-    public void menuTL() {
+    public void menuTL(){
         int option;
 
-        do {
+        do{
             System.out.println(" ===== MENU TL =====");
-            System.out.println("1. Ver noticias");
-            System.out.println("2. Ver mis clanes y coders");
-            System.out.println("3. Ver detalle de un clan");
-            System.out.println("4. Agregar coder");
-            System.out.println("5. Eliminar coder");
-            System.out.println("0. Salir");
-            System.out.print("Seleccione una opción: ");
+            System.out.println("1. View News");
+            System.out.println("2. View Team");
+            System.out.println("3. Add Coder");
+            System.out.println("4. Delete Coder");
+            System.out.println("5. Create New");
+            System.out.println("0. Exit");
+            System.out.println("Select a option");
 
             option = leerEntero();
 
-            switch (option) {
+            switch (option){
                 case 1:
                     System.out.println("NEWS");
                     break;
-
                 case 2:
                     // US-09: ver todos los clanes del TL con su lista de coders
                     if (tlSesion != null) {
@@ -58,7 +57,6 @@ public class TLView {
                         System.out.println("[ERROR] No hay TL en sesión.");
                     }
                     break;
-
                 case 3:
                     // US-09: seleccionar y ver detalle de una célula específica
                     if (tlSesion != null) {
@@ -67,24 +65,19 @@ public class TLView {
                         System.out.println("[ERROR] No hay TL en sesión.");
                     }
                     break;
-
                 case 4:
-                    System.out.println("ADD CODER");
-                    break;
-
-                case 5:
                     System.out.println("DELETE CODER");
                     break;
-
-                case 0:
-                    System.out.println("Cerrando...");
+                case 5:
+                    System.out.println("CREATE NEW");
                     break;
-
+                case 0:
+                    System.out.println("Closing ...");
+                    break;
                 default:
-                    System.out.println("Opción inválida.");
+                    System.out.println("Invalid option ");
             }
-
-        } while (option != 0);
+        }while (option != 0);
     }
 
     /**
@@ -102,4 +95,5 @@ public class TLView {
 
     public void close() {
     }
+
 }

@@ -20,8 +20,12 @@ public class CoderView {
             System.out.println("0. Exit");
             System.out.println("Select a option");
 
-            option = scanner.nextInt();
-            scanner.nextLine(); //clean buffer
+            String optionInput = scanner.nextLine();
+            try {
+                option = Integer.parseInt(optionInput);
+            } catch (NumberFormatException e) {
+                option = -1;
+            }
 
             switch (option){
                 case 1:

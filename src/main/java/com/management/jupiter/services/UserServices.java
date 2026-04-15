@@ -1,9 +1,15 @@
 package com.management.jupiter.services;
 
+import com.management.jupiter.models.Admin;
+import com.management.jupiter.models.Coder;
+import com.management.jupiter.models.Tl;
 import com.management.jupiter.models.User;
+import com.management.jupiter.models.enums.Clan;
+import com.management.jupiter.models.enums.Role;
 import com.management.jupiter.repository.UserRepository;
 
 public class UserServices {
+
     public static User LoginService(String email, String password) throws Exception {
         User user = UserRepository.findByEmail(email);
         //if the user doesn't exist in file.csv, throe error

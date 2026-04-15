@@ -18,6 +18,10 @@ public class ClanService {
         this.repository = new ClanRepository();
     }
 
+    public ClanService(ClanRepository repository) {
+        this.repository = repository;
+    }
+
     // ── CREATE ───────────────────────────────────────────────────────────────
 
     public Clan crearClan(String name) {

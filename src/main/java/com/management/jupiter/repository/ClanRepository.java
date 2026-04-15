@@ -1,6 +1,7 @@
 package com.management.jupiter.repository;
 
 import com.management.jupiter.models.Clan;
+import com.management.jupiter.models.enums.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,8 +15,24 @@ import java.util.Map;
  */
 public class ClanRepository {
 
-    private final Map<Integer, Clan> clans = new HashMap<>();
+    public final Map<Integer, Clan> clans = new HashMap<>();
+
+    @Override
+    public String toString() {
+        return "ClanRepository{" +
+                "clans=" + clans +
+                ", currentId=" + currentId +
+                '}';
+    }
+
     private int currentId = 1;
+
+    public ClanRepository() {
+        for (com.management.jupiter.models.enums.Clan clanEnum : com.management.jupiter.models.enums.Clan.values()) {
+            Clan clan = new Clan(currentId++, clanEnum.name());
+            clans.put(clan.getId(), clan);
+        }
+    }
 
     // ── CREATE ───────────────────────────────────────────────────────────────
 
