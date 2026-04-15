@@ -103,38 +103,6 @@ public class AdminRepository {
 
         handler.write("users.csv", users); // guardar cambios
     }
-//    public void updateUser(String idOrEmail, String newName, String newEmail, String newPassword, String newRole) {
-//        List<String[]> users = handler.read("users.csv");
-//
-//        for (String[] user : users) {
-//            if (user[2].equalsIgnoreCase(idOrEmail) || user[0].equalsIgnoreCase(idOrEmail)) {
-//
-//                // user[0] = id
-//                // user[1] = name
-//                // user[2] = email
-//                // user[3] = password
-//                // user[4] = role
-//
-//                if (newName != null && !newName.isEmpty()) {
-//                    user[1] = newName;
-//                }
-//
-//                if (newEmail != null && !newEmail.isEmpty()) {
-//                    user[2] = newEmail;
-//                }
-//
-//                if (newPassword != null && !newPassword.isEmpty()) {
-//                    user[3] = newPassword;
-//                }
-//
-//                if (newRole != null && !newRole.isEmpty()) {
-//                    user[4] = newRole;
-//                }
-//            }
-//        }
-//
-//        handler.write("users.csv", users); // guardar cambios
-//    }
 
     private static String mapToLine(User user) {
         String base = user.getId() + "," + user.getUsername() + "," + user.getEmail() + "," + user.getPassword() + "," + user.getRole();

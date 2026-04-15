@@ -55,12 +55,12 @@ public class AdminController {
         AdminService.deleteUser(value);
     }
 
-    public static void updateUser() {
-        UpdateUserView updateUserView = new UpdateUserView();
+    public static void updateUser(String idOrEmail, String newValue, String fieldName) {
+        if (idOrEmail == null || newValue == null || fieldName == null){
+            throw new RuntimeException("All fields are required");
+        }
+        AdminService.updateUser(idOrEmail, newValue, fieldName);
 
-        UpdateUserView.UpdateRequest updateRequest = updateUserView.updateUserSubmenu();
-        AdminService.updateUser(updateRequest.idOrEmail(), updateRequest.newValue(), updateRequest.fieldName());
-        System.out.println(updateRequest.idOrEmail());
     }
 //    public static void getUsersByRol(){
 //        Scanner scanner = InputView.getScanner();
