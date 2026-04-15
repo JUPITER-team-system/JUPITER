@@ -16,9 +16,25 @@ import com.management.jupiter.views.CoderView;
 import com.management.jupiter.views.LoginView;
 import com.management.jupiter.views.TLView;
 import com.management.jupiter.models.enums.Role;
+import com.management.jupiter.persistance.DatabaseConnection;
+
+import java.sql.Connection;
 
 public class Main {
     public static void main(String[] args) throws Exception {
+        System.out.println("Start JUPITER project...");
+
+        //Establecemos la coneccion a la database
+        try(Connection conn  = DatabaseConnection.getConnection()){
+            if (conn != null && !conn.isClosed()){
+                System.out.println("The connection was successful. RUNNING.");
+                System.out.println("The database with supabase is: " + conn.getCatalog());
+            }
+        }catch (Exception e){
+            System.out.println("[ERROR]: Not is possible connect with the database");
+            e.printStackTrace();
+        }
+
         // 🔹 Repositorios (acceso a datos)
         ClanRepository clanRepository = new ClanRepository();
         TeamLeaderRepository teamLeaderRepository = new TeamLeaderRepository();
