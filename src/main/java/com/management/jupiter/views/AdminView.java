@@ -2,6 +2,7 @@ package com.management.jupiter.views;
 import com.management.jupiter.controllers.AdminController;
 
 
+import com.management.jupiter.controllers.CellController;
 import com.management.jupiter.models.Clan;
 import com.management.jupiter.models.Tl;
 import com.management.jupiter.models.Coder;

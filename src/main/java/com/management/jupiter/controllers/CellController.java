@@ -9,8 +9,9 @@ public class CellController {
     public void createCell(String name, int clanId) {
         try{
             cellServices.createCell(name, clanId);
+            System.out.println("Clan created");
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
         }
     }
 }
