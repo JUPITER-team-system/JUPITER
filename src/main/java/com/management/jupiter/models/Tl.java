@@ -6,24 +6,20 @@ import com.management.jupiter.models.enums.TlType;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Un TL puede pertenecer a múltiples clanes simultáneamente (US-04).
- * Se elimina el atributo Clan fijo y se agrega TlType para distinguir
- * entre TL de programación y TL de inglés (necesario para validar límites).
- */
+
 public class Tl extends User {
 
     private final TlType tlType;
     private List<Clan> clans;
 
     public Tl(String username, String email, String password, Role role, TlType tlType) {
-        super(username, email, password, role);
+        super(username, email, password, role, null);
         this.tlType = tlType;
         this.clans = new ArrayList<>();
     }
 
     public Tl(int id, String username, String email, String password, Role role, TlType tlType) {
-        super(id, username, email, password, role);
+        super(id, username, email, password, role, null);
         this.tlType = tlType;
         this.clans = new ArrayList<>();
     }

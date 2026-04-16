@@ -12,21 +12,24 @@ public class User {
     private final String email;
     private final String password;
     private final Role   role;
+    private final Clan clan_id;
 
-    public User(String username, String email, String password, Role role) {
+    public User(String username, String email, String password, Role role, Clan clan_id) {
         this.id       = counter++;
         this.username = username;
         this.email    = email;
         this.password = password;
         this.role     = role;
+        this.clan_id = clan_id;
     }
 
-    public User(int id, String username, String email, String password, Role role) {
+    public User(int id, String username, String email, String password, Role role, Clan clanId) {
         this.id       = id;
         this.username = username;
         this.email    = email;
         this.password = password;
         this.role     = role;
+        this.clan_id = clanId;
         syncCounter(id);
     }
 
@@ -41,6 +44,8 @@ public class User {
     public String getPassword()  { return password; }
     public String getEmail() {return email;}
     public Role getRole() { return role; }
+
+    public Clan getClan_id() {return clan_id;}
 
     @Override
     public boolean equals(Object o) {

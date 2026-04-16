@@ -3,6 +3,7 @@ package stepsdefinitions;
 import com.management.jupiter.models.User;
 import com.management.jupiter.repository.AdminRepository;
 import com.management.jupiter.repository.UserRepository;
+import com.management.jupiter.impl.UserRepositoryImpl;
 import com.management.jupiter.services.AdminService;
 import com.management.jupiter.services.UserServices;
 import io.cucumber.java.After;
@@ -14,6 +15,7 @@ import io.cucumber.java.en.When;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -54,7 +56,8 @@ public class DeleteUser {
 
     @Then("the user should be deleted successfully")
     public void userDeleted(){
-        User user = UserRepository.findByIdOrEmail(idOrEmail);
-        assertNull(user);
+        UserRepositoryImpl userRepository = new UserRepositoryImpl();
+        Optional<User> user = userRepository.findByEmail(idOrEmail);
+        assertNull(user.orElse(null));
     }
 }

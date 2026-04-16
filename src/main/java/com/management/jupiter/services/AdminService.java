@@ -10,6 +10,7 @@ import com.management.jupiter.models.enums.TlType;
 import com.management.jupiter.persistance.Handler;
 import com.management.jupiter.repository.AdminRepository;
 import com.management.jupiter.repository.UserRepository;
+import com.management.jupiter.impl.UserRepositoryImpl;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class AdminService {
     private static AdminRepository adminRepository = new AdminRepository();
 
     public static User createUser(String username, String email, String password, Role role, Clan clan, TlType tlType) throws Exception {
+        // Validación de campos obligatorios
         if (username == null || username.isBlank() ||
                 email == null || email.isBlank() ||
                 password == null || password.isBlank() ||
@@ -24,12 +26,15 @@ public class AdminService {
             throw new Exception("All fields are required");
         }
 
-        if (UserRepository.findByIdOrEmail(email.trim()) != null) {
+        // Verificar si el email ya existe usando UserRepositoryImpl
+        UserRepositoryImpl userRepository = new UserRepositoryImpl();
+        if (userRepository.findByEmail(email.trim()).isPresent()) {
             throw new Exception("Email already exists");
         }
 
         User user;
-        int nextId = UserRepository.nextId();
+        // Generar ID simple (temporal hasta tener un sistema de IDs robusto)
+        int nextId = (int) (System.currentTimeMillis() % 10000);
         if (role == Role.ADMIN) {
             user = new Admin(nextId, username.trim(), email.trim(), password.trim(), role);
         } else {
@@ -44,7 +49,8 @@ public class AdminService {
             }
         }
 
-        AdminRepository.save(user);
+        // Guardar usuario usando UserRepositoryImpl en lugar de AdminRepository
+        userRepository.save(user);
         return user;
     }
 
