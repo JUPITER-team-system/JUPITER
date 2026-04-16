@@ -11,6 +11,7 @@ import com.management.jupiter.repository.AdminRepository;
 import com.management.jupiter.repository.CellRepository;
 import com.management.jupiter.services.AdminService;
 import com.management.jupiter.services.AssignmentService;
+import com.management.jupiter.services.CellServices;
 import com.management.jupiter.services.ClanService;
 
 import java.util.List;
@@ -48,7 +49,6 @@ public class AdminView {
             System.out.println("9.  Assign TL to a clan");
             System.out.println("10. Assign Coder to a clan");
             System.out.println("11. View clan members");
-            System.out.println("12. test");
             System.out.println("0.  Exit");
             System.out.println("Select a option");
 
@@ -112,10 +112,6 @@ public class AdminView {
                 case 11:
                     // US-04 – Ver miembros de un clan
                     verMiembrosDeClan();
-                    break;
-
-                case 12:
-                    CellRepository.insertCell("test");
                     break;
                 case 0:
                     System.out.println("Cerrando...");

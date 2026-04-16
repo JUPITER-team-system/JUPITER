@@ -12,6 +12,7 @@ public class Handler {
         File dir = new File(basePath);
         if (!dir.exists()) dir.mkdirs();
     }
+
     public static int nextId(String fileName) {
         int maxId = 0;
 
@@ -86,6 +87,8 @@ public class Handler {
                     bw.write("name,email,password,role");
                 } else if (fileName.equals("clans.csv")) {
                     bw.write("id,clanName,teamLeader,members");
+                } else if (fileName.equals("cells.csv")) {
+                    bw.write("id,cellName");
                 }
                 bw.newLine();
             }
