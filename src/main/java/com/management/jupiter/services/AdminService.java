@@ -15,6 +15,7 @@ import java.util.List;
 
 public class AdminService {
     private static final AdminRepository adminRepository = new AdminRepository();
+    private static final String FILE_NAME = "users.csv";
 
     public static User createUser(String username, String email, String password, Role role, TlType tlType) throws Exception {
         if (username == null || username.isBlank() ||
@@ -28,7 +29,7 @@ public class AdminService {
             throw new Exception("Email already exists");
         }
         User user;
-        int nextId = UserRepository.nextId();
+        int nextId = Handler.nextId(FILE_NAME);
         if (role == Role.ADMIN) {
             user = new Admin(nextId, username.trim(), email.trim(), password.trim(), role);
         } else {

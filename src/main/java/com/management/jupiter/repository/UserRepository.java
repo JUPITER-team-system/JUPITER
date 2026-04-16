@@ -60,36 +60,7 @@ public class UserRepository {
         return null;
     }
 
-    public static int nextId() {
-        int maxId = 0;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.isBlank()) {
-                    continue;
-                }
-
-                String[] data = line.split(",");
-                if (data.length == 0) {
-                    continue;
-                }
-
-                try {
-                    int id = Integer.parseInt(data[0].trim());
-                    if (id > maxId) {
-                        maxId = id;
-                    }
-                } catch (NumberFormatException ignored) {
-                    // Compatibilidad con filas viejas sin ID al inicio.
-                }
-            }
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-
-        return maxId + 1;
-    }
 
     private static User mapLineToUser(String[] data) {
         if (data.length < 5) {
