@@ -147,7 +147,7 @@ public class AdminView {
     }
 
     private void actualizarClan() {
-        Integer id = leerEntero("ID del clan a actualizar: ");
+        String id = leerIdDeClan("ID del clan a actualizar: ");
         if (id == null) {
             return;
         }
@@ -162,7 +162,7 @@ public class AdminView {
     }
 
     private void eliminarClan() {
-        Integer id = leerEntero("ID del clan a eliminar: ");
+        String id = leerIdDeClan("ID del clan a eliminar: ");
         if (id == null) {
             return;
         }
@@ -177,11 +177,11 @@ public class AdminView {
     // ── US-04: Asignaciones ──────────────────────────────────────────────────
 
     private void asignarTlAClan() {
-        Integer tlId = leerEntero("ID del TL: ");
+        String tlId = leerIdDeClan("ID del TL: ");
         if (tlId == null) {
             return;
         }
-        Integer clanId = leerIdDeClan("ID o nombre del clan: ");
+        String clanId = leerIdDeClan("ID o nombre del clan: ");
         if (clanId == null) {
             return;
         }
@@ -194,11 +194,11 @@ public class AdminView {
     }
 
     private void asignarCoderAClan() {
-        Integer coderId = leerEntero("ID del Coder: ");
+        String coderId = leerIdDeClan("ID del Coder: ");
         if (coderId == null) {
             return;
         }
-        Integer clanId = leerIdDeClan("ID o nombre del clan: ");
+        String clanId = leerIdDeClan("ID o nombre del clan: ");
         if (clanId == null) {
             return;
         }
@@ -211,7 +211,7 @@ public class AdminView {
     }
 
     private void verMiembrosDeClan() {
-        Integer clanId = leerIdDeClan("ID o nombre del clan: ");
+        String clanId = leerIdDeClan("ID o nombre del clan: ");
         if (clanId == null) {
             return;
         }
@@ -240,18 +240,18 @@ public class AdminView {
     public void close() {
     }
 
-    private Integer leerEntero(String mensaje) {
+    private Long leerEntero(String mensaje) {
         System.out.print(mensaje);
         String input = scanner.nextLine().trim();
         try {
-            return Integer.parseInt(input);
+            return Long.parseLong(input);
         } catch (NumberFormatException e) {
             System.out.println("[ERROR] Debes ingresar un ID numérico.");
             return null;
         }
     }
 
-    private Integer leerIdDeClan(String mensaje) {
+    private String leerIdDeClan(String mensaje) {
         System.out.print(mensaje);
         String input = scanner.nextLine().trim();
 
@@ -260,13 +260,14 @@ public class AdminView {
             return null;
         }
 
-        try {
-            return Integer.parseInt(input);
-        } catch (NumberFormatException ignored) {
+        // Try to parse as UUID first, if not, try as enum name
+        if (input.contains("-")) {
+            return input; // Assume it's a UUID
+        } else {
             try {
                 com.management.jupiter.models.enums.Clan clanEnum =
                         com.management.jupiter.models.enums.Clan.valueOf(input.toUpperCase());
-                return clanEnum.ordinal() + 1;
+                return clanEnum.name(); // Return the enum name as ID
             } catch (IllegalArgumentException e) {
                 System.out.println("[ERROR] Clan inválido. Usa uno de estos valores: HAMILTON, THOMPSON, TESLA, NAKAMOTO.");
                 return null;

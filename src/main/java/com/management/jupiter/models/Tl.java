@@ -18,7 +18,7 @@ public class Tl extends User {
         this.clans = new ArrayList<>();
     }
 
-    public Tl(int id, String username, String email, String password, Role role, TlType tlType) {
+    public Tl(String id, String username, String email, String password, Role role, TlType tlType) {
         super(id, username, email, password, role, null);
         this.tlType = tlType;
         this.clans = new ArrayList<>();

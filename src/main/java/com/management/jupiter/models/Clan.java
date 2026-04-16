@@ -5,12 +5,12 @@ import java.util.List;
 
 public class Clan {
 
-    private int id;
+    private String id;
     private String name;
     private List<Coder> coders;
     private List<Tl> tls;
 
-    public Clan(int id, String name) {
+    public Clan(String id, String name) {
         this.id = id;
         this.name = name;
         this.coders = new ArrayList<>();
@@ -19,7 +19,7 @@ public class Clan {
 
     // ── Getters básicos ──────────────────────────────────────────────────────
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

@@ -91,7 +91,7 @@ public class ClanDetailView {
         System.out.println("  [0] Volver");
         imprimirLinea();
 
-        int opcion = leerEntero("  Selecciona una célula: ");
+        long opcion = leerEntero("  Selecciona una célula: ");
 
         if (opcion == 0) return;
 
@@ -100,7 +100,7 @@ public class ClanDetailView {
             return;
         }
 
-        mostrarDetalleClan(misClanes.get(opcion - 1));
+        mostrarDetalleClan(misClanes.get((int)(opcion - 1)));
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -192,10 +192,10 @@ public class ClanDetailView {
      * Lee un entero desde consola con manejo seguro de errores.
      * Si el input no es numérico, retorna -1.
      */
-    private int leerEntero(String prompt) {
+    private long leerEntero(String prompt) {
         System.out.print(prompt);
         try {
-            return Integer.parseInt(scanner.nextLine().trim());
+            return Long.parseLong(scanner.nextLine().trim());
         } catch (NumberFormatException e) {
             System.out.println("  [ERROR] Ingresa un número válido.");
             return -1;

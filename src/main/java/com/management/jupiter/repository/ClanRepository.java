@@ -15,21 +15,19 @@ import java.util.Map;
  */
 public class ClanRepository {
 
-    public final Map<Integer, Clan> clans = new HashMap<>();
+    public final Map<String, Clan> clans = new HashMap<>();
 
     @Override
     public String toString() {
         return "ClanRepository{" +
                 "clans=" + clans +
-                ", currentId=" + currentId +
                 '}';
     }
 
-    private int currentId = 1;
-
+    
     public ClanRepository() {
         for (com.management.jupiter.models.enums.Clan clanEnum : com.management.jupiter.models.enums.Clan.values()) {
-            Clan clan = new Clan(currentId++, clanEnum.name());
+            Clan clan = new Clan(java.util.UUID.randomUUID().toString(), clanEnum.name());
             clans.put(clan.getId(), clan);
         }
     }
@@ -37,7 +35,7 @@ public class ClanRepository {
     // ── CREATE ───────────────────────────────────────────────────────────────
 
     public Clan save(Clan clan) {
-        Clan newClan = new Clan(currentId++, clan.getName());
+        Clan newClan = new Clan(java.util.UUID.randomUUID().toString(), clan.getName());
         clans.put(newClan.getId(), newClan);
         return newClan;
     }
@@ -50,13 +48,13 @@ public class ClanRepository {
 
     // ── READ BY ID ───────────────────────────────────────────────────────────
 
-    public Clan findById(int id) {
+    public Clan findById(String id) {
         return clans.get(id);
     }
 
     // ── DELETE ───────────────────────────────────────────────────────────────
 
-    public void delete(int id) {
+    public void delete(String id) {
         clans.remove(id);
     }
 
@@ -67,8 +65,8 @@ public class ClanRepository {
                 .anyMatch(c -> c.getName().equalsIgnoreCase(name));
     }
 
-    public boolean existsByNameExcludingId(String name, int excludeId) {
+    public boolean existsByNameExcludingId(String name, String excludeId) {
         return clans.values().stream()
-                .anyMatch(c -> c.getName().equalsIgnoreCase(name) && c.getId() != excludeId);
+                .anyMatch(c -> c.getName().equalsIgnoreCase(name) && !c.getId().equals(excludeId));
     }
 }

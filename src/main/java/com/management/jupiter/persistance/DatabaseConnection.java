@@ -12,7 +12,6 @@ public class DatabaseConnection {
     private static final String USER = dotenv.get("DB_USER");
     private static final String PASS = dotenv.get("DB_PASS");
     private static Connection connection = null;
-
     //Constructor privado para que nadie acceda a la db
 
     public static Connection getConnection() throws SQLException {

@@ -33,8 +33,8 @@ public class AdminService {
         }
 
         User user;
-        // Generar ID simple (temporal hasta tener un sistema de IDs robusto)
-        int nextId = (int) (System.currentTimeMillis() % 10000);
+        // Generar UUID para el nuevo usuario
+        String nextId = java.util.UUID.randomUUID().toString();
         if (role == Role.ADMIN) {
             user = new Admin(nextId, username.trim(), email.trim(), password.trim(), role);
         } else {

@@ -31,7 +31,7 @@ public class ClanService {
         if (repository.existsByName(name)) {
             throw new IllegalStateException("Ya existe un clan con el nombre: " + name);
         }
-        Clan clan = new Clan(0, name.trim());
+        Clan clan = new Clan(java.util.UUID.randomUUID().toString(), name.trim());
         return repository.save(clan);
     }
 
@@ -41,7 +41,7 @@ public class ClanService {
         return repository.findAll();
     }
 
-    public Clan buscarPorId(int id) {
+    public Clan buscarPorId(String id) {
         Clan clan = repository.findById(id);
         if (clan == null) {
             throw new IllegalArgumentException("No existe un clan con id: " + id);
@@ -51,7 +51,7 @@ public class ClanService {
 
     // ── UPDATE ───────────────────────────────────────────────────────────────
 
-    public void actualizarClan(int id, String nuevoNombre) {
+    public void actualizarClan(String id, String nuevoNombre) {
         if (nuevoNombre == null || nuevoNombre.isBlank()) {
             throw new IllegalArgumentException("El nuevo nombre no puede estar vacío.");
         }
@@ -75,7 +75,7 @@ public class ClanService {
     /**
      * Criterio de aceptación: no se puede eliminar un clan con coders activos.
      */
-    public void eliminarClan(int id) {
+    public void eliminarClan(String id) {
         Clan clan = repository.findById(id);
         if (clan == null) {
             throw new IllegalArgumentException("No existe un clan con id: " + id);

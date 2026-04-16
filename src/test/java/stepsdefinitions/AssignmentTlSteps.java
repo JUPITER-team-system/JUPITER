@@ -58,7 +58,7 @@ public class AssignmentTlSteps {
 
     @Given("the TL with id {int} is already assigned to the clan with id {int}")
     public void theTlWithIdIsAlreadyAssignedToTheClanWithId(int tlId, int clanId) {
-        assignmentService.asignarTlAClan(tlId, clanId);
+        assignmentService.asignarTlAClan(String.valueOf(tlId), String.valueOf(clanId));
     }
 
     @When("I assign the TL with id {int} to the clan with id {int}")
@@ -66,7 +66,7 @@ public class AssignmentTlSteps {
         assignmentException = null;
 
         try {
-            assignmentService.asignarTlAClan(tlId, clanId);
+            assignmentService.asignarTlAClan(String.valueOf(tlId), String.valueOf(clanId));
         } catch (Exception exception) {
             assignmentException = exception;
         }
@@ -85,13 +85,13 @@ public class AssignmentTlSteps {
 
     @And("the clan should have {int} TLs of type {string}")
     public void theClanShouldHaveTlsOfType(int expectedCount, String tlType) {
-        int actualCount = assignmentService.obtenerTlsDeClanPorTipo(1, TlType.valueOf(tlType)).size();
+        int actualCount = assignmentService.obtenerTlsDeClanPorTipo("1", TlType.valueOf(tlType)).size();
         assertEquals(expectedCount, actualCount);
     }
 
     @And("the TL with id {int} should be assigned to clan {string}")
     public void theTlWithIdShouldBeAssignedToClan(int tlId, String clanName) {
-        Tl tl = teamLeaderRepository.findById(tlId);
+        Tl tl = teamLeaderRepository.findById(String.valueOf(tlId));
         assertNotNull(tl);
         assertEquals(1, tl.getClans().size());
         assertEquals(clanName, tl.getClans().getFirst().getName());

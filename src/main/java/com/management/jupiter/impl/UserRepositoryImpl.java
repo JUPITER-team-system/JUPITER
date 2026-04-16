@@ -21,14 +21,14 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void save(User user) {
         //Miramos el codigo SQL que vamos a ejecutar
-        String sql = "INSERT INTO Cohorte.users(email, password, all_name, rol, clan_id) VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO \"Cohorte\".user(email, password, full_name, rol, clan_id) VALUES (?,?,?,?,?)";
         try(PreparedStatement stmt = getConnection().prepareStatement(sql)){
             stmt.setString(1, user.getEmail());
             stmt.setString(2, user.getPassword());
             stmt.setString(3, user.getUsername());
             stmt.setString(4, user.getRole().toString());
             if (user.getClan_id() != null){
-                stmt.setLong(5, user.getClan_id().getId());
+                stmt.setString(5, user.getClan_id() != null ? user.getClan_id().getId() : null);
             }else {stmt.setNull(5, Types.BIGINT);}
 
             stmt.executeUpdate();
@@ -46,11 +46,11 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findById(long id) {
-        String sql = "SELECT * FROM Cohorte.users WHERE id = ?";
+    public Optional<User> findById(String id) {
+        String sql = "SELECT * FROM \"Cohorte\".user WHERE id = ?";
         
         try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
-            stmt.setLong(1, id);
+            stmt.setString(1, id);
             ResultSet rs = stmt.executeQuery();
             
             if (rs.next()) {
@@ -58,7 +58,7 @@ public class UserRepositoryImpl implements UserRepository {
                 return Optional.of(user);
             }
         } catch (SQLException e) {
-            System.out.println("[ERROR]: Error al buscar usuario por ID: " + e.getMessage());
+            System.out.println("[ERROR]: Error to search user by Id: " + e.getMessage());
             throw new RuntimeException(e);
         }
         
@@ -71,17 +71,23 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void delete(long id) {
+    public void delete(String id) {
     }
 
     @Override
     public User findByEmailorId(String emailOrId) {
-        // Try to parse as ID first
+        // Try to parse as ID first - check if it looks like a UUID
         try {
-            long id = Long.parseLong(emailOrId);
-            Optional<User> userById = findById(id);
-            return userById.orElse(null);
-        } catch (NumberFormatException e) {
+            // If it contains hyphens, treat as UUID ID
+            if (emailOrId.contains("-")) {
+                Optional<User> userById = findById(emailOrId);
+                return userById.orElse(null);
+            } else {
+                // Try parsing as email
+                Optional<User> userByEmail = findByEmail(emailOrId);
+                return userByEmail.orElse(null);
+            }
+        } catch (Exception e) {
             // If not a number, treat as email
             Optional<User> userByEmail = findByEmail(emailOrId);
             return userByEmail.orElse(null);
@@ -92,7 +98,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Optional<User> findByEmail(String email) {
         // Consulta SQL para buscar usuario por email
-        String sql = "SELECT * FROM \"Cohorte\".users WHERE email = ?";
+        String sql = "SELECT * FROM \"Cohorte\".user WHERE email = ?";
         
         try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
             stmt.setString(1, email);
@@ -104,7 +110,7 @@ public class UserRepositoryImpl implements UserRepository {
                 return Optional.of(user);
             }
         } catch (SQLException e) {
-            System.out.println("[ERROR]: Error al buscar usuario por email: " + e.getMessage());
+            System.out.println("[ERROR]: Error to search user by email: " + e.getMessage());
             throw new RuntimeException(e);
         }
         
@@ -115,11 +121,11 @@ public class UserRepositoryImpl implements UserRepository {
 
     private User mapResultSetToUser(ResultSet rs) throws SQLException {
         // Extraer datos del ResultSet
-        int id = rs.getInt("id");
-        String username = rs.getString("all_name");
+        String id = rs.getString("id");
+        String username = rs.getString("full_name");
         String email = rs.getString("email");
         String password = rs.getString("password");
-        String roleStr = rs.getString("rol");
+        String roleStr = rs.getString("role");
         
         // Convertir string a enum Role
         Role role = Role.valueOf(roleStr.toUpperCase());

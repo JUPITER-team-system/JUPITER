@@ -50,7 +50,7 @@ public class AdminController {
     }
 
     public static void deleteUser() {
-        System.out.println("Ingresa el id o email del usuario que deseas eliminar");
+        System.out.println("Enter the email or id of the user you want to delete");
         String value = scanner.nextLine();
         AdminService.deleteUser(value);
     }

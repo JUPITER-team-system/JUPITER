@@ -78,7 +78,7 @@ public class TeamLeaderRepository {
         return tls;
     }
 
-    public Tl findById(int id) {
+    public Tl findById(String id) {
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -87,7 +87,7 @@ public class TeamLeaderRepository {
                 }
 
                 Tl tl = mapLineToTl(line.split(","));
-                if (tl != null && tl.getId() == id) {
+                if (tl != null && tl.getId().equals(id)) {
                     return tl;
                 }
             }
@@ -98,7 +98,7 @@ public class TeamLeaderRepository {
         return null;
     }
 
-    public void delete(int id) {
+    public void delete(String id) {
     }
 
     private Tl mapLineToTl(String[] data) {
@@ -107,7 +107,7 @@ public class TeamLeaderRepository {
         }
 
         try {
-            int id = Integer.parseInt(data[0].trim());
+            String id = data[0].trim();
             String username = data[1].trim();
             String email = data[2].trim();
             String password = data[3].trim();
@@ -143,11 +143,11 @@ public class TeamLeaderRepository {
                 .forEach(name -> tl.addClan(new Clan(resolveClanId(name), name)));
     }
 
-    private int resolveClanId(String clanName) {
+    private String resolveClanId(String clanName) {
         try {
-            return com.management.jupiter.models.enums.Clan.valueOf(clanName.toUpperCase()).ordinal() + 1;
+            return com.management.jupiter.models.enums.Clan.valueOf(clanName.toUpperCase()).name();
         } catch (IllegalArgumentException e) {
-            return -1;
+            return null;
         }
     }
 

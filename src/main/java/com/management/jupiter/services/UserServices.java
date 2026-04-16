@@ -22,14 +22,14 @@ public class UserServices {
         // Paso 1: Verificar si el usuario existe
         // Optional.isEmpty() es la forma correcta de verificar si no hay valor
         if (user.isEmpty()) {
-            throw new Exception("Usuario no encontrado en el sistema");
+            throw new Exception("User not found");
         }
         
 
         User foundUser = user.get();
 
         if (!foundUser.getPassword().equals(password)) {
-            throw new Exception("Contraseña incorrecta");
+            throw new Exception("Invalid password");
         }
         
         // Paso 4: Login exitoso - retornar usuario autenticado

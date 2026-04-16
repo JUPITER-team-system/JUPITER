@@ -46,7 +46,7 @@ public class AssignmentService {
      * @param tlId    ID del TL a asignar.
      * @param clanId  ID del clan destino.
      */
-    public void asignarTlAClan(int tlId, int clanId) {
+    public void asignarTlAClan(String tlId, String clanId) {
         Tl   tl   = buscarTlOFallar(tlId);
         Clan clan = buscarClanOFallar(clanId);
 
@@ -80,7 +80,7 @@ public class AssignmentService {
     /**
      * Desasigna un TL de un clan.
      */
-    public void desasignarTlDeClan(int tlId, int clanId) {
+    public void desasignarTlDeClan(String tlId, String clanId) {
         Tl   tl   = buscarTlOFallar(tlId);
         Clan clan = buscarClanOFallar(clanId);
 
@@ -101,7 +101,7 @@ public class AssignmentService {
     /**
      * Asigna un Coder a un clan.
      */
-    public void asignarCoderAClan(int coderId, int clanId) {
+    public void asignarCoderAClan(String coderId, String clanId) {
         Coder coder = buscarCoderOFallar(coderId);
         Clan  clan  = buscarClanOFallar(clanId);
 
@@ -111,7 +111,7 @@ public class AssignmentService {
     /**
      * Desasigna un Coder de un clan.
      */
-    public void desasignarCoderDeClan(int coderId, int clanId) {
+    public void desasignarCoderDeClan(String coderId, String clanId) {
         Coder coder = buscarCoderOFallar(coderId);
         Clan  clan  = buscarClanOFallar(clanId);
 
@@ -125,7 +125,7 @@ public class AssignmentService {
     /**
      * Retorna la lista de TLs asignados a un clan.
      */
-    public List<Tl> obtenerTlsDeClan(int clanId) {
+    public List<Tl> obtenerTlsDeClan(String clanId) {
         Clan clan = buscarClanOFallar(clanId);
         return tlRepository.findAll().stream()
                 .filter(tl -> tl.isAssignedToClan(clan))
@@ -135,21 +135,21 @@ public class AssignmentService {
     /**
      * Retorna la lista de Coders asignados a un clan.
      */
-    public List<Coder> obtenerCodersDeClan(int clanId) {
+    public List<Coder> obtenerCodersDeClan(String clanId) {
         return buscarClanOFallar(clanId).getCoders();
     }
 
     /**
      * Retorna todos los clanes a los que pertenece un TL.
      */
-    public List<Clan> obtenerClanesDeTl(int tlId) {
+    public List<Clan> obtenerClanesDeTl(String tlId) {
         return buscarTlOFallar(tlId).getClans();
     }
 
     /**
      * Retorna los TLs de un tipo específico dentro de un clan.
      */
-    public List<Tl> obtenerTlsDeClanPorTipo(int clanId, TlType tipo) {
+    public List<Tl> obtenerTlsDeClanPorTipo(String clanId, TlType tipo) {
         return buscarClanOFallar(clanId).getTls().stream()
                 .filter(tl -> tl.getTlType() == tipo)
                 .collect(Collectors.toList());
@@ -159,7 +159,7 @@ public class AssignmentService {
     //  HELPERS PRIVADOS
     // ═══════════════════════════════════════════════════════════════════════
 
-    private Tl buscarTlOFallar(int tlId) {
+    private Tl buscarTlOFallar(String tlId) {
         Tl tl = tlRepository.findById(tlId);
         if (tl == null) {
             throw new IllegalArgumentException("No existe un TL con id: " + tlId);
@@ -167,7 +167,7 @@ public class AssignmentService {
         return tl;
     }
 
-    private Clan buscarClanOFallar(int clanId) {
+    private Clan buscarClanOFallar(String clanId) {
         Clan clan = clanRepository.findById(clanId);
         if (clan == null) {
             throw new IllegalArgumentException("No existe un clan con id: " + clanId);
@@ -175,7 +175,7 @@ public class AssignmentService {
         return clan;
     }
 
-    private Coder buscarCoderOFallar(int coderId) {
+    private Coder buscarCoderOFallar(String coderId) {
         Coder coder = coderRepository.findById(coderId);
         if (coder == null) {
             throw new IllegalArgumentException("No existe un Coder con id: " + coderId);
