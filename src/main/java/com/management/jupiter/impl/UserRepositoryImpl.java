@@ -7,7 +7,6 @@ import com.management.jupiter.models.Admin;
 import com.management.jupiter.persistance.DatabaseConnection;
 import com.management.jupiter.repository.UserRepository;
 import com.management.jupiter.models.enums.Role;
-import com.management.jupiter.models.enums.TlType;
 
 import java.sql.*;
 import java.util.List;
@@ -46,6 +45,11 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public Optional<User> findById(long id) {
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<User> findById(String id) {
         String sql = "SELECT * FROM \"Cohorte\".user WHERE id = ?";
         
@@ -67,6 +71,11 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void update(User user) {
+
+    }
+
+    @Override
+    public void delete(long id) {
 
     }
 

@@ -5,5 +5,10 @@ import java.util.Optional;
 
 public  interface UserRepository extends Repository<User> {
     public  Optional<User> findByEmail(String email);
+
+    Optional<User> findById(String id);
+
+    void delete(String id);
+
     public User findByEmailorId(String emailOrId);
 }
