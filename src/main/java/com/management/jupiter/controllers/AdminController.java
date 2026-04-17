@@ -1,18 +1,14 @@
 package com.management.jupiter.controllers;
 
 import com.management.jupiter.models.User;
-import com.management.jupiter.models.enums.Clan;
 import com.management.jupiter.models.enums.Role;
 import com.management.jupiter.models.enums.TlType;
 import com.management.jupiter.services.AdminService;
-import com.management.jupiter.services.UserServices;
-import com.management.jupiter.ui.admin.UpdateUserView;
-import com.management.jupiter.views.InputView;
 
 import java.util.Scanner;
 
 public class AdminController {
-    public static Scanner scanner = InputView.getScanner();
+    public static Scanner scanner = new Scanner(System.in);
 
     public static void createUser(String username, String email, String password, Role role, TlType tlType) {
         try {
