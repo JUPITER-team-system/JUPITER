@@ -1,4 +1,5 @@
 package com.management.jupiter.views;
+
 import com.management.jupiter.controllers.AdminController;
 
 
@@ -10,6 +11,7 @@ import com.management.jupiter.models.enums.Role;
 import com.management.jupiter.models.enums.TlType;
 import com.management.jupiter.repository.AdminRepository;
 import com.management.jupiter.repository.CellRepository;
+import com.management.jupiter.repository.IaRepo;
 import com.management.jupiter.services.AdminService;
 import com.management.jupiter.services.AssignmentService;
 import com.management.jupiter.services.CellServices;
@@ -24,20 +26,20 @@ import java.util.Scanner;
  */
 public class AdminView {
 
-    private final Scanner           scanner;
-    private final ClanService       clanService;
+    private final Scanner scanner;
+    private final ClanService clanService;
     private final AssignmentService assignmentService;
 
     public AdminView(ClanService clanService, AssignmentService assignmentService) {
-        this.scanner           = InputView.getScanner();
-        this.clanService       = clanService;
+        this.scanner = InputView.getScanner();
+        this.clanService = clanService;
         this.assignmentService = assignmentService;
     }
 
-    public void menuAdmin(){
+    public void menuAdmin() {
         int option;
 
-        do{
+        do {
             System.out.println(" ===== MENU ADMIN =====");
             System.out.println("1. View Coders");
             System.out.println("2. View Tls");
@@ -114,6 +116,9 @@ public class AdminView {
                     // US-04 – Ver miembros de un clan
                     verMiembrosDeClan();
                     break;
+                case 12:
+                    List<String> resp = IaRepo.useIA();
+                    break;
                 case 0:
                     System.out.println("Cerrando...");
                     break;
@@ -121,7 +126,7 @@ public class AdminView {
                 default:
                     System.out.println("Opción inválida.");
             }
-        }while (option != 0);
+        } while (option != 0);
     }
 
     // ── US-02: CRUD de Clanes ────────────────────────────────────────────────

@@ -14,4 +14,7 @@ public class CellController {
             System.out.println(e.getMessage());
         }
     }
+    public void assignateCoderToCell(){
+
+    }
 }
