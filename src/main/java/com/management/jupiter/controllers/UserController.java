@@ -2,7 +2,7 @@ package com.management.jupiter.controllers;
 
 import com.management.jupiter.models.Attempts;
 import com.management.jupiter.models.User;
-import com.management.jupiter.services.UserServices;
+import com.management.jupiter.services.UserService;
 import com.management.jupiter.views.LoginView;
 
 import java.util.HashMap;
@@ -37,7 +37,7 @@ public class UserController {
             }
 
             try {
-                User loggedUser = UserServices.LoginService(request.email(), request.password());
+                User loggedUser = UserService.LoginService(request.email(), request.password());
                 attempts.reset();
                 attemptsPerUser.put(email, attempts);
                 loginView.showLoginSuccess(loggedUser);

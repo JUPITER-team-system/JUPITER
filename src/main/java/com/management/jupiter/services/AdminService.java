@@ -14,7 +14,8 @@ import com.management.jupiter.repository.impl.AdminRepositoryImpl;
 import java.util.List;
 
 public class AdminService {
-    private static AdminRepository adminRepository = new AdminRepository();
+    private static final UserService userService = new UserService();
+    private static final AdminRepositoryImpl userRepository = new AdminRepositoryImpl();
 
     public static User createUser(String username, String email, String password, Role role, Clan clan, TlType tlType) throws Exception {
         // Validación de campos obligatorios
@@ -25,15 +26,14 @@ public class AdminService {
             throw new Exception("All fields are required");
         }
 
-        // Verificar si el email ya existe usando UserRepositoryImpl
-        AdminRepositoryImpl userRepository = new AdminRepositoryImpl();
-        if (userRepository.findByEmail(email.trim()).isPresent()) {
+        // Verificar si el email ya existe usando UserService
+        if (userService.emailExists(email.trim())) {
             throw new Exception("Email already exists");
         }
 
         User user;
         // Generar ID simple (temporal hasta tener un sistema de IDs robusto)
-        int nextId = (int) (System.currentTimeMillis() % 10000);
+        String nextId = String.valueOf(System.currentTimeMillis() % 10000);
         if (role == Role.ADMIN) {
             user = new Admin(nextId, username.trim(), email.trim(), password.trim(), role);
         } else {
@@ -48,7 +48,7 @@ public class AdminService {
             }
         }
 
-        // Guardar usuario usando UserRepositoryImpl en lugar de AdminRepository
+        // Guardar usuario usando UserRepositoryImpl
         userRepository.save(user);
         return user;
     }
@@ -65,13 +65,15 @@ public class AdminService {
 
     public static void deleteUser(String value) {
         try {
-            adminRepository.deleteUser(value);
+            userService.deleteUser(value);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     public static void updateUser(String idOrEmail, String newValue, String fieldName) {
-        adminRepository.updateUser(idOrEmail, newValue, fieldName);
+        // TODO: Implementar método de actualización usando UserRepository
+        // Por ahora, este método necesita ser implementado en la nueva arquitectura
+        throw new UnsupportedOperationException("Update user method not yet implemented in new architecture");
     }
 }
