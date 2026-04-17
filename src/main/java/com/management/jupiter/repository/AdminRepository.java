@@ -3,6 +3,7 @@ import com.management.jupiter.persistance.Handler;
 import java.io.*;
 import java.util.List;
 import com.management.jupiter.persistance.DatabaseConnection;
+import com.management.jupiter.repository.impl.AdminRepositoryImpl;
 
 import static com.management.jupiter.persistance.ReadCSV.readCSV;
 
@@ -10,9 +11,15 @@ import static com.management.jupiter.persistance.ReadCSV.readCSV;
 public class AdminRepository {
     private Handler handler;
     private DatabaseConnection DB;
+    private AdminRepositoryImpl adminRepositoryImpl;
 
     public AdminRepository() {
         handler = new Handler();
+        adminRepositoryImpl = new AdminRepositoryImpl();
+    }
+
+    public void insertCSV(List<String[]> data) {
+        adminRepositoryImpl.insertCSV(data);
     }
 
     //Hacemos un receptor de archivos
@@ -20,16 +27,12 @@ public class AdminRepository {
         new Thread(()->{
             try {
                 List<String[]> filas = readCSV(inputStream);
-               insertLot(filas);
+               insertCSV(filas);
 
-               handler.post(() ->{
-                   System.out.println("Import Agree!!");
-               });
+               System.out.println("Import Agree!!");
             }catch (Exception e){
                 e.printStackTrace();
-                handler.post(()->{
-                    System.out.println("Import Error");
-                });
+                System.out.println("Import Error");
             }
         }).start();
     }
