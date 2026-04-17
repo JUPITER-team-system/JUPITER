@@ -16,7 +16,7 @@ public class ClanRepository {
 
         String sql = """
                 SELECT
-                    c.id AS clan_id
+                    c.id AS clan_id,
                     c.name AS clan_name,
                     c.description AS clan_description,
                     u.id AS user_id,
@@ -110,7 +110,7 @@ public class ClanRepository {
 
         String sql = """
                 SELECT
-                    c.id AS clan_id
+                    c.id AS clan_id,
                     c.name AS clan_name,
                     c.description AS clan_description,
                     u.id AS user_id,
@@ -200,7 +200,7 @@ public class ClanRepository {
 
     public String findByName (String name) {
 
-        String sql = "SELECT clan.id AS clan_id FROM clan where name = ?";
+        String sql = "SELECT \"Cohorte\".clan.id AS clan_id FROM clan where name = ?";
 
         try(Connection conn = DatabaseConnection.getConnection();
             PreparedStatement psmt = conn.prepareStatement(sql)){
@@ -229,7 +229,7 @@ public class ClanRepository {
 
     public UUID save (Clan clanData, Connection conn) throws SQLException {
 
-        String sql = "INSERT INTO clan (name, description) Values (?, ?)";
+        String sql = "INSERT INTO \"Cohorte\".clan (name, description) Values (?, ?)";
 
         try (PreparedStatement psmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
 
@@ -260,7 +260,7 @@ public class ClanRepository {
 
     public void delete (String id) {
 
-        String sql = "DELETE FROM clan WHERE ID = ?";
+        String sql = "DELETE FROM \"Cohorte\".clan WHERE ID = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstm = conn.prepareStatement(sql)){
@@ -290,7 +290,7 @@ public class ClanRepository {
 
     public void edit (Clan clan, Connection conn) throws SQLException {
 
-        String sql = "UPDATE clan SET name = ?, description = ? WHERE id = ?";
+        String sql = "UPDATE \"Cohorte\".clan SET name = ?, description = ? WHERE id = ?";
 
         try (PreparedStatement psmt = conn.prepareStatement(sql)){
 
@@ -314,7 +314,7 @@ public class ClanRepository {
 
     public void addUser (UUID clanId ,String userId, Connection conn) throws SQLException {
 
-        String sql = "INSERT INTO clan_members (clan_id, user_id) values (?, ?)";
+        String sql = "INSERT INTO \"Cohorte\".clan_members (clan_id, user_id) values (?, ?)";
 
         try(PreparedStatement psmt = conn.prepareStatement(sql)){
 
@@ -339,7 +339,7 @@ public class ClanRepository {
 
     public void removeUser (String clanId, Connection conn) throws SQLException{
 
-        String sql = "DELETE FROM clan_members WHERE clan_id = ?";
+        String sql = "DELETE FROM \"Cohorte\".clan_members WHERE clan_id = ?";
 
         try(PreparedStatement psmt = conn.prepareStatement(sql)){
 
