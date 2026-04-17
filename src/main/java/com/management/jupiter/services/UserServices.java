@@ -3,8 +3,7 @@ import com.management.jupiter.models.User;
 import com.management.jupiter.models.Coder;
 import com.management.jupiter.models.Tl;
 import com.management.jupiter.models.Admin;
-import com.management.jupiter.repository.UserRepository;
-import com.management.jupiter.impl.UserRepositoryImpl;
+import com.management.jupiter.repository.impl.AdminRepositoryImpl;
 import com.management.jupiter.models.enums.Role;
 
 import java.util.Optional;
@@ -14,7 +13,7 @@ public class UserServices {
 
     public static User LoginService(String email, String password) throws Exception {
         // Crear instancia del repositorio de usuarios
-        UserRepositoryImpl userRepository = new UserRepositoryImpl();
+        AdminRepositoryImpl userRepository = new AdminRepositoryImpl();
         
         // Buscar usuario por email en la base de datos
         Optional<User> user = userRepository.findByEmail(email);
@@ -37,7 +36,7 @@ public class UserServices {
     }
 
     public static void createTestUsers() {
-        UserRepositoryImpl userRepository = new UserRepositoryImpl();
+        AdminRepositoryImpl userRepository = new AdminRepositoryImpl();
         
         try {
             System.out.println("=== Creando usuarios de prueba ===");

@@ -1,9 +1,7 @@
 package stepsdefinitions;
 
 import com.management.jupiter.models.User;
-import com.management.jupiter.repository.AdminRepository;
-import com.management.jupiter.repository.UserRepository;
-import com.management.jupiter.impl.UserRepositoryImpl;
+import com.management.jupiter.repository.impl.AdminRepositoryImpl;
 import com.management.jupiter.services.AdminService;
 import com.management.jupiter.services.UserServices;
 import io.cucumber.java.After;
@@ -56,7 +54,7 @@ public class DeleteUser {
 
     @Then("the user should be deleted successfully")
     public void userDeleted(){
-        UserRepositoryImpl userRepository = new UserRepositoryImpl();
+        AdminRepositoryImpl userRepository = new AdminRepositoryImpl();
         Optional<User> user = userRepository.findByEmail(idOrEmail);
         assertNull(user.orElse(null));
     }

@@ -9,8 +9,7 @@ import com.management.jupiter.models.enums.Role;
 import com.management.jupiter.models.enums.TlType;
 import com.management.jupiter.persistance.Handler;
 import com.management.jupiter.repository.AdminRepository;
-import com.management.jupiter.repository.UserRepository;
-import com.management.jupiter.impl.UserRepositoryImpl;
+import com.management.jupiter.repository.impl.AdminRepositoryImpl;
 
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class AdminService {
         }
 
         // Verificar si el email ya existe usando UserRepositoryImpl
-        UserRepositoryImpl userRepository = new UserRepositoryImpl();
+        AdminRepositoryImpl userRepository = new AdminRepositoryImpl();
         if (userRepository.findByEmail(email.trim()).isPresent()) {
             throw new Exception("Email already exists");
         }

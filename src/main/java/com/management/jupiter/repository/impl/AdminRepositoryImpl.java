@@ -1,4 +1,4 @@
-package com.management.jupiter.impl;
+package com.management.jupiter.repository.impl;
 
 import com.management.jupiter.models.User;
 import com.management.jupiter.models.Coder;
@@ -9,10 +9,11 @@ import com.management.jupiter.repository.UserRepository;
 import com.management.jupiter.models.enums.Role;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class UserRepositoryImpl implements UserRepository {
+public class AdminRepositoryImpl implements UserRepository {
     private Connection getConnection() throws SQLException{
         return DatabaseConnection.getConnection();
     }
@@ -41,7 +42,22 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> getAll() {
-        return List.of();
+        //Creo la Lista para poder retornarla en consola
+        List<User> usersDB = new ArrayList<>();
+        //Hago la consulta
+        String sql = "SELECT * FROM \"Cohorte\".user";
+        //Hago una declaracion y ejecuto la consulta
+        try(PreparedStatement stmt = getConnection().prepareStatement(sql)){
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()){
+                User user = mapResultSetToUser(rs);
+                usersDB.add(user);
+            }
+        }catch (SQLException e){
+            System.out.println("[ERROR]: error to get users" + e.getMessage());
+            throw new RuntimeException(e);
+        }
+        return usersDB;
     }
 
     @Override
@@ -129,7 +145,7 @@ public class UserRepositoryImpl implements UserRepository {
     
 
     private User mapResultSetToUser(ResultSet rs) throws SQLException {
-        // Extraer datos del ResultSet
+        // Extraer datos del ResultSet Toma los objetos y los vuelve Strings
         String id = rs.getString("id");
         String username = rs.getString("full_name");
         String email = rs.getString("email");
@@ -152,6 +168,9 @@ public class UserRepositoryImpl implements UserRepository {
                 return new User(id, username, email, password, role, null);
         }
     }
-    // Los demás métodos los dejaremos vacíos por ahora para enfocarnos en el INSERT
+
+
+
+
 
 }
