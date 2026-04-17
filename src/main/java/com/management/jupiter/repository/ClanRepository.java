@@ -104,6 +104,99 @@ public class ClanRepository {
 
     }
 
+    public Clan findById(String clanId) {
+
+        Map<String, Clan> clanMap = new LinkedHashMap<>();
+
+        String sql = """
+                SELECT
+                    c.id AS clan_id
+                    c.name AS clan_name,
+                    c.description AS clan_description,
+                    u.id AS user_id,
+                    u.full_name AS user_name,
+                    u.email AS user_email,
+                    u.specialty AS user_specialty,
+                    u.role
+                FROM "Cohorte".clan c
+                LEFT JOIN "Cohorte".clan_members cm ON c.id = cm.clan_id
+                LEFT JOIN "Cohorte"."user" u ON cm.user_id = u.id
+                WHERE c.id = ?
+                """;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement psmt = conn.prepareStatement(sql);
+             ){
+
+            psmt.setObject(1, UUID.fromString(clanId));
+
+            try(ResultSet rs = psmt.executeQuery()){
+
+                while (rs.next()){
+
+
+                    Clan clan = clanMap.computeIfAbsent(clanId, id -> {
+                        try {
+
+                            return new Clan(
+                                    id,
+                                    rs.getString("clan_name"),
+                                    rs.getString("clan_description"))
+                                    ;
+
+                        }catch (SQLException e) {
+
+                            throw new RuntimeException(e);
+
+                        }
+
+                    });
+
+                    String userId = rs.getString("user_id");
+
+                    if (userId != null){
+
+                        var name = rs.getString("user_name");
+                        var email = rs.getString("user_email");
+                        var role = rs.getString("role").toUpperCase();
+
+                        if ("Tl".equalsIgnoreCase(role)) {
+
+                            var specialty = rs.getString("user_specialty").toUpperCase();
+
+                            clan.getTls().add(new Tl(
+                                    userId,
+                                    name,
+                                    email,
+                                    null,
+                                    Role.valueOf(role),
+                                    TlType.valueOf(specialty)
+                            ));
+
+                        } else {
+
+                            clan.getCoders().add(new Coder(
+                                    userId,
+                                    name,
+                                    email,
+                                    null,
+                                    Role.valueOf(role)
+                            ));
+
+                        }
+                    }
+                }
+            }
+
+        }catch (SQLException err){
+
+            System.err.println("Error to get clan: " + err.getMessage());
+
+        }
+
+        return clanMap.get(clanId);
+
+    }
 
     public UUID save (Clan clanData, Connection conn) throws SQLException {
 
