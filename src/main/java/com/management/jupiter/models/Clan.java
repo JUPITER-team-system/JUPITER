@@ -7,26 +7,38 @@ import java.util.List;
 
 public class Clan {
 
-    private int id;
+    private String id;
     private String name;
+    private String description;
+    private String userId;
     private List<Coder> coders;
     private List<Tl> tls;
 
-    public Clan(int id, String name) {
+    public Clan(String id, String name, String description, String userId) {
         this.id = id;
         this.name = name;
+        this.description = description;
+        this.userId = userId;
         this.coders = new ArrayList<>();
         this.tls = new ArrayList<>();
     }
 
     // ── Getters básicos ──────────────────────────────────────────────────────
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public void setName(String name) {
