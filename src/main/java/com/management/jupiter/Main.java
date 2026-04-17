@@ -1,13 +1,9 @@
 package com.management.jupiter;
-
 import com.management.jupiter.services.ClanService;
 import com.management.jupiter.services.AssignmentService;
-import com.management.jupiter.services.UserService;
-
 import com.management.jupiter.repository.ClanRepository;
 import com.management.jupiter.repository.TeamLeaderRepository;
 import com.management.jupiter.repository.CoderRepository;
-
 import com.management.jupiter.controllers.UserController;
 import com.management.jupiter.models.Tl;
 import com.management.jupiter.models.User;
@@ -34,8 +30,6 @@ public class Main {
             e.printStackTrace();
         }
 
-        // Crear usuarios de prueba si no existen
-        UserService.createTestUsers();
 
         // Repositorios (necesarios para AssignmentService)
         ClanRepository clanRepository = new ClanRepository();
