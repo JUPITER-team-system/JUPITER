@@ -42,36 +42,35 @@ public class ClanRepository {
 
     }
 
-    public UUID save (Clan clanData, String userId){
+    public UUID save (Clan clanData, Connection conn) throws SQLException {
 
-        String sql = "INSERT INTO clan (name, description, user_id) Values (?, ?, ?)";
+        String sql = "INSERT INTO clan (name, description) Values (?, ?)";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement psmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);){
+        try (PreparedStatement psmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);){
 
 
             psmt.setString(1, clanData.getName());
             psmt.setString(2, clanData.getDescription());
-            psmt.setObject(3, UUID.fromString(userId));
 
             int arrows = psmt.executeUpdate();
 
             if (arrows > 0){
+
                 var rs = psmt.getGeneratedKeys();
                 if (rs.next()) {
                     return (UUID) rs.getObject(1);
                 }
+
+            }else {
+
+                throw new SQLException("Error to add clan information");
+
             }
-
-
-        }catch (SQLException err) {
-
-            System.err.println("Error to add clan: " + err.getMessage());
 
         }
 
-
         return null;
+
     }
 
     public boolean delete (String id) {
@@ -100,7 +99,7 @@ public class ClanRepository {
 
     public boolean edit (Clan clan) {
 
-        String sql = "UPDATE clan SET name = ?, description = ?, user_id = ? WHERE id = ?";
+        String sql = "UPDATE clan SET name = ?, description = ? WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement psmt = conn.prepareStatement(sql)){
@@ -108,8 +107,7 @@ public class ClanRepository {
 
             psmt.setString(1, clan.getName());
             psmt.setString(2, clan.getDescription());
-            psmt.setObject(3, UUID.fromString(clan.getUserId()));
-            psmt.setObject(4, UUID.fromString(clan.getId()));
+            psmt.setObject(3, UUID.fromString(clan.getId()));
 
             int rows = psmt.executeUpdate();
 
