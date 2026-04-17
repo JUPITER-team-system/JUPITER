@@ -198,6 +198,35 @@ public class ClanRepository {
 
     }
 
+    public String findByName (String name) {
+
+        String sql = "SELECT clan.id AS clan_id FROM clan where name = ?";
+
+        try(Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement psmt = conn.prepareStatement(sql)){
+
+            psmt.setString(1, name);
+
+            try (ResultSet rs = psmt.executeQuery();){
+
+                if (rs.next()){
+
+                    return rs.getString("clan_id");
+
+                }
+
+            }
+
+        }catch (SQLException err){
+
+            System.err.println("Error to get clan by name: " + err.getMessage());
+
+        }
+
+        return null;
+
+    }
+
     public UUID save (Clan clanData, Connection conn) throws SQLException {
 
         String sql = "INSERT INTO clan (name, description) Values (?, ?)";
