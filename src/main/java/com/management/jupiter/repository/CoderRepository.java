@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class CoderRepository {
 
-    private final Map<Integer, Coder> coders = new HashMap<>();
+    private final Map<String, Coder> coders = new HashMap<>();
 
     // ── CREATE / UPDATE ──────────────────────────────────────────────────────
 
@@ -27,13 +27,13 @@ public class CoderRepository {
         return new ArrayList<>(coders.values());
     }
 
-    public Coder findById(int id) {
+    public Coder findById(String id) {
         return coders.get(id);
     }
 
     // ── DELETE ───────────────────────────────────────────────────────────────
 
-    public void delete(int id) {
+    public void delete(String id) {
         coders.remove(id);
     }
 }

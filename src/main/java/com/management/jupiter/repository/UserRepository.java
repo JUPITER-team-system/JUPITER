@@ -97,7 +97,7 @@ public class UserRepository {
         }
 
         try {
-            int id = Integer.parseInt(data[0].trim());
+            String id = String.valueOf(Integer.parseInt(data[0].trim()));
             String username = data[1].trim();
             String email = data[2].trim();
             String password = data[3].trim();
