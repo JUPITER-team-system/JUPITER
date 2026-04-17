@@ -73,7 +73,7 @@ public class ClanRepository {
 
     }
 
-    public boolean delete (String id) {
+    public void delete (String id) {
 
         String sql = "DELETE FROM clan WHERE ID = ?";
 
@@ -85,15 +85,21 @@ public class ClanRepository {
 
             int rows = pstm.executeUpdate();
 
-            return rows > 0;
+            if (rows == 0){
+
+                System.out.println("Error at delete clan");
+
+            }else {
+
+                System.out.println("Clan deleted correctly");
+
+            }
 
         }catch(SQLException err){
 
             System.err.println("Error to delete clan: " + err.getMessage());
 
         }
-
-        return false;
 
     }
 
