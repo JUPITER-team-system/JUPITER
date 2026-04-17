@@ -129,4 +129,26 @@ public class ClanRepository {
 
     }
 
+
+    public void addUser (UUID clanId ,String userId, Connection conn) throws SQLException {
+
+        String sql = "INSERT INTO clan_members (clan_id, user_id) values (?, ?)";
+
+        try(PreparedStatement psmt = conn.prepareStatement(sql)){
+
+            psmt.setObject(1, clanId);
+            psmt.setObject(2, UUID.fromString(userId));
+
+            int rows = psmt.executeUpdate();
+
+            if (rows == 0) {
+                throw new SQLException("Error to add user");
+            }
+
+            System.out.println("User added correctly");
+
+        }
+
+    }
+
 }
