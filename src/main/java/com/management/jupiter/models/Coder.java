@@ -8,7 +8,7 @@ public class Coder extends User {
         super(username, email, password, role);
     }
 
-    public Coder(int id, String username, String email, String password, Role role) {
+    public Coder(String id, String username, String email, String password, Role role) {
         super(id, username, email, password, role);
     }
 

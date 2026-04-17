@@ -10,15 +10,13 @@ public class Clan {
     private String id;
     private String name;
     private String description;
-    private String userId;
     private List<Coder> coders;
     private List<Tl> tls;
 
-    public Clan(String id, String name, String description, String userId) {
+    public Clan(String id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.userId = userId;
         this.coders = new ArrayList<>();
         this.tls = new ArrayList<>();
     }
@@ -35,10 +33,6 @@ public class Clan {
 
     public String getDescription() {
         return description;
-    }
-
-    public String getUserId() {
-        return userId;
     }
 
     public void setName(String name) {
