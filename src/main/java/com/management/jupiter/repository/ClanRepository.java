@@ -139,10 +139,34 @@ public class ClanRepository {
             int rows = psmt.executeUpdate();
 
             if (rows == 0) {
+
                 throw new SQLException("Error to add user");
+
+            }else {
+
+                System.out.println("User added correctly");
+
             }
 
-            System.out.println("User added correctly");
+        }
+
+    }
+
+    public void removeUser (String clanId, Connection conn) throws SQLException{
+
+        String sql = "DELETE FROM clan_members WHERE clan_id = ?";
+
+        try(PreparedStatement psmt = conn.prepareStatement(sql)){
+
+            psmt.setObject(1, UUID.fromString(clanId));
+
+            int rows = psmt.executeUpdate();
+
+            if (rows == 0){
+
+                System.out.println("has cleaned " + rows + " old members.");
+
+            }
 
         }
 
