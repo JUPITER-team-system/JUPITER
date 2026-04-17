@@ -1,6 +1,8 @@
 package com.management.jupiter.repository;
 
 import com.management.jupiter.models.Clan;
+import com.management.jupiter.models.*;
+import com.management.jupiter.models.enums.*;
 import com.management.jupiter.persistance.DatabaseConnection;
 
 import java.sql.*;
@@ -8,39 +10,100 @@ import java.util.*;
 
 public class ClanRepository {
 
-    public List<Clan> findAll() {
+    public List<Clan> findAll (){
 
-        List<Clan> clanList = new ArrayList<>();
-        String sql = "SELECT * FROM clan";
+        Map<String, Clan> clanMap = new LinkedHashMap<>();
+
+        String sql = """
+                SELECT
+                    c.id AS clan_id
+                    c.name AS clan_name,
+                    c.description AS clan_description,
+                    u.id AS user_id,
+                    u.full_name AS user_name,
+                    u.email AS user_email,
+                    u.specialty AS user_specialty,
+                    u.role
+                FROM "Cohorte".clan c
+                LEFT JOIN "Cohorte".clan_members cm ON c.id = cm.clan_id
+                LEFT JOIN "Cohorte"."user" u ON cm.user_id = u.id
+                """;
 
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement statement = conn.createStatement();
-             ResultSet rs = statement.executeQuery(sql)){
-
-
+             PreparedStatement psmt = conn.prepareStatement(sql);
+             ResultSet rs = psmt.executeQuery();
+        ){
 
             while (rs.next()){
 
-                String clanId = rs.getString("id");
-                String clanName = rs.getString("name");
-                String clanDesc = rs.getString("description");
+                String clanId = rs.getString("clan_id");
+
+                Clan clan = clanMap.computeIfAbsent(clanId, id -> {
+
+                    try {
+
+                        return new Clan(
+                                id,
+                                rs.getString("clan_name"),
+                                rs.getString("clan_description")
+                        );
+
+                    }catch (SQLException e) {
+
+                        throw new RuntimeException(e);
+
+                    }
+
+                });
+
                 String userId = rs.getString("user_id");
 
-                Clan clan = new Clan(clanId, clanName, clanDesc, userId);
+                if (userId != null){
 
-                clanList.add(clan);
+                    var name = rs.getString("user_name");
+                    var email = rs.getString("user_email");
+                    var role = rs.getString("role").toUpperCase();
+
+                    if ("Tl".equalsIgnoreCase(role)) {
+
+                        var specialty = rs.getString("user_specialty").toUpperCase();
+
+                        clan.getTls().add(new Tl(
+                                userId,
+                                name,
+                                email,
+                                null,
+                                Role.valueOf(role),
+                                TlType.valueOf(specialty)
+                        ));
+
+                    } else {
+
+                        clan.getCoders().add(new Coder(
+                                userId,
+                                name,
+                                email,
+                                null,
+                                Role.valueOf(role)
+                        ));
+
+                    }
+                }
 
             }
 
-        }catch (SQLException err){
 
-            System.err.println("Error to get clans: " + err.getMessage());
+        }catch (SQLException err) {
+
+            System.err.println("Error to get clan: " + err.getMessage());
 
         }
 
-        return clanList;
+
+        return new ArrayList<>(clanMap.values());
 
     }
+
 
     public UUID save (Clan clanData, Connection conn) throws SQLException {
 
