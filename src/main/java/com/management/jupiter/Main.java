@@ -30,7 +30,7 @@ public class Main {
         AdminRepository adminRepo = new AdminRepository();
         ClanRepository clanRepo = new ClanRepository();
         CoderRepository coderRepo = new CoderRepository();
-        TeamLeaderRepository tlRepo = new TeamLeaderRepository();
+        TeamLeaderRepository tlRepo = new TeamLeaderRepository(clanRepo);
         UserRepository userRepo = new UserRepository();
 
         //Services:
