@@ -28,7 +28,7 @@ public class AdminService {
             throw new Exception("Email already exists");
         }
         User user;
-        int nextId = UserRepository.nextId();
+        String  nextId = String.valueOf(UserRepository.nextId());
         if (role == Role.ADMIN) {
             user = new Admin(nextId, username.trim(), email.trim(), password.trim(), role);
         } else {
