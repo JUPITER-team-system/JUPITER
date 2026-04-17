@@ -112,30 +112,36 @@ public class AdminRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void insertCSV(List<String[]> data){
-        String sql = "INSERT INTO user(email, password, full_name, role, clan_id) VALUES (?,?,?,?,?)";
-        try{
-            getConnection().setAutoCommit(false);
+    public void insertCSV(List<String[]> data) {
 
-            PreparedStatement ps = getConnection().prepareStatement(sql);
+        String sql = "INSERT INTO \"Cohorte\".user(email, password, full_name, role, clan_id) VALUES (?,?,?,?,?)";
 
-            for (String[] row : data){
-                ps.setString(1, row[1]);
-                ps.setString(2, row[2]);
-                ps.setString(3, row[3]);
-                ps.setString(4, row[4]);
-                ps.setString(5, "USER");
-                ps.addBatch();
+        // Usamos try-with-resources para asegurar que la conexión y el statement se cierren solos
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-                ps.executeBatch();
-                getConnection().commit();
+            conn.setAutoCommit(false); // Iniciamos transacción
 
-                ps.close();
-                getConnection().close();
+            for (String[] row : data) {
+                ps.setString(1, row[1]); // email
+                ps.setString(2, row[2]); // password
+                ps.setString(3, row[3]); // full_name
+                ps.setString(4, row[4]); // role
+
+                // Aquí puedes decidir si el clan_id es nulo o viene en el CSV
+                ps.setNull(5, Types.OTHER); // O el valor que corresponda
+
+                ps.addBatch(); // Agregamos a la "bolsa" de envíos
             }
-        }catch (Exception e){
-            try{getConnection().rollback();}catch (Exception ignored){}
-            e.printStackTrace();
+
+            ps.executeBatch(); // Enviamos
+            conn.commit();     // Confirmamos la transacción
+            System.out.println("Bulk upload completed successfully");
+
+        } catch (SQLException e) {
+            // Si algo falla, intentamos hacer rollback para no dejar datos inconsistentes
+            System.err.println("[ERROR]: Error in bulk upload: " + e.getMessage());
+            // Aquí deberías manejar el rollback con la conexión abierta
         }
     }
 
