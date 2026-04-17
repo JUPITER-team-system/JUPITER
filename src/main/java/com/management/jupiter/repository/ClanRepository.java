@@ -15,7 +15,7 @@ public class ClanRepository {
 
         try (Connection conn = DatabaseConnection.getConnection();
              Statement statement = conn.createStatement();
-             ResultSet rs = statement.executeQuery(sql);){
+             ResultSet rs = statement.executeQuery(sql)){
 
 
 
@@ -46,7 +46,7 @@ public class ClanRepository {
 
         String sql = "INSERT INTO clan (name, description) Values (?, ?)";
 
-        try (PreparedStatement psmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);){
+        try (PreparedStatement psmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
 
 
             psmt.setString(1, clanData.getName());
@@ -78,7 +78,7 @@ public class ClanRepository {
         String sql = "DELETE FROM clan WHERE ID = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstm = conn.prepareStatement(sql);){
+             PreparedStatement pstm = conn.prepareStatement(sql)){
 
 
             pstm.setObject(1, UUID.fromString(id));
@@ -103,12 +103,11 @@ public class ClanRepository {
 
     }
 
-    public boolean edit (Clan clan) {
+    public void edit (Clan clan, Connection conn) throws SQLException {
 
         String sql = "UPDATE clan SET name = ?, description = ? WHERE id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement psmt = conn.prepareStatement(sql)){
+        try (PreparedStatement psmt = conn.prepareStatement(sql)){
 
 
             psmt.setString(1, clan.getName());
@@ -117,15 +116,13 @@ public class ClanRepository {
 
             int rows = psmt.executeUpdate();
 
-            return rows > 0;
+            if (rows == 0){
 
-        }catch (SQLException err){
+                throw new SQLException("Error to edit Clan");
 
-            System.err.println("Error to update clan: " + err.getMessage());
+            }
 
         }
-
-        return false;
 
     }
 
