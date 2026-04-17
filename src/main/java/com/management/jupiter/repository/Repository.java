@@ -8,5 +8,5 @@ public  interface Repository<T>{
     List<T> getAll();
     Optional<T> findById(long id);
     void update(T t);
-    void delete(long id);
+
 }

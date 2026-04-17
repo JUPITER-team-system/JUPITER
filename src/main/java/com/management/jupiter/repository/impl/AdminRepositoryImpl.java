@@ -13,25 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Implementation of UserRepository for PostgreSQL database operations
- * Handles all CRUD operations for User entities
- */
 public class AdminRepositoryImpl implements UserRepository {
-    
-    /**
-     * Gets database connection from DatabaseConnection
-     * @return Database connection
-     * @throws SQLException if connection fails
-     */
+    //Gets database connection from DatabaseConnection
     private Connection getConnection() throws SQLException{
         return DatabaseConnection.getConnection();
     }
 
-    /**
-     * Saves a new user to the database
-     * @param user User object to save
-     */
+
+     //*Saves a new user to the database
+
     @Override
     public void save(User user) {
         String sql = "INSERT INTO \"Cohorte\".user(email, password, full_name, role, clan_id) VALUES (?,?,?,?,?)";
@@ -54,10 +44,7 @@ public class AdminRepositoryImpl implements UserRepository {
         }
     }
 
-    /**
-     * Retrieves all users from database
-     * @return List of all users
-     */
+
     @Override
     public List<User> getAll() {
         List<User> usersDB = new ArrayList<>();
@@ -76,21 +63,16 @@ public class AdminRepositoryImpl implements UserRepository {
         return usersDB;
     }
 
-    /**
-     * Finds user by long ID (not implemented)
-     * @param id User's long ID
-     * @return Empty optional (not implemented)
-     */
+
+     // Finds user by long ID (not implemented)
+
     @Override
     public Optional<User> findById(long id) {
         return Optional.empty();
     }
 
-    /**
-     * Finds user by string ID
-     * @param id User's string ID
-     * @return Optional containing user if found
-     */
+
+    // Finds user by string ID
     @Override
     public Optional<User> findById(String id) {
         String sql = "SELECT * FROM \"Cohorte\".user WHERE id = ?";
@@ -111,34 +93,52 @@ public class AdminRepositoryImpl implements UserRepository {
         return Optional.empty();
     }
 
-    /**
-     * Updates user in database
-     * @param user User object with updated data
-     */
+
+    //Updates user in database
+
     @Override
     public void update(User user) {
         // Implementation already added above
     }
 
-    /**
-     * Deletes user by long ID (not implemented)
-     * @param id User's long ID
-     */
-    @Override
-    public void delete(long id) {
-        // Not implemented - using String ID version
-    }
 
-    /**
-     * Deletes user by string ID
-     * @param id User's string ID
-     */
+
+
+
+// delete by ID
     @Override
     public void delete(String id) {
         // Implementation already added above
     }
 
-    
+    @Override
+    public void insertCSV(List<String[]> data){
+        String sql = "INSERT INTO user(email, password, full_name, role, clan_id) VALUES (?,?,?,?,?)";
+        try{
+            getConnection().setAutoCommit(false);
+
+            PreparedStatement ps = getConnection().prepareStatement(sql);
+
+            for (String[] row : data){
+                ps.setString(1, row[1]);
+                ps.setString(2, row[2]);
+                ps.setString(3, row[3]);
+                ps.setString(4, row[4]);
+                ps.setString(5, "USER");
+                ps.addBatch();
+
+                ps.executeBatch();
+                getConnection().commit();
+
+                ps.close();
+                getConnection().close();
+            }
+        }catch (Exception e){
+            try{getConnection().rollback();}catch (Exception ignored){}
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public Optional<User> findByEmail(String email) {
@@ -161,12 +161,7 @@ public class AdminRepositoryImpl implements UserRepository {
     }
     
 
-    /**
-     * Maps ResultSet to User object with proper type casting
-     * @param rs ResultSet from database query
-     * @return User object (Admin, Coder, or TL based on role)
-     * @throws SQLException if mapping fails
-     */
+
     private User mapResultSetToUser(ResultSet rs) throws SQLException {
         String id = rs.getString("id");
         String username = rs.getString("full_name");
