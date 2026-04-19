@@ -1,37 +1,45 @@
 package com.management.jupiter.controllers;
 
 import com.management.jupiter.models.User;
-import com.management.jupiter.models.enums.Role;
-import com.management.jupiter.models.enums.TlType;
+import com.management.jupiter.models.enums.*;
 import com.management.jupiter.services.AdminService;
 
-import java.util.Scanner;
-
 public class AdminController {
-    public static Scanner scanner = new Scanner(System.in);
 
-    public static void createUser(String username, String email, String password, Role role, TlType tlType) {
+
+    public void createUser(String username, String email, String password, Role role, TlType tlType) {
+
         try {
-            User createdUser = AdminService.createUser(username, email, password, role, tlType);
+
+            User createdUser = service.createUser(username, email, password, role, tlType);
             System.out.println("User created successfully: " + createdUser);
+
         } catch (IllegalArgumentException e) {
+
             System.out.println("Invalid role or clan");
+
         } catch (Exception e) {
+
             System.out.println(e.getMessage());
+
         }
     }
 
-    public static void deleteUser() {
-        System.out.println("Ingresa el id o email del usuario que deseas eliminar");
-        String value = scanner.nextLine();
-        AdminService.deleteUser(value);
+    public void deleteUser(String value) {
+
+        service.deleteUser(value);
+
     }
 
-    public static void updateUser(String idOrEmail, String newValue, String fieldName) {
+    public void updateUser(String idOrEmail, String newValue, String fieldName) {
+
         if (idOrEmail == null || newValue == null || fieldName == null) {
+
             throw new RuntimeException("All fields are required");
+
         }
-        AdminService.updateUser(idOrEmail, newValue, fieldName);
+
+        service.updateUser(idOrEmail, newValue, fieldName);
 
     }
 //    public static void getUsersByRol(){
