@@ -70,4 +70,21 @@ public class AdminUI {
         System.out.println(user);
 
     }
+
+    public static void userOptions () {
+
+        String userOptions = """
+                -----------------------------
+                | 1) Name.                  |
+                | 2) Email.                 |
+                | 3) Password.              |
+                | 4) Role                   |
+                | 0) Exit                   |
+                -----------------------------
+                """
+                ;
+
+        System.out.println(userOptions);
+
+    }
 }
