@@ -3,6 +3,7 @@ package com.management.jupiter;
 import com.management.jupiter.controllers.*;
 import com.management.jupiter.models.*;
 import com.management.jupiter.repository.*;
+import com.management.jupiter.security.LoginSession;
 import com.management.jupiter.security.UserSession;
 import com.management.jupiter.services.*;
 import com.management.jupiter.util.scanner.ScannerUtil;
@@ -45,7 +46,7 @@ public class Main {
 
         User user = login.login();
 
-        UserSession loggedUser = new UserSession(user);
+        LoginSession loggedUser = new UserSession(user);
 
         AdminView admin = new AdminView(input, adminController, loggedUser);
         TlView tl = new TlView(input, tlController);
