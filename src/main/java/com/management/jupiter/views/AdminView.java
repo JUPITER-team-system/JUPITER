@@ -2,6 +2,7 @@ package com.management.jupiter.views;
 
 import com.management.jupiter.controllers.AdminController;
 import com.management.jupiter.models.Admin;
+import com.management.jupiter.models.enums.*;
 import com.management.jupiter.ui.users.AdminUI;
 import com.management.jupiter.util.scanner.ScannerUtil;
 
@@ -98,7 +99,7 @@ public class AdminView {
             switch (dec) {
 
                 case 1:
-                    //Add Soon...
+                    addUser();
                     break;
                 case 2:
                     //Add Soon...
@@ -110,6 +111,51 @@ public class AdminView {
             }
 
         } while (dec != 0);
+
+    }
+
+    private void addUser() {
+
+        while (true) {
+
+            String name = input.readString("What's his/her name? (or 'exit' to quit): ");
+            if (name.equalsIgnoreCase("exit")) break;
+
+            String email = input.readString("What's his/her email?: ");
+            String password = input.readString("What's his/her password?: ");
+
+            Role role;
+
+            try{
+
+                role = Role.valueOf(input.readString("what's her/his role? (Coder/Tl): ").toUpperCase());
+
+            }catch (IllegalArgumentException err) {
+
+                System.out.println("Invalid type");
+                continue;
+
+            }
+
+            TlType tl = null;
+
+            if(role == Role.TL) {
+
+                try {
+
+                    tl = TlType.valueOf(input.readString("TL Type (PROGRAMACION/INGLES): ").toUpperCase());
+
+                } catch (IllegalArgumentException err) {
+
+                    System.out.println("Invalid type");
+                    continue;
+
+                }
+            }
+
+            controller.createUser(name, email, password, role, tl);
+
+        }
 
     }
 
