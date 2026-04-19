@@ -1,20 +1,12 @@
 package com.management.jupiter;
 
-import com.management.jupiter.controllers.AdminController;
-import com.management.jupiter.controllers.CoderController;
-import com.management.jupiter.controllers.TlController;
-import com.management.jupiter.controllers.UserController;
-import com.management.jupiter.models.Admin;
-import com.management.jupiter.models.Coder;
-import com.management.jupiter.models.Tl;
-import com.management.jupiter.models.User;
+import com.management.jupiter.controllers.*;
+import com.management.jupiter.models.*;
 import com.management.jupiter.repository.*;
-import com.management.jupiter.services.AssignmentService;
+import com.management.jupiter.services.*;
 import com.management.jupiter.util.scanner.ScannerUtil;
-import com.management.jupiter.views.AdminView;
-import com.management.jupiter.views.CoderView;
-import com.management.jupiter.views.LoginView;
-import com.management.jupiter.views.TlView;
+import com.management.jupiter.views.*;
+
 
 import java.util.Scanner;
 
@@ -35,11 +27,12 @@ public class Main {
 
         //Services:
         AssignmentService assignmentService = new AssignmentService(clanRepo, tlRepo, coderRepo);
+        AdminService adminService = new AdminService(adminRepo);
 
 
         //Controllers:
         UserController userController = new UserController();
-        AdminController adminController = new AdminController();
+        AdminController adminController = new AdminController(adminService);
         TlController tlController = new TlController();
         CoderController coderController = new CoderController();
 
