@@ -6,6 +6,13 @@ import com.management.jupiter.services.AdminService;
 
 public class AdminController {
 
+    private final AdminService service;
+
+    public AdminController (AdminService service) {
+
+        this.service = service;
+
+    }
 
     public void createUser(String username, String email, String password, Role role, TlType tlType) {
 
