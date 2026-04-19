@@ -3,6 +3,7 @@ package com.management.jupiter;
 import com.management.jupiter.controllers.*;
 import com.management.jupiter.models.*;
 import com.management.jupiter.repository.*;
+import com.management.jupiter.security.UserSession;
 import com.management.jupiter.services.*;
 import com.management.jupiter.util.scanner.ScannerUtil;
 import com.management.jupiter.views.*;
@@ -14,7 +15,10 @@ public class Main {
 
     public static void main (String[] args){
 
-        //Input
+        //Models:
+
+
+        //Input:
         Scanner scanner = new Scanner(System.in);
         ScannerUtil input = new ScannerUtil(scanner);
 
@@ -38,11 +42,14 @@ public class Main {
 
         //Views:
         LoginView login = new LoginView(input, userController);
-        AdminView admin = new AdminView(input, adminController);
-        TlView tl = new TlView(input, tlController);
-        CoderView coder = new CoderView(input, coderController);
 
         User user = login.login();
+
+        UserSession loggedUser = new UserSession(user);
+
+        AdminView admin = new AdminView(input, adminController, loggedUser);
+        TlView tl = new TlView(input, tlController);
+        CoderView coder = new CoderView(input, coderController);
 
         if(user instanceof Admin loggedAdmin){
             admin.show(loggedAdmin);
