@@ -108,7 +108,7 @@ public class AdminView {
                     deleteUser();
                     break;
                 case 3:
-                    //Add Soon...
+                    editUser();
                     break;
 
             }
@@ -177,4 +177,48 @@ public class AdminView {
 
     }
 
+    private void editUser () {
+
+        String idOrEmail = input.readString("Enter the user id or email: ");
+
+        if (idOrEmail.equals(session.loggedUser().getId()) || idOrEmail.equals(session.loggedUser().getEmail())){
+
+            System.out.println("You can't modify yourself!");
+            return;
+
+        }
+
+        AdminUI.userOptions();
+
+        int dec = input.readInt("What's your decision?: ");
+        String fieldName = "";
+
+        switch (dec) {
+
+            case 1 -> fieldName = "name";
+            case 2 -> fieldName = "email";
+            case 3 -> fieldName = "password";
+            case 4 -> fieldName = "role";
+            case 5 -> {
+                System.out.println("Operation Cancelled");
+                return;
+            }
+            default -> {
+                System.out.println("Invalid option");
+                return;
+            }
+
+        }
+
+        String newValue = input.readString("Enter the new value of " + fieldName + ": ");
+
+        try {
+            controller.updateUser(idOrEmail, newValue, fieldName);
+            System.out.println("User updated correctly");
+        }catch (RuntimeException err){
+            System.err.println("Error to update user" + err.getMessage());
+        }
+
+
+    }
 }
