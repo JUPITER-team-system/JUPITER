@@ -3,6 +3,7 @@ package com.management.jupiter.views;
 import com.management.jupiter.controllers.AdminController;
 import com.management.jupiter.models.Admin;
 import com.management.jupiter.models.enums.*;
+import com.management.jupiter.security.UserSession;
 import com.management.jupiter.ui.users.AdminUI;
 import com.management.jupiter.util.scanner.ScannerUtil;
 
@@ -10,12 +11,12 @@ public class AdminView {
 
     private final ScannerUtil input;
     private final AdminController controller;
-    private final Admin admin;
+    private final UserSession session;
 
-    public AdminView (ScannerUtil input, AdminController controller, Admin admin) {
+    public AdminView (ScannerUtil input, AdminController controller, UserSession session) {
         this.input = input;
         this.controller = controller;
-        this.admin = admin;
+        this.session = session;
     }
 
     public void show (Admin admin) {
@@ -165,7 +166,7 @@ public class AdminView {
 
         String value = input.readString("Which is her/h6s email or id: ");
 
-        if (value.equals(admin.getId()) || value.equals(admin.getEmail())){
+        if (value.equals(session.loggedUser().getId()) || value.equals(session.loggedUser().getEmail())){
 
             System.out.println("You can't delete yourself!");
             return;
