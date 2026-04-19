@@ -10,10 +10,12 @@ public class AdminView {
 
     private final ScannerUtil input;
     private final AdminController controller;
+    private final Admin admin;
 
-    public AdminView (ScannerUtil input, AdminController controller) {
+    public AdminView (ScannerUtil input, AdminController controller, Admin admin) {
         this.input = input;
         this.controller = controller;
+        this.admin = admin;
     }
 
     public void show (Admin admin) {
@@ -102,7 +104,7 @@ public class AdminView {
                     addUser();
                     break;
                 case 2:
-                    //Add Soon...
+                    deleteUser();
                     break;
                 case 3:
                     //Add Soon...
@@ -156,6 +158,21 @@ public class AdminView {
             controller.createUser(name, email, password, role, tl);
 
         }
+
+    }
+
+    private void deleteUser () {
+
+        String value = input.readString("Which is her/h6s email or id: ");
+
+        if (value.equals(admin.getId()) || value.equals(admin.getEmail())){
+
+            System.out.println("You can't delete yourself!");
+            return;
+
+        }
+
+        controller.deleteUser(value);
 
     }
 
