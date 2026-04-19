@@ -3,7 +3,7 @@ package com.management.jupiter.views;
 import com.management.jupiter.controllers.AdminController;
 import com.management.jupiter.models.Admin;
 import com.management.jupiter.models.enums.*;
-import com.management.jupiter.security.UserSession;
+import com.management.jupiter.security.LoginSession;
 import com.management.jupiter.ui.users.AdminUI;
 import com.management.jupiter.util.scanner.ScannerUtil;
 
@@ -11,9 +11,9 @@ public class AdminView {
 
     private final ScannerUtil input;
     private final AdminController controller;
-    private final UserSession session;
+    private final LoginSession session;
 
-    public AdminView (ScannerUtil input, AdminController controller, UserSession session) {
+    public AdminView (ScannerUtil input, AdminController controller, LoginSession session) {
         this.input = input;
         this.controller = controller;
         this.session = session;
@@ -164,7 +164,7 @@ public class AdminView {
 
     private void deleteUser () {
 
-        String value = input.readString("Which is her/h6s email or id: ");
+        String value = input.readString("Which is her/his email or id: ");
 
         if (value.equals(session.loggedUser().getId()) || value.equals(session.loggedUser().getEmail())){
 
