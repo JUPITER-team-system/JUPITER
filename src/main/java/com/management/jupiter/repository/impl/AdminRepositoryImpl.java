@@ -111,8 +111,25 @@ public class AdminRepositoryImpl implements UserRepository {
 
 // delete by ID
     @Override
-    public void delete(String id) {
-        // Implementation already added above
+    public void delete(String id)   {
+        //Empezamos con la consulta SQL
+        String sql = "DELETE FROM \"Cohorte\".user WHERE id = ?";
+        //Cocinamos la declaracion SQL
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, id);
+            //Pasamos a servirla y nos dice cuantos platos se recogieron
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0){
+                System.out.printf("User delete success!!" + id);
+            }else {
+                System.out.printf("User not found with id" + id);
+            }
+        }catch (SQLException e){
+            System.out.println("[ERROR]: error to try delete this user: " + e.getMessage());
+            throw new RuntimeException();
+        }
+
     }
 
     @Override
