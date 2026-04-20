@@ -5,7 +5,7 @@ import com.management.jupiter.models.Coder;
 import com.management.jupiter.models.Tl;
 import com.management.jupiter.models.Admin;
 import com.management.jupiter.persistance.DatabaseConnection;
-import com.management.jupiter.repository.UserRepository;
+import com.management.jupiter.repository.interfaces.UserRepository;
 import com.management.jupiter.models.enums.Role;
 
 import java.sql.*;
@@ -62,15 +62,6 @@ public class AdminRepositoryImpl implements UserRepository {
         }
         return usersDB;
     }
-
-
-     // Finds user by long ID (not implemented)
-
-    @Override
-    public Optional<User> findById(long id) {
-        return Optional.empty();
-    }
-
 
     // Finds user by string ID
     @Override
