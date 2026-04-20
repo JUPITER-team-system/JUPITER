@@ -104,7 +104,7 @@ public class ClanRepository {
 
     }
 
-    public Clan findById(String clanId) {
+    public Clan findByIdOrName(String value) {
 
         Map<String, Clan> clanMap = new LinkedHashMap<>();
 
@@ -121,21 +121,28 @@ public class ClanRepository {
                 FROM "Cohorte".clan c
                 LEFT JOIN "Cohorte".clan_members cm ON c.id = cm.clan_id
                 LEFT JOIN "Cohorte"."user" u ON cm.user_id = u.id
-                WHERE c.id = ?
+                WHERE c.name = ? or c.id = ?;
                 """;
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement psmt = conn.prepareStatement(sql);
              ){
 
-            psmt.setObject(1, UUID.fromString(clanId));
+            psmt.setString(1, value);
+
+            try {
+                psmt.setObject(2, UUID.fromString(value));
+            }catch (IllegalArgumentException err){
+                psmt.setObject(2, null);
+            }
 
             try(ResultSet rs = psmt.executeQuery()){
 
                 while (rs.next()){
 
+                    String idClanActual = rs.getString("clan_id");
 
-                    Clan clan = clanMap.computeIfAbsent(clanId, id -> {
+                    Clan clan = clanMap.computeIfAbsent(idClanActual, id -> {
                         try {
 
                             return new Clan(
@@ -194,36 +201,7 @@ public class ClanRepository {
 
         }
 
-        return clanMap.get(clanId);
-
-    }
-
-    public String findByName (String name) {
-
-        String sql = "SELECT \"Cohorte\".clan.id AS clan_id FROM clan where name = ?";
-
-        try(Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement psmt = conn.prepareStatement(sql)){
-
-            psmt.setString(1, name);
-
-            try (ResultSet rs = psmt.executeQuery();){
-
-                if (rs.next()){
-
-                    return rs.getString("clan_id");
-
-                }
-
-            }
-
-        }catch (SQLException err){
-
-            System.err.println("Error to get clan by name: " + err.getMessage());
-
-        }
-
-        return null;
+        return clanMap.values().stream().findFirst().orElse(null);
 
     }
 
