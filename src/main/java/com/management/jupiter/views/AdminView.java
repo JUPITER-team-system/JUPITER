@@ -7,14 +7,8 @@ import com.management.jupiter.controllers.CellController;
 import com.management.jupiter.models.Clan;
 import com.management.jupiter.models.Tl;
 import com.management.jupiter.models.Coder;
-import com.management.jupiter.models.enums.Role;
-import com.management.jupiter.models.enums.TlType;
-import com.management.jupiter.repository.AdminRepository;
-import com.management.jupiter.repository.CellRepository;
-import com.management.jupiter.repository.IaRepo;
 import com.management.jupiter.services.AdminService;
 import com.management.jupiter.services.AssignmentService;
-import com.management.jupiter.services.CellServices;
 import com.management.jupiter.services.ClanService;
 
 import java.util.List;
@@ -117,7 +111,8 @@ public class AdminView {
                     verMiembrosDeClan();
                     break;
                 case 12:
-                    List<String> resp = IaRepo.useIA();
+                    CellController cellController = new CellController();
+                    cellController.createCell();
                     break;
                 case 0:
                     System.out.println("Cerrando...");
