@@ -1,6 +1,7 @@
 package com.management.jupiter.repository;
 
 import com.management.jupiter.models.User;
+import com.management.jupiter.repository.interfaces.Repository;
 
 import java.util.List;
 import java.util.Optional;

@@ -8,9 +8,10 @@ import com.management.jupiter.persistance.DatabaseConnection;
 import java.sql.*;
 import java.util.*;
 
-public class ClanRepository {
+public class ClanRepositoryImpl implements ClanRepositoryImpl {
 
-    public List<Clan> findAll (){
+    @Override
+    public List<Clan> getAll(){
 
         Map<String, Clan> clanMap = new LinkedHashMap<>();
 
@@ -104,6 +105,7 @@ public class ClanRepository {
 
     }
 
+    @Override
     public Clan findByIdOrName(String value) {
 
         Map<String, Clan> clanMap = new LinkedHashMap<>();
@@ -205,6 +207,7 @@ public class ClanRepository {
 
     }
 
+    @Override
     public UUID save (Clan clanData, Connection conn) throws SQLException {
 
         String sql = "INSERT INTO \"Cohorte\".clan (name, description) Values (?, ?)";
@@ -266,7 +269,8 @@ public class ClanRepository {
 
     }
 
-    public void edit (Clan clan, Connection conn) throws SQLException {
+    @Override
+    public void update(Clan clan, Connection conn) throws SQLException {
 
         String sql = "UPDATE \"Cohorte\".clan SET name = ?, description = ? WHERE id = ?";
 
