@@ -31,7 +31,7 @@ public class AdminRepositoryImpl implements UserRepository {
             //Hasheamos la password
             String hashedPassword = PasswordHasher.hash(user.getPassword());
             //Procedemos con insertarla
-            stmt.setString(2, user.getPassword());
+            stmt.setString(2, hashedPassword);
             stmt.setString(3, user.getUsername());
             stmt.setString(4, user.getRole().toString());
             if (user.getClan_id() != null){
