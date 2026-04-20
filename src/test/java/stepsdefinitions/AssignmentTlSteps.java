@@ -2,7 +2,7 @@ package stepsdefinitions;
 
 import com.management.jupiter.models.Tl;
 import com.management.jupiter.models.enums.TlType;
-import com.management.jupiter.repository.ClanRepository;
+import com.management.jupiter.repository.impl.ClanRepositoryImpl;
 import com.management.jupiter.repository.CoderRepository;
 import com.management.jupiter.repository.TeamLeaderRepository;
 import com.management.jupiter.services.AssignmentService;
@@ -30,7 +30,7 @@ public class AssignmentTlSteps {
     private AssignmentService assignmentService;
     private TeamLeaderRepository teamLeaderRepository;
     private Exception assignmentException;
-    private ClanRepository clanRepository;
+    private ClanRepositoryImpl clanRepositoryImpl;
 
     @Before("@assignment-tl")
     public void setUpScenarioData() throws IOException {
@@ -43,10 +43,10 @@ public class AssignmentTlSteps {
                 5,English Three,eng3@gmail.com,12345,TL,,INGLES
                 """);
 
-        clanRepository = new ClanRepository();
-        teamLeaderRepository = new TeamLeaderRepository(clanRepository);
+        clanRepositoryImpl = new ClanRepositoryImpl();
+        teamLeaderRepository = new TeamLeaderRepository(clanRepositoryImpl);
         assignmentService = new AssignmentService(
-                new ClanRepository(),
+                new ClanRepositoryImpl(),
                 teamLeaderRepository,
                 new CoderRepository()
         );
