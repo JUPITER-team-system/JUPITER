@@ -1,90 +1,129 @@
 package com.management.jupiter.services;
 
-import com.management.jupiter.models.Clan;
+import com.management.jupiter.models.*;
+import com.management.jupiter.persistance.DatabaseConnection;
 import com.management.jupiter.repository.ClanRepository;
 
-import java.util.List;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.*;
 
-/**
- * US-02 – Lógica CRUD completa para Clan.
- * Corrige el paquete incorrecto (era "services") y los imports
- * para que coincidan con la estructura real del proyecto.
- */
 public class ClanService {
 
-    private final ClanRepository repository;
+    private final ClanRepository clanRepo;
 
-    public ClanService() {
-        this.repository = new ClanRepository();
+    public ClanService (ClanRepository clanRepo) {
+
+        this.clanRepo = clanRepo;
+
     }
 
-    public ClanService(ClanRepository repository) {
-        this.repository = repository;
+    public List<Clan> readAll () {
+
+        List<Clan> clanList = new ArrayList<>();
+
+        try {
+
+            clanList = clanRepo.findAll();
+
+        } catch (Exception err) {
+
+            System.err.println("Error to obtain clans: " + err.getMessage());
+
+        }
+
+        return clanList;
+
     }
 
-    // ── CREATE ───────────────────────────────────────────────────────────────
+    public void add (Clan clan) {
 
-    public Clan crearClan(String name) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("El nombre del clan no puede estar vacío.");
+        try(Connection conn = DatabaseConnection.getConnection()){
+
+            try {
+
+                conn.setAutoCommit(false);
+
+                UUID data = clanRepo.save(clan, conn);
+
+                for (User coder : clan.getCoders()){
+
+                    clanRepo.addUser(data, coder.getId(), conn);
+
+                }
+
+                for (User tl : clan.getTls()){
+
+                    clanRepo.addUser(data, tl.getId(), conn);
+
+                }
+
+                conn.commit();
+                System.out.println("Users added correctly");
+
+            }catch (SQLException err){
+
+                conn.rollback();
+                System.err.println("Revert transfer:" + err.getMessage());
+
+            }
+
+        }catch (Exception err){
+
+            System.err.println("Error to add Users: " + err.getMessage());
+
         }
-        if (repository.existsByName(name)) {
-            throw new IllegalStateException("Ya existe un clan con el nombre: " + name);
-        }
-        Clan clan = new Clan(java.util.UUID.randomUUID().toString(), name.trim());
-        return repository.save(clan);
+
     }
 
-    // ── READ ─────────────────────────────────────────────────────────────────
+    public void delete (Clan clan) {
 
-    public List<Clan> listarClanes() {
-        return repository.findAll();
+        clanRepo.delete(clan.getId());
+
     }
 
-    public Clan buscarPorId(String id) {
-        Clan clan = repository.findById(id);
-        if (clan == null) {
-            throw new IllegalArgumentException("No existe un clan con id: " + id);
+    public void edit (Clan clan) {
+
+        try(Connection conn = DatabaseConnection.getConnection()){
+
+            try{
+
+                conn.setAutoCommit(false);
+
+                var clanId = clan.getId();
+
+                clanRepo.edit(clan, conn);
+
+                clanRepo.removeUser(clanId, conn);
+
+                for (User coder : clan.getCoders()){
+
+                    clanRepo.addUser(UUID.fromString(clanId), coder.getId(), conn);
+
+                }
+
+                for (User tl : clan.getTls()){
+
+                    clanRepo.addUser(UUID.fromString(clanId), tl.getId(), conn);
+
+                }
+
+                conn.commit();
+
+            }catch (SQLException err){
+
+                conn.rollback();
+                System.err.println("Revert transfer:" + err.getMessage());
+
+            }
+
+        }catch (Exception err){
+
+            System.err.println("Error to add Users: " + err.getMessage());
+
         }
-        return clan;
+
     }
 
-    // ── UPDATE ───────────────────────────────────────────────────────────────
 
-    public void actualizarClan(String id, String nuevoNombre) {
-        if (nuevoNombre == null || nuevoNombre.isBlank()) {
-            throw new IllegalArgumentException("El nuevo nombre no puede estar vacío.");
-        }
-
-        Clan clan = repository.findById(id);
-        if (clan == null) {
-            throw new IllegalArgumentException("Clan no encontrado con id: " + id);
-        }
-
-        // Permite actualizar con el mismo nombre (sin cambio real), pero bloquea
-        // si ese nombre ya lo usa OTRO clan.
-        if (repository.existsByNameExcludingId(nuevoNombre, id)) {
-            throw new IllegalStateException("Ese nombre ya está en uso por otro clan.");
-        }
-
-        clan.setName(nuevoNombre.trim());
-    }
-
-    // ── DELETE ───────────────────────────────────────────────────────────────
-
-    /**
-     * Criterio de aceptación: no se puede eliminar un clan con coders activos.
-     */
-    public void eliminarClan(String id) {
-        Clan clan = repository.findById(id);
-        if (clan == null) {
-            throw new IllegalArgumentException("No existe un clan con id: " + id);
-        }
-        if (clan.hasCoders()) {
-            throw new IllegalStateException(
-                    "No se puede eliminar el clan '" + clan.getName() +
-                    "' porque tiene " + clan.getCoders().size() + " coder(s) asignado(s).");
-        }
-        repository.delete(id);
-    }
 }

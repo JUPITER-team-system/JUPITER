@@ -1,54 +1,55 @@
 package com.management.jupiter.controllers;
 
 import com.management.jupiter.models.User;
-import com.management.jupiter.models.enums.Clan;
-import com.management.jupiter.models.enums.Role;
-import com.management.jupiter.models.enums.TlType;
+import com.management.jupiter.models.enums.*;
 import com.management.jupiter.services.AdminService;
-import com.management.jupiter.services.UserService;
-import com.management.jupiter.ui.admin.UpdateUserView;
-import com.management.jupiter.views.InputView;
-
-import java.util.Scanner;
 
 public class AdminController {
-    public static Scanner scanner = InputView.getScanner();
 
-    public static void createUser(String username, String email, String password, Role role, Clan clan, TlType tlType) {
+    private final AdminService service;
+
+    public AdminController (AdminService service) {
+
+        this.service = service;
+
+    }
+
+    public void createUser(String username, String email, String password, Role role, Clan clan ,TlType tlType) {
+
         try {
-            User createdUser = AdminService.createUser(username, email, password, role, clan, tlType);
+
+            User createdUser = service.createUser(username, email, password, role, clan ,tlType);
             System.out.println("User created successfully: " + createdUser);
+
         } catch (IllegalArgumentException e) {
+
             System.out.println("Invalid role or clan");
+
         } catch (Exception e) {
+
             System.out.println(e.getMessage());
+
         }
     }
 
-    public static void deleteUser() {
-        System.out.println("Enter the email or id of the user you want to delete");
-        String value = scanner.nextLine();
-        try {
-            AdminService.deleteUser(value);
-            System.out.println("User deleted successfully");
-        } catch (Exception e) {
-            System.out.println("Error deleting user: " + e.getMessage());
-        }
+    public void deleteUser(String value) {
+
+        service.deleteUser(value);
+
     }
 
-    public static void updateUser(String idOrEmail, String newValue, String fieldName) {
+    public void updateUser(String idOrEmail, String newValue, String fieldName) {
+
         if (idOrEmail == null || newValue == null || fieldName == null) {
-            System.out.println("All fields are required");
-            return;
+
+            throw new RuntimeException("All fields are required");
+
         }
-        
-        try {
-            AdminService.updateUser(idOrEmail, newValue, fieldName);
-            System.out.println("User updated successfully");
-        } catch (Exception e) {
-            System.out.println("Error updating user: " + e.getMessage());
-        }
+
+        service.updateUser(idOrEmail, newValue, fieldName);
+
     }
+
 //    public static void getUsersByRol(){
 //        Scanner scanner = InputView.getScanner();
 //        try{

@@ -1,70 +1,65 @@
 package com.management.jupiter;
-import com.management.jupiter.services.ClanService;
-import com.management.jupiter.services.AssignmentService;
-import com.management.jupiter.repository.ClanRepository;
-import com.management.jupiter.repository.TeamLeaderRepository;
-import com.management.jupiter.repository.CoderRepository;
-import com.management.jupiter.controllers.UserController;
-import com.management.jupiter.models.Tl;
-import com.management.jupiter.models.User;
-import com.management.jupiter.views.AdminView;
-import com.management.jupiter.views.CoderView;
-import com.management.jupiter.views.TLView;
-import com.management.jupiter.models.enums.Role;
-import com.management.jupiter.persistance.DatabaseConnection;
 
-import java.sql.Connection;
+import com.management.jupiter.controllers.*;
+import com.management.jupiter.models.*;
+import com.management.jupiter.repository.*;
+import com.management.jupiter.repository.impl.AdminRepositoryImpl;
+import com.management.jupiter.security.LoginSession;
+import com.management.jupiter.security.UserSession;
+import com.management.jupiter.services.*;
+import com.management.jupiter.util.scanner.ScannerUtil;
+import com.management.jupiter.views.*;
+
+
+import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
-        System.out.println("Start JUPITER project...");
 
-        // Establecer conexión a la base de datos
-        try(Connection conn = DatabaseConnection.getConnection()){
-            if (conn != null && !conn.isClosed()){
-                System.out.println("Database connection successful. RUNNING.");
-                System.out.println("Connected to database: " + conn.getCatalog());
-            }
-        }catch (Exception e){
-            System.out.println("[ERROR]: Cannot connect to database");
-            e.printStackTrace();
+    public static void main (String[] args){
+
+        //Interfaces:
+
+
+        //Input:
+        Scanner scanner = new Scanner(System.in);
+        ScannerUtil input = new ScannerUtil(scanner);
+
+        //Repositories:
+        AdminRepositoryImpl adminRepo = new AdminRepositoryImpl();
+        ClanRepository clanRepo = new ClanRepository();
+        CoderRepository coderRepo = new CoderRepository();
+        TeamLeaderRepository tlRepo = new TeamLeaderRepository(clanRepo);
+
+        //Services:
+        AssignmentService assignmentService = new AssignmentService(clanRepo, tlRepo, coderRepo);
+        UserService userService = new UserService();
+        AdminService adminService = new AdminService(userService, adminRepo);
+
+
+        //Controllers:
+        UserController userController = new UserController();
+        AdminController adminController = new AdminController(adminService);
+        TlController tlController = new TlController();
+        CoderController coderController = new CoderController();
+
+        //Views:
+        LoginView login = new LoginView(input, userController);
+
+        User user = login.login();
+
+        LoginSession loggedUser = new UserSession(user);
+
+        AdminView admin = new AdminView(input, adminController, loggedUser);
+        TlView tl = new TlView(input, tlController);
+        CoderView coder = new CoderView(input, coderController);
+
+        if(user instanceof Admin loggedAdmin){
+            admin.show(loggedAdmin);
+        } else if (user instanceof Tl loggedTl) {
+            tl.show(loggedTl);
+        } else if (user instanceof Coder loggedCoder){
+            coder.show(loggedCoder);
         }
 
-
-        // Repositorios (necesarios para AssignmentService)
-        ClanRepository clanRepository = new ClanRepository();
-        TeamLeaderRepository teamLeaderRepository = new TeamLeaderRepository();
-        CoderRepository coderRepository = new CoderRepository();
-
-        // Servicios (lógica de negocio)
-        ClanService clanService = new ClanService();
-        AssignmentService assignmentService = new AssignmentService(
-                clanRepository,
-                teamLeaderRepository,
-                coderRepository
-        );
-
-        User loggedUser = UserController.login();
-        if (loggedUser == null) {
-            return;
-        }
-
-        // Flujo por roles
-        if (loggedUser.getRole() == Role.CODER) {
-            CoderView coderView = new CoderView();
-            coderView.menuCoder();
-            coderView.close();
-        } else if (loggedUser.getRole() == Role.TL) {
-            TLView tlView = new TLView(assignmentService);
-            if (loggedUser instanceof Tl tl) {
-                tlView.setTlSesion(tl);
-            }
-            tlView.menuTL();
-            tlView.close();
-        } else if (loggedUser.getRole() == Role.ADMIN) {
-            AdminView adminView = new AdminView(clanService, assignmentService);
-            adminView.menuAdmin();
-            adminView.close();
-        }
     }
 }

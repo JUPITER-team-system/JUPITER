@@ -7,9 +7,9 @@ import java.util.Optional;
 
 public interface UserRepository extends Repository<User> {
     Optional<User> findByEmail(String email);
-    
+
     Optional<User> findById(String id);
-    
+
     void delete(String id);
 
     void insertCSV(List<String[]> data);

@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -21,6 +22,11 @@ import java.util.stream.Collectors;
 public class TeamLeaderRepository {
 
     public static final String FILE_PATH = "data/users.csv";
+    private final ClanRepository clanRepo;
+
+    public TeamLeaderRepository (ClanRepository clanRepo) {
+        this.clanRepo = clanRepo;
+    }
 
     public void save(Tl tl) {
         Path path = Path.of(FILE_PATH);
@@ -39,7 +45,7 @@ public class TeamLeaderRepository {
 
                 String[] data = line.split(",", -1);
                 Tl existingTl = mapLineToTl(data);
-                if (existingTl != null && existingTl.getId() == tl.getId()) {
+                if (existingTl != null && Objects.equals(existingTl.getId(), tl.getId())) {
                     lines.set(i, mapTlToLine(tl));
                     updated = true;
                     break;
@@ -87,7 +93,7 @@ public class TeamLeaderRepository {
                 }
 
                 Tl tl = mapLineToTl(line.split(","));
-                if (tl != null && tl.getId().equals(id)) {
+                if (tl != null && Objects.equals(tl.getId(), id)) {
                     return tl;
                 }
             }
@@ -140,16 +146,9 @@ public class TeamLeaderRepository {
         Arrays.stream(data[5].split("\\|"))
                 .map(String::trim)
                 .filter(name -> !name.isEmpty())
-                .forEach(name -> tl.addClan(new Clan(resolveClanId(name), name)));
+                .forEach(name -> tl.addClan(new Clan(clanRepo.findByName(name), name,"")));
     }
 
-    private String resolveClanId(String clanName) {
-        try {
-            return com.management.jupiter.models.enums.Clan.valueOf(clanName.toUpperCase()).name();
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
-    }
 
     private String mapTlToLine(Tl tl) {
         String clans = tl.getClans().stream()

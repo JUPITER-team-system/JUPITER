@@ -1,5 +1,7 @@
 package com.management.jupiter.models;
 
+import com.management.jupiter.models.enums.TlType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,12 +9,14 @@ public class Clan {
 
     private String id;
     private String name;
+    private String description;
     private List<Coder> coders;
     private List<Tl> tls;
 
-    public Clan(String id, String name) {
+    public Clan(String id, String name, String description) {
         this.id = id;
         this.name = name;
+        this.description = description;
         this.coders = new ArrayList<>();
         this.tls = new ArrayList<>();
     }
@@ -25,6 +29,10 @@ public class Clan {
 
     public String getName() {
         return name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public void setName(String name) {
@@ -58,9 +66,25 @@ public class Clan {
     }
 
     public void addTl(Tl tl) {
-        if (tl != null && !tls.contains(tl)) {
-            tls.add(tl);
+
+        if (tl == null){
+            return;
         }
+
+        if (tls.contains(tl)){
+            throw new IllegalStateException("The TL already exist in the clan");
+        }
+
+        long tlCount = tls.stream().filter(t -> t.getTlType() == tl.getTlType()).count();
+
+        int limit = (tl.getTlType().toString().equalsIgnoreCase("PROGRAMACION")) ? 1 : 2;
+
+        if (tlCount >= limit){
+            throw new IllegalStateException("Limit of tls of " + tl.getTlType() + "reached");
+        }
+
+        this.tls.add(tl);
+
     }
 
     public void removeTl(Tl tl) {
@@ -69,6 +93,15 @@ public class Clan {
 
     public boolean hasTl(Tl tl) {
         return tls.contains(tl);
+    }
+
+    public Tl clanTl () {
+
+        return this.tls.stream()
+                .filter(t -> t.getTlType() == TlType.PROGRAMACION)
+                .findFirst()
+                .orElse(null);
+
     }
 
     // ── toString ─────────────────────────────────────────────────────────────

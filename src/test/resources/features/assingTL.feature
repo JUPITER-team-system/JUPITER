@@ -3,10 +3,10 @@ Feature: Assign TL to clan
   The assignment service must enforce the maximum number of TLs by type per clan.
 
   Scenario: Assign one programming TL to a clan
-    When I assign the TL with id 1 to the clan with id 1
+    When I assign the TL with id "1" to the clan with id "81e3578d-b9e1-440d-b8c7-57495c8cf115"
     Then the assignment should be successful
     And the clan should have 1 TLs of type "PROGRAMACION"
-    And the TL with id 1 should be assigned to clan "HAMILTON"
+    And the TL with id "1" should be assigned to clan "HAMILTON"
 
   Scenario: Reject a second programming TL in the same clan
     Given the TL with id 1 is already assigned to the clan with id 1

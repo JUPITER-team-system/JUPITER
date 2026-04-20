@@ -13,11 +13,17 @@ import com.management.jupiter.repository.impl.AdminRepositoryImpl;
 import java.util.List;
 
 public class AdminService {
-    private static final UserService userService = new UserService();
-    private static final AdminRepositoryImpl userRepository = new AdminRepositoryImpl();
+
+    private final UserService userService;
+    private final AdminRepositoryImpl adminRepository;
+
+    public AdminService (UserService userService, AdminRepositoryImpl adminRepository){
+        this.adminRepository = adminRepository;
+        this.userService = userService;
+    }
 
 // I bring the entire NewUser object
-    public static User createUser(String username, String email, String password, Role role, Clan clan, TlType tlType) throws Exception {
+    public User createUser(String username, String email, String password, Role role, Clan clan, TlType tlType) throws Exception {
         // Validate required fields
         if (username == null || username.isBlank() ||
                 email == null || email.isBlank() ||
@@ -49,7 +55,7 @@ public class AdminService {
         }
 
         // Save user using UserRepositoryImpl
-        userRepository.save(user);
+        adminRepository.save(user);
         return user;
     }
 //Show the users exist in to database
@@ -65,7 +71,7 @@ public class AdminService {
     }
 
 
-    public static void deleteUser(String value) {
+    public void deleteUser(String value) {
         try {
             userService.deleteUser(value);
         } catch (Exception e) {
