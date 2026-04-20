@@ -1,14 +1,15 @@
-package com.management.jupiter.repository;
+package com.management.jupiter.repository.impl;
 
 import com.management.jupiter.models.Clan;
 import com.management.jupiter.models.*;
 import com.management.jupiter.models.enums.*;
 import com.management.jupiter.persistance.DatabaseConnection;
+import com.management.jupiter.repository.interfaces.ClanRepository;
 
 import java.sql.*;
 import java.util.*;
 
-public class ClanRepositoryImpl implements ClanRepositoryImpl {
+public class ClanRepositoryImpl implements ClanRepository {
 
     @Override
     public List<Clan> getAll(){
@@ -106,7 +107,12 @@ public class ClanRepositoryImpl implements ClanRepositoryImpl {
     }
 
     @Override
-    public Clan findByIdOrName(String value) {
+    public Optional<Clan> findById(String id) {
+        return findByIdOrName(id);
+    }
+
+    @Override
+    public Optional<Clan> findByIdOrName(String value) {
 
         Map<String, Clan> clanMap = new LinkedHashMap<>();
 
@@ -203,7 +209,22 @@ public class ClanRepositoryImpl implements ClanRepositoryImpl {
 
         }
 
-        return clanMap.values().stream().findFirst().orElse(null);
+        return clanMap.values().stream().findFirst();
+
+    }
+
+    @Override
+    public void save(Clan clan){
+
+        try(Connection conn = DatabaseConnection.getConnection()){
+
+            this.save(clan, conn);
+
+        }catch (SQLException err){
+
+            throw new RuntimeException("Error in simple save", err);
+
+        }
 
     }
 
@@ -239,6 +260,7 @@ public class ClanRepositoryImpl implements ClanRepositoryImpl {
 
     }
 
+    @Override
     public void delete (String id) {
 
         String sql = "DELETE FROM \"Cohorte\".clan WHERE ID = ?";
@@ -270,6 +292,21 @@ public class ClanRepositoryImpl implements ClanRepositoryImpl {
     }
 
     @Override
+    public void update(Clan clan) {
+
+        try (Connection conn = DatabaseConnection.getConnection()){
+
+            this.update(clan, conn);
+
+        }catch (SQLException err){
+
+            throw new RuntimeException("Error in a simple update", err);
+
+        }
+
+    }
+
+    @Override
     public void update(Clan clan, Connection conn) throws SQLException {
 
         String sql = "UPDATE \"Cohorte\".clan SET name = ?, description = ? WHERE id = ?";
@@ -293,8 +330,8 @@ public class ClanRepositoryImpl implements ClanRepositoryImpl {
 
     }
 
-
-    public void addUser (UUID clanId ,String userId, Connection conn) throws SQLException {
+    @Override
+    public void addUser (UUID clanId , String userId, Connection conn) throws SQLException {
 
         String sql = "INSERT INTO \"Cohorte\".clan_members (clan_id, user_id) values (?, ?)";
 
@@ -319,6 +356,7 @@ public class ClanRepositoryImpl implements ClanRepositoryImpl {
 
     }
 
+    @Override
     public void removeUser (String clanId, Connection conn) throws SQLException{
 
         String sql = "DELETE FROM \"Cohorte\".clan_members WHERE clan_id = ?";
