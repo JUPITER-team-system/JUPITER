@@ -1,10 +1,18 @@
 package stepsdefinitions;
 
+import com.management.jupiter.controllers.UserController;
 import com.management.jupiter.models.User;
 import com.management.jupiter.services.UserServices;
+import com.management.jupiter.util.scanner.ScannerUtil;
+import com.management.jupiter.views.LoginView;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -32,8 +40,15 @@ public class LoginSteps {
         authenticatedUser = null;
         loginException = null;
 
+        String simulatedInput = email + "\n" + password + "\n";
+        UserController controller = new UserController();
+        InputStream in = new ByteArrayInputStream(simulatedInput.getBytes());
+
+        ScannerUtil testInput = new ScannerUtil(new Scanner(in));
+        LoginView loginView = new LoginView(testInput, controller);
+
         try {
-            authenticatedUser = UserServices.LoginService(email, password);
+            authenticatedUser = loginView.login();
         } catch (Exception exception) {
             loginException = exception;
         }
