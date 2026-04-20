@@ -1,7 +1,7 @@
 package com.management.jupiter.services;
 
 import com.management.jupiter.models.User;
-import com.management.jupiter.repository.UserRepository;
+import com.management.jupiter.repository.interfaces.UserRepository;
 import com.management.jupiter.repository.impl.AdminRepositoryImpl;
 
 

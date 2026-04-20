@@ -2,7 +2,7 @@ package com.management.jupiter.services;
 
 import com.management.jupiter.models.*;
 import com.management.jupiter.persistance.DatabaseConnection;
-import com.management.jupiter.repository.ClanRepository;
+import com.management.jupiter.repository.impl.ClanRepositoryImpl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -10,9 +10,9 @@ import java.util.*;
 
 public class ClanService {
 
-    private final ClanRepository clanRepo;
+    private final ClanRepositoryImpl clanRepo;
 
-    public ClanService (ClanRepository clanRepo) {
+    public ClanService (ClanRepositoryImpl clanRepo) {
 
         this.clanRepo = clanRepo;
 
@@ -24,7 +24,7 @@ public class ClanService {
 
         try {
 
-            clanList = clanRepo.findAll();
+            clanList = clanRepo.getAll();
 
         } catch (Exception err) {
 
@@ -92,7 +92,7 @@ public class ClanService {
 
                 var clanId = clan.getId();
 
-                clanRepo.edit(clan, conn);
+                clanRepo.update(clan, conn);
 
                 clanRepo.removeUser(clanId, conn);
 
