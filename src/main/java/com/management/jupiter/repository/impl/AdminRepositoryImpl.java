@@ -7,6 +7,7 @@ import com.management.jupiter.models.Admin;
 import com.management.jupiter.persistance.DatabaseConnection;
 import com.management.jupiter.repository.UserRepository;
 import com.management.jupiter.models.enums.Role;
+import com.management.jupiter.security.PasswordHasher;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -27,6 +28,9 @@ public class AdminRepositoryImpl implements UserRepository {
         String sql = "INSERT INTO \"Cohorte\".user(email, password, full_name, role, clan_id) VALUES (?,?,?,?,?)";
         try(PreparedStatement stmt = getConnection().prepareStatement(sql)){
             stmt.setString(1, user.getEmail());
+            //Hasheamos la password
+            String hashedPassword = PasswordHasher.hash(user.getPassword());
+            //Procedemos con insertarla
             stmt.setString(2, user.getPassword());
             stmt.setString(3, user.getUsername());
             stmt.setString(4, user.getRole().toString());
@@ -188,9 +192,4 @@ public class AdminRepositoryImpl implements UserRepository {
                 return new User(id, username, email, password, role, null);
         }
     }
-
-
-
-
-
 }
