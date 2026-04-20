@@ -168,12 +168,20 @@ erDiagram
 
 ## 5. Matriz de Trazabilidad de Requisitos (RTM)
 
-| ID Req | Módulo (Implementación) | Caso de Prueba | Estado |
-|--------|------------------------|----------------|--------|
-| RF-01 | AuthService.java | Login válido/inválido | ⏳ |
-| RF-06 | CsvLoader.java | Carga masiva correcta | ⏳ |
-| RF-11 | CellService.java | Distribución equilibrada | ⏳ |
-| RF-12 | AIService.java | Generación de nombres | ⏳ |
+| ID Req | Nombre del Requisito | Estado | Archivo Feature / Evidencia | Escenario(s) Relacionado(s) |
+| :--- | :--- | :--- | :--- | :--- |
+| **RF-01** | Autenticación | ✅ Cubierto | `login.feature` | • Successful/Rejected/Failed Login |
+| **RF-02** | CRUD Clanes | ❌ Pendiente | - | Sin escenarios definidos en Gherkin |
+| **RF-03** | CRUD Usuarios | ✅ Cubierto | `createUser.feature`, `deleteUser.feature` | • Create user (Roles: Coder, TL, Admin)<br>• Delete user (ID/Email) |
+| **RF-04** | Asignación TL | ✅ Cubierto | `assingTL.feature` | • Asignación exitosa/fallida por tipo (Prog/Ing) |
+| **RF-05** | Asignación Coders | ❌ Pendiente | - | Sin escenarios definidos en Gherkin |
+| **RF-06** | Carga Masiva (CSV) | ❌ Pendiente | - | Sin escenarios definidos en Gherkin |
+| **RF-07** | Eliminación Masiva | ❌ Pendiente | - | Sin escenarios definidos en Gherkin |
+| **RF-08** | Visualización TL | ❌ Pendiente | - | Sin escenarios definidos en Gherkin |
+| **RF-09** | Publicación Contenido | ❌ Pendiente | - | Sin escenarios definidos en Gherkin |
+| **RF-10** | Visualización Coder | ❌ Pendiente | - | Sin escenarios definidos en Gherkin |
+| **RF-11** | Creación de Células | ❌ Pendiente | - | Sin escenarios definidos en Gherkin |
+| **RF-12** | Generación IA | ❌ Pendiente | - | Sin escenarios definidos en Gherkin |
 
 ---
 

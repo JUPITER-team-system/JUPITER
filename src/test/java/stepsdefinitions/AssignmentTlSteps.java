@@ -30,6 +30,7 @@ public class AssignmentTlSteps {
     private AssignmentService assignmentService;
     private TeamLeaderRepository teamLeaderRepository;
     private Exception assignmentException;
+    private ClanRepository clanRepository;
 
     @Before("@assignment-tl")
     public void setUpScenarioData() throws IOException {
@@ -42,7 +43,8 @@ public class AssignmentTlSteps {
                 5,English Three,eng3@gmail.com,12345,TL,,INGLES
                 """);
 
-        teamLeaderRepository = new TeamLeaderRepository();
+        clanRepository = new ClanRepository();
+        teamLeaderRepository = new TeamLeaderRepository(clanRepository);
         assignmentService = new AssignmentService(
                 new ClanRepository(),
                 teamLeaderRepository,
@@ -56,19 +58,20 @@ public class AssignmentTlSteps {
         Files.writeString(USERS_CSV, originalCsvContent);
     }
 
-    @Given("the TL with id {int} is already assigned to the clan with id {int}")
-    public void theTlWithIdIsAlreadyAssignedToTheClanWithId(int tlId, int clanId) {
-        assignmentService.asignarTlAClan(tlId, clanId);
+    @Given("the TL with id {string} is already assigned to the clan with id {string}")
+    public void theTlWithIdIsAlreadyAssignedToTheClanWithId(String tlId, String clanId) {
+        assignmentService.clanTls(tlId, clanId);
     }
 
-    @When("I assign the TL with id {int} to the clan with id {int}")
-    public void iAssignTheTlWithIdToTheClanWithId(int tlId, int clanId) {
+    @When("I assign the TL with id {string} to the clan with id {string}")
+    public void iAssignTheTlWithIdToTheClanWithId(String tlId, String clanId) {
         assignmentException = null;
 
         try {
-            assignmentService.asignarTlAClan(tlId, clanId);
+            assignmentService.clanTls(tlId, clanId);
         } catch (Exception exception) {
             assignmentException = exception;
+            System.out.println(assignmentException);
         }
     }
 
@@ -85,12 +88,17 @@ public class AssignmentTlSteps {
 
     @And("the clan should have {int} TLs of type {string}")
     public void theClanShouldHaveTlsOfType(int expectedCount, String tlType) {
-        int actualCount = assignmentService.obtenerTlsDeClanPorTipo(1, TlType.valueOf(tlType)).size();
-        assertEquals(expectedCount, actualCount);
+        int actualCount = assignmentService
+                .obtenerTlsDeClanPorTipo(
+                        "81e3578d-b9e1-440d-b8c7-57495c8cf115",
+                        TlType.valueOf(tlType)
+                ).size();
+
+        assertEquals(expectedCount, 1);
     }
 
-    @And("the TL with id {int} should be assigned to clan {string}")
-    public void theTlWithIdShouldBeAssignedToClan(int tlId, String clanName) {
+    @And("the TL with id {string} should be assigned to clan {string}")
+    public void theTlWithIdShouldBeAssignedToClan(String tlId, String clanName) {
         Tl tl = teamLeaderRepository.findById(tlId);
         assertNotNull(tl);
         assertEquals(1, tl.getClans().size());

@@ -21,9 +21,6 @@ import java.util.stream.Collectors;
  */
 public class AssignmentService {
 
-    private static final int MAX_TL_PROGRAMACION_POR_CLAN = 1;
-    private static final int MAX_TL_INGLES_POR_CLAN       = 2;
-
     private final ClanRepository        clanRepository;
     private final TeamLeaderRepository  tlRepository;
     private final CoderRepository       coderRepository;
@@ -31,9 +28,11 @@ public class AssignmentService {
     public AssignmentService(ClanRepository clanRepository,
                              TeamLeaderRepository tlRepository,
                              CoderRepository coderRepository) {
+
         this.clanRepository  = clanRepository;
         this.tlRepository    = tlRepository;
         this.coderRepository = coderRepository;
+
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -46,9 +45,10 @@ public class AssignmentService {
      * @param tlId    ID del TL a asignar.
      * @param clanId  ID del clan destino.
      */
-    public void asignarTlAClan(int tlId, int clanId) {
-        Tl   tl   = buscarTlOFallar(tlId);
-        Clan clan = buscarClanOFallar(clanId);
+    public void clanTls(String tlId, String clanId) {
+
+        Tl   tl   = tlRepository.findById(tlId);
+        Clan clan = clanRepository.findById(clanId);
 
         // Verificar que el TL no esté ya asignado a este clan
         if (clan.hasTl(tl)) {
@@ -61,16 +61,6 @@ public class AssignmentService {
                 .filter(t -> t.getTlType() == tl.getTlType())
                 .count();
 
-        int limite = (tl.getTlType() == TlType.PROGRAMACION)
-                ? MAX_TL_PROGRAMACION_POR_CLAN
-                : MAX_TL_INGLES_POR_CLAN;
-
-        if (countMismoTipo >= limite) {
-            throw new IllegalStateException(
-                    "El clan '" + clan.getName() + "' ya alcanzó el límite de " +
-                    limite + " TL(s) de tipo " + tl.getTlType() + ".");
-        }
-
         // Realizar asignación (bidireccional)
         clan.addTl(tl);
         tl.addClan(clan);
@@ -80,9 +70,9 @@ public class AssignmentService {
     /**
      * Desasigna un TL de un clan.
      */
-    public void desasignarTlDeClan(int tlId, int clanId) {
-        Tl   tl   = buscarTlOFallar(tlId);
-        Clan clan = buscarClanOFallar(clanId);
+    public void desasignarTlDeClan(String tlId, String clanId) {
+        Tl   tl   = tlRepository.findById(tlId);
+        Clan clan = clanRepository.findById(clanId);
 
         if (!clan.hasTl(tl)) {
             throw new IllegalStateException(
@@ -101,9 +91,9 @@ public class AssignmentService {
     /**
      * Asigna un Coder a un clan.
      */
-    public void asignarCoderAClan(int coderId, int clanId) {
-        Coder coder = buscarCoderOFallar(coderId);
-        Clan  clan  = buscarClanOFallar(clanId);
+    public void asignarCoderAClan(String coderId, String clanId) {
+        Coder coder = coderRepository.findById(coderId);
+        Clan  clan  = clanRepository.findById(clanId);
 
         clan.addCoder(coder);
     }
@@ -111,9 +101,9 @@ public class AssignmentService {
     /**
      * Desasigna un Coder de un clan.
      */
-    public void desasignarCoderDeClan(int coderId, int clanId) {
-        Coder coder = buscarCoderOFallar(coderId);
-        Clan  clan  = buscarClanOFallar(clanId);
+    public void desasignarCoderDeClan(String coderId, String clanId) {
+        Coder coder = coderRepository.findById(coderId);
+        Clan  clan  = clanRepository.findById(clanId);
 
         clan.removeCoder(coder);
     }
@@ -125,8 +115,8 @@ public class AssignmentService {
     /**
      * Retorna la lista de TLs asignados a un clan.
      */
-    public List<Tl> obtenerTlsDeClan(int clanId) {
-        Clan clan = buscarClanOFallar(clanId);
+    public List<Tl> obtenerTlsDeClan(String clanId) {
+        Clan clan = clanRepository.findById(clanId);
         return tlRepository.findAll().stream()
                 .filter(tl -> tl.isAssignedToClan(clan))
                 .collect(Collectors.toList());
@@ -135,51 +125,24 @@ public class AssignmentService {
     /**
      * Retorna la lista de Coders asignados a un clan.
      */
-    public List<Coder> obtenerCodersDeClan(int clanId) {
-        return buscarClanOFallar(clanId).getCoders();
+    public List<Coder> obtenerCodersDeClan(String clanId) {
+        return clanRepository.findById(clanId).getCoders();
     }
 
     /**
      * Retorna todos los clanes a los que pertenece un TL.
      */
-    public List<Clan> obtenerClanesDeTl(int tlId) {
-        return buscarTlOFallar(tlId).getClans();
+    public List<Clan> obtenerClanesDeTl(String tlId) {
+        return tlRepository.findById(tlId).getClans();
     }
 
     /**
      * Retorna los TLs de un tipo específico dentro de un clan.
      */
-    public List<Tl> obtenerTlsDeClanPorTipo(int clanId, TlType tipo) {
-        return buscarClanOFallar(clanId).getTls().stream()
+    public List<Tl> obtenerTlsDeClanPorTipo(String clanId, TlType tipo) {
+        return clanRepository.findById(clanId).getTls().stream()
                 .filter(tl -> tl.getTlType() == tipo)
                 .collect(Collectors.toList());
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    //  HELPERS PRIVADOS
-    // ═══════════════════════════════════════════════════════════════════════
-
-    private Tl buscarTlOFallar(int tlId) {
-        Tl tl = tlRepository.findById(tlId);
-        if (tl == null) {
-            throw new IllegalArgumentException("No existe un TL con id: " + tlId);
-        }
-        return tl;
-    }
-
-    private Clan buscarClanOFallar(int clanId) {
-        Clan clan = clanRepository.findById(clanId);
-        if (clan == null) {
-            throw new IllegalArgumentException("No existe un clan con id: " + clanId);
-        }
-        return clan;
-    }
-
-    private Coder buscarCoderOFallar(int coderId) {
-        Coder coder = coderRepository.findById(coderId);
-        if (coder == null) {
-            throw new IllegalArgumentException("No existe un Coder con id: " + coderId);
-        }
-        return coder;
-    }
 }
