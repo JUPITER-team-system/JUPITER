@@ -1,65 +1,47 @@
 package com.management.jupiter.views;
 
+import com.management.jupiter.controllers.UserController;
+import com.management.jupiter.exceptions.UserBlockedException;
 import com.management.jupiter.models.User;
-
-import java.util.Scanner;
+import com.management.jupiter.ui.auth.LoginUI;
+import com.management.jupiter.util.scanner.ScannerUtil;
 
 public class LoginView {
-    private final Scanner scanner;
 
-    public LoginView() {
-        this.scanner = InputView.getScanner();
+    private final ScannerUtil input;
+    private final UserController controller;
+
+    public LoginView(ScannerUtil input, UserController controller ){
+        this.input = input;
+        this.controller = controller;
     }
 
-    public LoginRequest promptCredentials() {
-        System.out.println("========= LOGIN ==========");
-        System.out.print("Email: ");
-        String email = scanner.nextLine().trim();
+    public User login () {
 
-        System.out.print("Password: ");
-        String password = scanner.nextLine();
+        int attempts = 3;
 
-        return new LoginRequest(email, password);
-    }
+        while (true){
 
-    public void showLoginSuccess(User user) {
-        System.out.println("Login success! " + user);
-    }
+            LoginUI.login(attempts);
 
-    public void showLoginError(String message) {
-        System.out.println(message);
-    }
+            String email = input.readString("Email: ");
+            String password = input.readString("Password: ");
 
-    public void showBlocked(long secondsRemaining) {
-        System.out.println("User blocked. Try again in " + secondsRemaining + " seconds.");
-    }
+            try{
 
-    public void showBlockedForSeconds(int seconds) {
-        System.out.println("Many attempts. User blocked for " + seconds + " seconds.");
-    }
+                return controller.login(email, password);
 
-    public boolean askRetry() {
-        while (true) {
-            System.out.println("1. Try again");
-            System.out.println("0. Exit");
-            System.out.print("Select an option: ");
+            }catch (UserBlockedException err){
 
-            String option = scanner.nextLine().trim();
+                System.out.println("You are blocked by " + err.remaningTime() + " seconds");
 
-            if ("1".equals(option)) {
-                return true;
+            }catch (Exception err){
+
+                System.err.println("\n Error: " + err.getMessage());
+                attempts = controller.getLeftAttempts(email);
+
             }
-            if ("0".equals(option)) {
-                System.out.println("Exit ...");
-                return false;
-            }
-            System.out.println("Incorrect option ...");
         }
-    }
 
-    public void closeScanner(){
-    }
-
-    public record LoginRequest(String email, String password) {
     }
 }
