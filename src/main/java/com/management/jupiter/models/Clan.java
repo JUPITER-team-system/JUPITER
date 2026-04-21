@@ -117,10 +117,10 @@ public class Clan {
     }
 
     public void setCoders(List<Coder> coders) {
-        this.coders = coders;
+        this.coders = (coders != null) ? coders : new ArrayList<>();
     }
 
     public void setTls(List<Tl> tls) {
-        this.tls = tls;
+        this.tls = (tls != null) ? tls : new ArrayList<>();
     }
 }
