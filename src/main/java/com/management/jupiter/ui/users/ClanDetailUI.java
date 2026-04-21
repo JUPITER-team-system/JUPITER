@@ -55,6 +55,22 @@ public class ClanDetailUI {
 
     }
 
+    public static void clanUpdater(Clan clan) {
+
+        String update = """
+                -------------------------------------
+                |       Updater of clans, Clan:
+                |                 %s
+                -------------------------------------
+                | 1) Edit clan information (name/desc)
+                | 2) manage member (Coder/Tls)
+                -------------------------------------
+                """.formatted(clan.getName());
+
+        System.out.println(update);
+
+    }
+
     public static void printLine() {
         System.out.println("  " + "=".repeat(72));
     }
