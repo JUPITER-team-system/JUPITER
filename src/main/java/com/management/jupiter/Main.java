@@ -4,6 +4,7 @@ import com.management.jupiter.controllers.*;
 import com.management.jupiter.models.*;
 import com.management.jupiter.repository.*;
 import com.management.jupiter.repository.impl.AdminRepositoryImpl;
+import com.management.jupiter.repository.impl.ClanRepositoryImpl;
 import com.management.jupiter.security.LoginSession;
 import com.management.jupiter.security.UserSession;
 import com.management.jupiter.services.*;
@@ -26,7 +27,7 @@ public class Main {
 
         //Repositories:
         AdminRepositoryImpl adminRepo = new AdminRepositoryImpl();
-        ClanRepository clanRepo = new ClanRepository();
+        ClanRepositoryImpl clanRepo = new ClanRepositoryImpl();
         CoderRepository coderRepo = new CoderRepository();
         TeamLeaderRepository tlRepo = new TeamLeaderRepository(clanRepo);
 

@@ -4,6 +4,7 @@ import com.management.jupiter.models.Tl;
 import com.management.jupiter.models.Clan;
 import com.management.jupiter.models.enums.Role;
 import com.management.jupiter.models.enums.TlType;
+import com.management.jupiter.repository.impl.ClanRepositoryImpl;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -22,9 +23,9 @@ import java.util.stream.Collectors;
 public class TeamLeaderRepository {
 
     public static final String FILE_PATH = "data/users.csv";
-    private final ClanRepository clanRepo;
+    private final ClanRepositoryImpl clanRepo;
 
-    public TeamLeaderRepository (ClanRepository clanRepo) {
+    public TeamLeaderRepository (ClanRepositoryImpl clanRepo) {
         this.clanRepo = clanRepo;
     }
 
@@ -146,7 +147,7 @@ public class TeamLeaderRepository {
         Arrays.stream(data[5].split("\\|"))
                 .map(String::trim)
                 .filter(name -> !name.isEmpty())
-                .forEach(name -> tl.addClan(new Clan(clanRepo.findByName(name), name,"")));
+                .forEach(name -> tl.addClan(new Clan(clanRepo.findByIdOrName(name).orElseThrow().getId(), name, "")));
     }
 
 
