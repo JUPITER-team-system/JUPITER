@@ -39,6 +39,10 @@ public class Clan {
         this.name = name;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     // ── Gestión de Coders ────────────────────────────────────────────────────
 
     public List<Coder> getCoders() {
