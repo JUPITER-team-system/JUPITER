@@ -99,6 +99,7 @@ public class ClanService {
                 }
 
                 DatabaseConnection.commit();
+                System.out.println("Clan and members updated correctly!");
 
             }catch (SQLException err){
 
