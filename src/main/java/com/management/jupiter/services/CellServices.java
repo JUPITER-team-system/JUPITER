@@ -25,7 +25,7 @@ public class CellServices {
                 continue;
             }
             int id = Handler.nextId("data/cells.csv");
-            Cell createdCell = new Cell(id, name, idClan);
+            Cell createdCell = new Cell(name, idClan);
             String[] cellArray = new String[]{String.valueOf(createdCell.getId()), createdCell.getName()};
             CellRepository.insertCell(cellArray);
         }

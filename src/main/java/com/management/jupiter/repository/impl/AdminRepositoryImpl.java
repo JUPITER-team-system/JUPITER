@@ -14,17 +14,15 @@ import java.util.List;
 import java.util.Optional;
 
 public class AdminRepositoryImpl implements UserRepository {
-    //Gets database connection from DatabaseConnection
-    private Connection getConnection() throws SQLException{
-        return DatabaseConnection.getConnection();
-    }
-
-
+        //Gets database connection from DatabaseConnection
+        private Connection getConnection() throws SQLException{
+            return DatabaseConnection.getConnection();
+        }
      //*Saves a new user to the database
 
     @Override
     public void save(User user) {
-        String sql = "INSERT INTO \"Cohorte\".user(email, password, full_name, role, clan_id) VALUES (?,?,?,?,?)";
+            String sql = "INSERT INTO \"Cohorte\".user(email, password, full_name, role, clan_id) VALUES (?,?,?,?,?)";
         try(PreparedStatement stmt = getConnection().prepareStatement(sql)){
             stmt.setString(1, user.getEmail());
             stmt.setString(2, user.getPassword());

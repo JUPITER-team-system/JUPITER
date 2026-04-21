@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Cell {
-    private final int id;
+    private int id;
     private final String name;
     private final int clanId;
     private List<Coder> members;
 
-    public Cell(int id, String name, int clanId) {
-        this.id = id;
+    public Cell(String name, int clanId) {
         this.name = name.toUpperCase();
         this.clanId = clanId;
         //this.members = members;
