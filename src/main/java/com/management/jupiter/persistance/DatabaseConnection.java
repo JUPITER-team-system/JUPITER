@@ -25,5 +25,64 @@ public class DatabaseConnection {
         return DriverManager.getConnection(URL, USER, PASS);
 
     }
+
+    public static void startTransaction () throws SQLException{
+
+        if (threadConnection.get() == null || threadConnection.get().isClosed()){
+
+            Connection conn = DriverManager.getConnection(URL, USER, PASS);
+            conn.setAutoCommit(false);
+            threadConnection.set(conn);
+
+        }
+
+    }
+
+    public static void commit () throws SQLException {
+
+        Connection conn = threadConnection.get();
+
+        if (conn != null) {
+
+            conn.commit();
+            closeConnection();
+
+        }
+
+    }
+
+    public static void rollback () {
+
+        try {
+
+            Connection conn = threadConnection.get();
+
+            if (conn != null) {
+
+                conn.rollback();
+                closeConnection();
+
+            }
+
+        }catch (SQLException err) {
+
+            System.err.println("Error in Rollback: " + err.getMessage());
+
+        }
+
+    }
+
+    public static void closeConnection () throws SQLException {
+
+        Connection conn = threadConnection.get();
+
+        if (conn != null) {
+
+            conn.close();
+            threadConnection.remove();
+
+        }
+
+    }
 }
 
