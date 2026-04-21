@@ -38,41 +38,34 @@ public class ClanService {
 
     public void add (Clan clan) {
 
-        try(Connection conn = DatabaseConnection.getConnection()){
+        try {
 
-            try {
+            DatabaseConnection.startTransaction();
 
-                conn.setAutoCommit(false);
+            UUID data = clanRepo.save(clan);
 
-                UUID data = clanRepo.save(clan, conn);
+            for (User coder : clan.getCoders()){
 
-                for (User coder : clan.getCoders()){
-
-                    clanRepo.addUser(data, coder.getId(), conn);
-
-                }
-
-                for (User tl : clan.getTls()){
-
-                    clanRepo.addUser(data, tl.getId(), conn);
-
-                }
-
-                conn.commit();
-                System.out.println("Users added correctly");
-
-            }catch (SQLException err){
-
-                conn.rollback();
-                System.err.println("Revert transfer:" + err.getMessage());
+                clanRepo.addUser(data, coder.getId());
 
             }
 
-        }catch (Exception err){
+            for (User tl : clan.getTls()){
 
-            System.err.println("Error to add Users: " + err.getMessage());
+                clanRepo.addUser(data, tl.getId());
+
+            }
+
+            DatabaseConnection.commit();
+            System.out.println("Users added correctly");
+
+        }catch (SQLException err){
+
+            DatabaseConnection.rollback();
+            System.err.println("Revert transfer:" + err.getMessage());
 
         }
+
 
     }
 
@@ -84,46 +77,37 @@ public class ClanService {
 
     public void edit (Clan clan) {
 
-        try(Connection conn = DatabaseConnection.getConnection()){
-
             try{
 
-                conn.setAutoCommit(false);
+                DatabaseConnection.startTransaction();
 
                 var clanId = clan.getId();
 
-                clanRepo.update(clan, conn);
+                clanRepo.update(clan);
 
-                clanRepo.removeUser(clanId, conn);
+                clanRepo.removeUser(clanId);
 
                 for (User coder : clan.getCoders()){
 
-                    clanRepo.addUser(UUID.fromString(clanId), coder.getId(), conn);
+                    clanRepo.addUser(UUID.fromString(clanId), coder.getId());
 
                 }
 
                 for (User tl : clan.getTls()){
 
-                    clanRepo.addUser(UUID.fromString(clanId), tl.getId(), conn);
+                    clanRepo.addUser(UUID.fromString(clanId), tl.getId());
 
                 }
 
-                conn.commit();
+                DatabaseConnection.commit();
 
             }catch (SQLException err){
 
-                conn.rollback();
+                DatabaseConnection.rollback();
                 System.err.println("Revert transfer:" + err.getMessage());
 
             }
 
-        }catch (Exception err){
-
-            System.err.println("Error to add Users: " + err.getMessage());
-
-        }
-
     }
-
 
 }
