@@ -12,7 +12,7 @@ import java.util.*;
 public class ClanRepositoryImpl implements ClanRepository {
 
     @Override
-    public List<Clan> getAll(){
+    public List<Clan> getAll() {
 
         Map<String, Clan> clanMap = new LinkedHashMap<>();
 
@@ -31,133 +31,27 @@ public class ClanRepositoryImpl implements ClanRepository {
                 LEFT JOIN "Cohorte"."user" u ON cm.user_id = u.id
                 """;
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement psmt = conn.prepareStatement(sql);
-             ResultSet rs = psmt.executeQuery();
-        ){
+        try {
 
-            while (rs.next()){
+            Connection conn = DatabaseConnection.getConnection();
 
-                String clanId = rs.getString("clan_id");
-
-                Clan clan = clanMap.computeIfAbsent(clanId, id -> {
-
-                    try {
-
-                        return new Clan(
-                                id,
-                                rs.getString("clan_name"),
-                                rs.getString("clan_description")
-                        );
-
-                    }catch (SQLException e) {
-
-                        throw new RuntimeException(e);
-
-                    }
-
-                });
-
-                String userId = rs.getString("user_id");
-
-                if (userId != null){
-
-                    var name = rs.getString("user_name");
-                    var email = rs.getString("user_email");
-                    var role = rs.getString("role").toUpperCase();
-
-                    if ("Tl".equalsIgnoreCase(role)) {
-
-                        var specialty = rs.getString("user_specialty").toUpperCase();
-
-                        clan.getTls().add(new Tl(
-                                userId,
-                                name,
-                                email,
-                                null,
-                                Role.valueOf(role),
-                                TlType.valueOf(specialty)
-                        ));
-
-                    } else {
-
-                        clan.getCoders().add(new Coder(
-                                userId,
-                                name,
-                                email,
-                                null,
-                                Role.valueOf(role)
-                        ));
-
-                    }
-                }
-
-            }
-
-
-        }catch (SQLException err) {
-
-            System.err.println("Error to get clan: " + err.getMessage());
-
-        }
-
-
-        return new ArrayList<>(clanMap.values());
-
-    }
-
-    @Override
-    public Optional<Clan> findById(String id) {
-        return findByIdOrName(id);
-    }
-
-    @Override
-    public Optional<Clan> findByIdOrName(String value) {
-
-        Map<String, Clan> clanMap = new LinkedHashMap<>();
-
-        String sql = """
-                SELECT
-                    c.id AS clan_id,
-                    c.name AS clan_name,
-                    c.description AS clan_description,
-                    u.id AS user_id,
-                    u.full_name AS user_name,
-                    u.email AS user_email,
-                    u.specialty AS user_specialty,
-                    u.role
-                FROM "Cohorte".clan c
-                LEFT JOIN "Cohorte".clan_members cm ON c.id = cm.clan_id
-                LEFT JOIN "Cohorte"."user" u ON cm.user_id = u.id
-                WHERE c.name = ? or c.id = ?;
-                """;
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement psmt = conn.prepareStatement(sql);
-             ){
-
-            psmt.setString(1, value);
-
-            try {
-                psmt.setObject(2, UUID.fromString(value));
-            }catch (IllegalArgumentException err){
-                psmt.setObject(2, null);
-            }
-
-            try(ResultSet rs = psmt.executeQuery()){
+            try (PreparedStatement psmt = conn.prepareStatement(sql);
+                 ResultSet rs = psmt.executeQuery()
+            ){
 
                 while (rs.next()){
 
-                    String idClanActual = rs.getString("clan_id");
+                    String clanId = rs.getString("clan_id");
 
-                    Clan clan = clanMap.computeIfAbsent(idClanActual, id -> {
+                    Clan clan = clanMap.computeIfAbsent(clanId, id -> {
+
                         try {
 
                             return new Clan(
                                     id,
                                     rs.getString("clan_name"),
-                                    rs.getString("clan_description"))
-                                    ;
+                                    rs.getString("clan_description")
+                            );
 
                         }catch (SQLException e) {
 
@@ -200,12 +94,125 @@ public class ClanRepositoryImpl implements ClanRepository {
 
                         }
                     }
+
                 }
+
+            }
+
+        }catch (SQLException err) {
+
+            throw new RuntimeException("Error to get clan: " + err.getMessage());
+
+        }
+
+        return new ArrayList<>(clanMap.values());
+
+    }
+
+    @Override
+    public Optional<Clan> findById(String id) {
+        return findByIdOrName(id);
+    }
+
+    @Override
+    public Optional<Clan> findByIdOrName(String value) {
+
+        Map<String, Clan> clanMap = new LinkedHashMap<>();
+
+        String sql = """
+                SELECT
+                    c.id AS clan_id,
+                    c.name AS clan_name,
+                    c.description AS clan_description,
+                    u.id AS user_id,
+                    u.full_name AS user_name,
+                    u.email AS user_email,
+                    u.specialty AS user_specialty,
+                    u.role
+                FROM "Cohorte".clan c
+                LEFT JOIN "Cohorte".clan_members cm ON c.id = cm.clan_id
+                LEFT JOIN "Cohorte"."user" u ON cm.user_id = u.id
+                WHERE c.name = ? or c.id = ?;
+                """;
+
+        try {
+
+            Connection conn = DatabaseConnection.getConnection();
+
+            try (PreparedStatement psmt = conn.prepareStatement(sql)){
+
+                psmt.setString(1, value);
+
+                try {
+                    psmt.setObject(2, UUID.fromString(value));
+                }catch (IllegalArgumentException err){
+                    psmt.setObject(2, null);
+                }
+
+                try(ResultSet rs = psmt.executeQuery()){
+
+                    while (rs.next()){
+
+                        String idClanActual = rs.getString("clan_id");
+
+                        Clan clan = clanMap.computeIfAbsent(idClanActual, id -> {
+                            try {
+
+                                return new Clan(
+                                        id,
+                                        rs.getString("clan_name"),
+                                        rs.getString("clan_description"))
+                                        ;
+
+                            }catch (SQLException e) {
+
+                                throw new RuntimeException(e);
+
+                            }
+
+                        });
+
+                        String userId = rs.getString("user_id");
+
+                        if (userId != null){
+
+                            var name = rs.getString("user_name");
+                            var email = rs.getString("user_email");
+                            var role = rs.getString("role").toUpperCase();
+
+                            if ("Tl".equalsIgnoreCase(role)) {
+
+                                var specialty = rs.getString("user_specialty").toUpperCase();
+
+                                clan.getTls().add(new Tl(
+                                        userId,
+                                        name,
+                                        email,
+                                        null,
+                                        Role.valueOf(role),
+                                        TlType.valueOf(specialty)
+                                ));
+
+                            } else {
+
+                                clan.getCoders().add(new Coder(
+                                        userId,
+                                        name,
+                                        email,
+                                        null,
+                                        Role.valueOf(role)
+                                ));
+
+                            }
+                        }
+                    }
+                }
+
             }
 
         }catch (SQLException err){
 
-            System.err.println("Error to get clan: " + err.getMessage());
+            throw new RuntimeException("Error to get clan: " + err.getMessage());
 
         }
 
@@ -214,45 +221,40 @@ public class ClanRepositoryImpl implements ClanRepository {
     }
 
     @Override
-    public void save(Clan clan){
-
-        try(Connection conn = DatabaseConnection.getConnection()){
-
-            this.save(clan, conn);
-
-        }catch (SQLException err){
-
-            throw new RuntimeException("Error in simple save", err);
-
-        }
-
-    }
-
-    @Override
-    public UUID save (Clan clanData, Connection conn) throws SQLException {
+    public UUID save (Clan clanData) {
 
         String sql = "INSERT INTO \"Cohorte\".clan (name, description) Values (?, ?)";
 
-        try (PreparedStatement psmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+        try {
+
+            Connection conn = DatabaseConnection.getConnection();
+
+            try (PreparedStatement psmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
 
 
-            psmt.setString(1, clanData.getName());
-            psmt.setString(2, clanData.getDescription());
+                psmt.setString(1, clanData.getName());
+                psmt.setString(2, clanData.getDescription());
 
-            int arrows = psmt.executeUpdate();
+                int arrows = psmt.executeUpdate();
 
-            if (arrows > 0){
+                if (arrows > 0){
 
-                var rs = psmt.getGeneratedKeys();
-                if (rs.next()) {
-                    return (UUID) rs.getObject(1);
+                    var rs = psmt.getGeneratedKeys();
+                    if (rs.next()) {
+                        return (UUID) rs.getObject(1);
+                    }
+
+                }else {
+
+                    throw new SQLException("Error to add clan information");
+
                 }
 
-            }else {
-
-                throw new SQLException("Error to add clan information");
-
             }
+
+        }catch (SQLException err) {
+
+            throw new RuntimeException("Error to save clan: " + err.getMessage());
 
         }
 
@@ -265,27 +267,32 @@ public class ClanRepositoryImpl implements ClanRepository {
 
         String sql = "DELETE FROM \"Cohorte\".clan WHERE ID = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstm = conn.prepareStatement(sql)){
+        try {
+
+            Connection conn = DatabaseConnection.getConnection();
+
+            try (PreparedStatement pstm = conn.prepareStatement(sql)){
 
 
-            pstm.setObject(1, UUID.fromString(id));
+                pstm.setObject(1, UUID.fromString(id));
 
-            int rows = pstm.executeUpdate();
+                int rows = pstm.executeUpdate();
 
-            if (rows == 0){
+                if (rows == 0){
 
-                System.out.println("Error at delete clan");
+                    System.out.println("Error at delete clan");
 
-            }else {
+                }else {
 
-                System.out.println("Clan deleted correctly");
+                    System.out.println("Clan deleted correctly");
+
+                }
 
             }
 
         }catch(SQLException err){
 
-            System.err.println("Error to delete clan: " + err.getMessage());
+            throw new RuntimeException("Error to delete clan: " + err.getMessage());
 
         }
 
@@ -294,46 +301,43 @@ public class ClanRepositoryImpl implements ClanRepository {
     @Override
     public void update(Clan clan) {
 
-        try (Connection conn = DatabaseConnection.getConnection()){
-
-            this.update(clan, conn);
-
-        }catch (SQLException err){
-
-            throw new RuntimeException("Error in a simple update", err);
-
-        }
-
-    }
-
-    @Override
-    public void update(Clan clan, Connection conn) throws SQLException {
-
         String sql = "UPDATE \"Cohorte\".clan SET name = ?, description = ? WHERE id = ?";
 
-        try (PreparedStatement psmt = conn.prepareStatement(sql)){
+        try {
+
+            Connection conn = DatabaseConnection.getConnection();
+
+            try (PreparedStatement psmt = conn.prepareStatement(sql)){
 
 
-            psmt.setString(1, clan.getName());
-            psmt.setString(2, clan.getDescription());
-            psmt.setObject(3, UUID.fromString(clan.getId()));
+                psmt.setString(1, clan.getName());
+                psmt.setString(2, clan.getDescription());
+                psmt.setObject(3, UUID.fromString(clan.getId()));
 
-            int rows = psmt.executeUpdate();
+                int rows = psmt.executeUpdate();
 
-            if (rows == 0){
+                if (rows == 0){
 
-                throw new SQLException("Error to edit Clan");
+                    throw new SQLException("Error to edit Clan");
+
+                }
 
             }
 
+        }catch (SQLException err) {
+
+            throw new RuntimeException("Error to update clan: " + err.getMessage());
+
         }
 
     }
 
     @Override
-    public void addUser (UUID clanId , String userId, Connection conn) throws SQLException {
+    public void addUser (UUID clanId , String userId) throws SQLException {
 
         String sql = "INSERT INTO \"Cohorte\".clan_members (clan_id, user_id) values (?, ?)";
+
+        Connection conn = DatabaseConnection.getConnection();
 
         try(PreparedStatement psmt = conn.prepareStatement(sql)){
 
@@ -357,9 +361,11 @@ public class ClanRepositoryImpl implements ClanRepository {
     }
 
     @Override
-    public void removeUser (String clanId, Connection conn) throws SQLException{
+    public void removeUser (String clanId) throws SQLException{
 
         String sql = "DELETE FROM \"Cohorte\".clan_members WHERE clan_id = ?";
+
+        Connection conn = DatabaseConnection.getConnection();
 
         try(PreparedStatement psmt = conn.prepareStatement(sql)){
 

@@ -26,7 +26,7 @@ public class AdminRepositoryImpl implements UserRepository {
      //*Saves a new user to the database
 
     @Override
-    public void save(User user) {
+    public Void save(User user) {
         String sql = "INSERT INTO \"Cohorte\".user(email, password, full_name, role, clan_id) VALUES (?,?,?,?,?)";
         try(PreparedStatement stmt = getConnection().prepareStatement(sql)){
             stmt.setString(1, user.getEmail());
@@ -48,6 +48,8 @@ public class AdminRepositoryImpl implements UserRepository {
             System.out.println("[ERROR]: It was not possible to insert the user");
             throw new RuntimeException(e);
         }
+
+        return null;
     }
 
 
