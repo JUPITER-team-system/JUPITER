@@ -42,7 +42,7 @@ public class AdminUI {
                 -----------------------------
                 | 1) Create Clan.           |
                 | 2) Delete Clan.           |
-                | 3) Update Name.           |
+                | 3) Update Clan.           |
                 | 4) Assign TL To Clan.     |
                 | 5) Assign Coder To Clan.  |
                 | 6) View Clan Members.     |
