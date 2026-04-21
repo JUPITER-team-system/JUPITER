@@ -10,7 +10,9 @@ import com.management.jupiter.models.enums.TlType;
 import com.management.jupiter.persistance.Handler;
 import com.management.jupiter.repository.impl.AdminRepositoryImpl;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class AdminService {
 
@@ -22,15 +24,26 @@ public class AdminService {
         this.userService = userService;
     }
 
-// I bring the entire NewUser object
-    public User createUser(String username, String email, String password, Role role, Clan clan, TlType tlType) throws Exception {
-        // Validate required fields
-        if (username == null || username.isBlank() ||
-                email == null || email.isBlank() ||
-                password == null || password.isBlank() ||
-                role == null) {
-            throw new Exception("All fields are required");
+    public List<User> getAll() {
+
+        List<User> usersList = new ArrayList<>();
+
+        try {
+
+            usersList = adminRepository.getAll();
+
+        } catch (Exception err) {
+
+            System.err.println("Error to obtain Users: " + err.getMessage());
+
         }
+
+        return usersList;
+
+    }
+
+    // I bring the entire NewUser object
+    public User createUser(String username, String email, String password, Role role, Clan clan, TlType tlType) throws Exception {
 
         // Check if email already exists using UserService
         if (userService.emailExists(email.trim())) {
@@ -58,9 +71,10 @@ public class AdminService {
         adminRepository.save(user);
         return user;
     }
-//Show the users exist in to database
+
+    //Show the users exist in to database
     @Deprecated
-    public static void getUsersByRol(String role) {
+    public void getUsersByRol(String role) {
         var handler = new Handler();
         List<String[]> users = handler.read("users.csv");
         users.stream()
@@ -69,7 +83,6 @@ public class AdminService {
                     System.out.println("Name: " + user[1] + " Email: " + user[2] + " Role: " + user[4]);
                 });
     }
-
 
     public void deleteUser(String value) {
         try {
@@ -80,9 +93,21 @@ public class AdminService {
     }
 
 
-    public static void updateUser(String idOrEmail, String newValue, String fieldName) {
+    public void updateUser(String idOrEmail, String newValue, String fieldName) {
         // TODO: Implement update method using UserRepository
         // This method needs to be implemented in the new architecture
         throw new UnsupportedOperationException("Update user method not yet implemented in new architecture");
+    }
+
+    public Optional<User> findById (String id){
+
+        if (id == null || id.isBlank()){
+
+            throw new IllegalArgumentException("The Id is required");
+
+        }
+
+        return adminRepository.findById(id);
+
     }
 }
