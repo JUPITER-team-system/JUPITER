@@ -2,6 +2,9 @@ package com.management.jupiter.ui.users;
 
 import com.management.jupiter.models.Clan;
 import com.management.jupiter.models.Coder;
+import com.management.jupiter.models.Tl;
+import com.management.jupiter.models.User;
+import com.management.jupiter.models.enums.TlType;
 
 import java.util.List;
 
@@ -14,7 +17,7 @@ public class ClanDetailUI {
                 |%s
                 | Coder Details        |
                 |%s
-                | ID : %d
+                | ID : %s
                 | Name: %s
                 | Email: %s
                 | Rol: %s
@@ -36,8 +39,16 @@ public class ClanDetailUI {
 
         for (int i = 0; i < clans.size(); i ++){
             Clan c = clans.get(i);
-            System.out.printf("  [%d] %-20s | Coders: %d%n",
-                    (i + 1), c.getName(), c.getCoders().size());
+            System.out.printf("  [%d] %-20s | Coders: %d%n | TL: %s%n" ,
+                    (i + 1), c.getName(),
+                    c.getCoders().size(),
+                    c.getTls()
+                            .stream()
+                            .filter(tl -> tl.getTlType() == TlType.PROGRAMACION)
+                            .map(User::getUsername)
+                            .findFirst()
+                            .orElse("This clan don't have TL")
+            );
         }
 
         printLine();
