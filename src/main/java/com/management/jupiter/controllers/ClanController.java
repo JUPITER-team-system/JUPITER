@@ -55,19 +55,15 @@ public class ClanController {
 
     }
 
-    public void updateClan (String id, String name, String desc, List<Coder> coders, List<Tl> tls)  {
+    public void updateClan (Clan clan)  {
 
-        if (id == null || id.isBlank()) {
+        if (clan == null || clan.getId() == null || clan.getId().isBlank()) {
 
-            throw new IllegalArgumentException("The id can't be empty");
+            throw new IllegalArgumentException("The Clan or its id can't be empty");
 
         }
 
-        Clan clanUpdate = new Clan(id, name, desc);
-        clanUpdate.setCoders(coders);
-        clanUpdate.setTls(tls);
-
-        service.edit(clanUpdate);
+        service.edit(clan);
 
     }
 
