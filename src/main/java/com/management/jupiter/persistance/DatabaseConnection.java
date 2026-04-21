@@ -11,21 +11,19 @@ public class DatabaseConnection {
     private static final String URL = dotenv.get("DB_URL");
     private static final String USER = dotenv.get("DB_USER");
     private static final String PASS = dotenv.get("DB_PASS");
-    private static Connection connection = null;
+    private static final ThreadLocal<Connection>  threadConnection = new ThreadLocal<>();
     //Constructor privado para que nadie acceda a la db
 
     public static Connection getConnection() throws SQLException {
-        if (connection == null || connection.isClosed()) {
-            try{
-                //Puente
-                connection = DriverManager.getConnection(URL,USER, PASS);
-                System.out.println("connected to the database");
-            }catch (SQLException s){
-                System.out.println("[Error]: It was not possible to connect to the database:" + s.getMessage());
-            }
+
+        if (threadConnection.get() != null && !threadConnection.get().isClosed()){
+
+            return threadConnection.get();
 
         }
-        return connection;
+
+        return DriverManager.getConnection(URL, USER, PASS);
+
     }
 }
 
