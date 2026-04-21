@@ -94,39 +94,46 @@ public class AdminRepositoryImpl implements UserRepository {
 
 
     //Updates user in database
-
-    @Override
+@Override
     public void update(User user) {
-        //Tomamos la orden de consulta SQL
-        String sql = "UPDATE \"Cohorte\".user SET email = ?, password = ?, full_name = ? WHERE id = ? ";
+        // 1. Corregimos el SQL: Agregamos placeholders para 'role' y 'clan_id'
+        // Y movemos el 'id' al final (posición 6)
+        String sql = "UPDATE \"Cohorte\".user SET email = ?, password = ?, full_name = ?, role = ?, clan_id = ? WHERE id = ?";
+
         try(Connection conn = getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql)){
-            //Empezamos a cambiar platillos
+            PreparedStatement stmt = conn.prepareStatement(sql)){
+
             stmt.setString(1, user.getEmail());
-            //Replicamos el hash de password porque hay inconsistencia donde no
+
+            // ¡OJO! Asegúrate de que este hash no se haga dos veces si ya está hasheado.
             String hashed = PasswordHasher.hash(user.getPassword());
-            stmt.setString(2,hashed);
+            stmt.setString(2, hashed);
+
             stmt.setString(3, user.getUsername());
             stmt.setString(4, user.getRole().toString());
-            //Validamos que esten bien las ordenes
+
+            // Manejo de clan_id
             if (user.getClan_id() != null){
                 stmt.setString(5, user.getClan_id().getId());
-            }else {stmt.setNull(5, Types.OTHER);}
+            } else {
+                stmt.setNull(5, Types.OTHER);
+            }
 
-            //El id del fulano al que le vamos a entregar la orden.
+            // El ID va al final
             stmt.setString(6, user.getId());
 
             int rowsUpdate = stmt.executeUpdate();
+
             if (rowsUpdate > 0){
                 System.out.println("The user has modified correct");
             } else {
-                System.out.println("[ERROR]: the user with " + user.getId());
+                System.out.println("[ERROR]: No user found with id: " + user.getId());
             }
-            } catch (Exception e) {
-            System.out.println("[ERROR]: Error trying update user" + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("[ERROR]: Error trying to update user: " + e.getMessage());
             throw new RuntimeException(e);
         }
-        }
+    }
 
 
 
@@ -158,35 +165,43 @@ public class AdminRepositoryImpl implements UserRepository {
 
     @Override
     public void insertCSV(List<String[]> data) {
-
         String sql = "INSERT INTO \"Cohorte\".user(email, password, full_name, role, clan_id) VALUES (?,?,?,?,?)";
+        Connection conn = null; // 1. Declaramos fuera
 
-        // Usamos try-with-resources para asegurar que la conexión y el statement se cierren solos
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
+        try {
+            conn = getConnection(); // 2. Iniciamos la conexión
             conn.setAutoCommit(false); // Iniciamos transacción
 
-            for (String[] row : data) {
-                ps.setString(1, row[1]); // email
-                ps.setString(2, row[2]); // password
-                ps.setString(3, row[3]); // full_name
-                ps.setString(4, row[4]); // role
-
-                // Aquí puedes decidir si el clan_id es nulo o viene en el CSV
-                ps.setNull(5, Types.OTHER); // O el valor que corresponda
-
-                ps.addBatch(); // Agregamos a la "bolsa" de envíos
+            try (PreparedStatement ps = conn.prepareStatement(sql)) { // Usamos try-with-resources solo para el Statement
+                for (String[] row : data) {
+                    ps.setString(1, row[1]);
+                    ps.setString(2, row[2]);
+                    ps.setString(3, row[3]);
+                    ps.setString(4, row[4]);
+                    ps.setNull(5, Types.OTHER);
+                    ps.addBatch();
+                }
+                ps.executeBatch();
+                conn.commit();
+                System.out.println("Bulk upload completed successfully");
             }
-
-            ps.executeBatch(); // Enviamos
-            conn.commit();     // Confirmamos la transacción
-            System.out.println("Bulk upload completed successfully");
-
         } catch (SQLException e) {
-            // Si algo falla, intentamos hacer rollback para no dejar datos inconsistentes
-            System.err.println("[ERROR]: Error in bulk upload: " + e.getMessage());
-            // Aquí deberías manejar el rollback con la conexión abierta
+            try {
+                if (conn != null) {
+                    conn.rollback();
+                    System.err.println("Transaction rolled back due to error");
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            throw new RuntimeException("Error in bulk upload", e);
+        } finally {
+            // 4. Cerramos manualmente la conexión para no dejarla abierta
+            try {
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -233,4 +248,25 @@ public class AdminRepositoryImpl implements UserRepository {
                 return new User(id, username, email, password, role, null);
         }
     }
+
+    //Creo funcion de buscar usuarios con el Clan Nulo para poder asignarlos
+    public List<User> findUsersWhitouClan(){
+        List<User> userWhitouClan = new ArrayList<>();
+        String SQL = "SELECT FROM \"Cohorte\".user WHERE clan_id IS NULL";
+
+        try(Connection conn = DatabaseConnection.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(SQL)){
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()){
+                User user = mapResultSetToUser(rs);
+                userWhitouClan.add(user);
+            }
+        } catch (SQLException e) {
+            System.out.println("[ERROR]: Error searching users whitou clan" + e.getMessage());
+            throw new RuntimeException(e);
+        }
+        return userWhitouClan;
+    }
+
 }
