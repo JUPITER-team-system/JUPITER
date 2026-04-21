@@ -252,7 +252,7 @@ public class AdminRepositoryImpl implements UserRepository {
     //Creo funcion de buscar usuarios con el Clan Nulo para poder asignarlos
     public List<User> findUsersWhitouClan(){
         List<User> userWhitouClan = new ArrayList<>();
-        String SQL = "SELECT FROM \"Cohorte\".user WHERE clan_id IS NULL";
+        String SQL = "SELECT \"Cohorte\".user SET clan_id = ? WHERE id = ? AND clan_id IS NULL";
 
         try(Connection conn = DatabaseConnection.getConnection();
         PreparedStatement stmt = conn.prepareStatement(SQL)){
@@ -269,4 +269,24 @@ public class AdminRepositoryImpl implements UserRepository {
         return userWhitouClan;
     }
 
-}
+    public void assignClan(String userID, String clanId){
+        String SQL = "UPDATE \"Cohorte\".user SET clan_id = ? WHERE id = ?";
+
+        try(Connection conn = DatabaseConnection.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(SQL)){
+            stmt.setString(1, clanId);
+            stmt.setString(2, userID);
+        int rowsUpdate = stmt.executeUpdate();
+            if (rowsUpdate > 0){
+                System.out.println("Clan assigned to user: " + userID);
+            }else{
+                System.out.println("[ERROR]: Not user found with id: " + userID);
+            }
+            } catch (SQLException e) {
+            System.out.println("[ERROR]: Error to asigment clan: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+        }
+    }
+
+
