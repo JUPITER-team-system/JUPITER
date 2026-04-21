@@ -16,6 +16,7 @@ public class AdminService {
 
     private final UserService userService;
     private final AdminRepositoryImpl adminRepository;
+    private static final String FILE_NAME = "users.csv";
 
     public AdminService (UserService userService, AdminRepositoryImpl adminRepository){
         this.adminRepository = adminRepository;
