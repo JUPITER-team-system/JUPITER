@@ -35,6 +35,18 @@ public class ClanService {
 
     }
 
+    public Optional<Clan> readIdOrName (String value) {
+
+        if (value == null || value.isBlank()){
+
+        throw new IllegalArgumentException("The name or id can't be empty");
+
+        }
+
+        return clanRepo.findByIdOrName(value);
+
+    }
+
     public void add (Clan clan) {
 
         try {
