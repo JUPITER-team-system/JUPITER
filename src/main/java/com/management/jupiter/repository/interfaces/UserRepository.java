@@ -5,7 +5,7 @@ import com.management.jupiter.models.User;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository extends Repository<User> {
+public interface UserRepository extends Repository<User, Void> {
     Optional<User> findByEmail(String email);
 
     Optional<User> findById(String id);
