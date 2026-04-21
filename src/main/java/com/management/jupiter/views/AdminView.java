@@ -1,22 +1,30 @@
 package com.management.jupiter.views;
 
 import com.management.jupiter.controllers.AdminController;
+import com.management.jupiter.controllers.ClanController;
 import com.management.jupiter.models.Admin;
 import com.management.jupiter.models.enums.*;
-import com.management.jupiter.security.LoginSession;
+import com.management.jupiter.security.interfaces.LoginSession;
 import com.management.jupiter.ui.users.AdminUI;
 import com.management.jupiter.util.scanner.ScannerUtil;
 
 public class AdminView {
 
     private final ScannerUtil input;
-    private final AdminController controller;
     private final LoginSession session;
+    private final AdminController adminController;
+    private final ClanController clanController;
 
-    public AdminView (ScannerUtil input, AdminController controller, LoginSession session) {
+
+    public AdminView (ScannerUtil input,
+                      LoginSession session,
+                      AdminController adminController,
+                      ClanController clanController) {
+
         this.input = input;
-        this.controller = controller;
         this.session = session;
+        this.adminController = adminController;
+        this.clanController = clanController;
     }
 
     public void show (Admin admin) {
@@ -156,7 +164,7 @@ public class AdminView {
                 }
             }
 
-            controller.createUser(name, email, password, role, null ,tl);
+            adminController.createUser(name, email, password, role, null ,tl);
 
         }
 
@@ -173,7 +181,7 @@ public class AdminView {
 
         }
 
-        controller.deleteUser(value);
+        adminController.deleteUser(value);
 
     }
 
@@ -213,10 +221,14 @@ public class AdminView {
         String newValue = input.readString("Enter the new value of " + fieldName + ": ");
 
         try {
-            controller.updateUser(idOrEmail, newValue, fieldName);
+
+            adminController.updateUser(idOrEmail, newValue, fieldName);
             System.out.println("User updated correctly");
+
         }catch (RuntimeException err){
+
             System.err.println("Error to update user" + err.getMessage());
+
         }
 
 
