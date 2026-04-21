@@ -4,6 +4,9 @@ import com.management.jupiter.models.User;
 import com.management.jupiter.models.enums.*;
 import com.management.jupiter.services.AdminService;
 
+import java.util.List;
+import java.util.Optional;
+
 public class AdminController {
 
     private final AdminService service;
@@ -14,7 +17,23 @@ public class AdminController {
 
     }
 
+    public List<User> getAll() {
+
+        return service.getAll();
+
+    }
+
     public void createUser(String username, String email, String password, Role role, Clan clan ,TlType tlType) {
+
+        // Validate required fields
+        if (username == null || username.isBlank() ||
+                email == null || email.isBlank() ||
+                password == null || password.isBlank() ||
+                role == null) {
+
+            throw new IllegalArgumentException("All fields are required");
+
+        }
 
         try {
 
@@ -34,6 +53,12 @@ public class AdminController {
 
     public void deleteUser(String value) {
 
+        if (value == null || value.isBlank()){
+
+            throw new IllegalArgumentException("The id is required");
+
+        }
+
         service.deleteUser(value);
 
     }
@@ -42,7 +67,7 @@ public class AdminController {
 
         if (idOrEmail == null || newValue == null || fieldName == null) {
 
-            throw new RuntimeException("All fields are required");
+            throw new IllegalArgumentException("All fields are required");
 
         }
 
@@ -50,17 +75,29 @@ public class AdminController {
 
     }
 
-//    public static void getUsersByRol(){
-//        Scanner scanner = InputView.getScanner();
-//        try{
-//            System.out.println("Filtrar por:");
-//            System.out.println("1.Admins");
-//            System.out.println("2.Coders");
-//            System.out.println("3.TLs");
-//            System.out.println("0.Salir");
-//
-//        }catch (Exception e){
-//            System.out.println(e.getMessage());
-//        }
-//    }
+    public Optional<User> findById(String id){
+
+        if (id == null || id.isBlank()){
+
+            throw new IllegalArgumentException("The id is required");
+
+        }
+
+        return service.findById(id);
+
+    }
+
+    //    public static void getUsersByRol(){
+    //        Scanner scanner = InputView.getScanner();
+    //        try{
+    //            System.out.println("Filtrar por:");
+    //            System.out.println("1.Admins");
+    //            System.out.println("2.Coders");
+    //            System.out.println("3.TLs");
+    //            System.out.println("0.Salir");
+    //
+    //        }catch (Exception e){
+    //            System.out.println(e.getMessage());
+    //        }
+    //    }
 }
