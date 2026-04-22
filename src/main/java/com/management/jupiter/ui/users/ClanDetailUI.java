@@ -31,6 +31,27 @@ public class ClanDetailUI {
         printLine();
     }
 
+    public static void coderList (List<User> user) {
+
+        printHeaders("Coders List");
+
+        for (int i = 0 ; i < user.size(); i ++){
+
+            User u = user.get(1);
+
+            if (u instanceof Coder c){
+
+                System.out.printf("[%d] ID:%-20s | Name: id:%-20s | Email: %s",
+                        (i + 1), c.getId(), c.getUsername(), c.getEmail()
+                );
+
+            }
+
+        }
+
+        printLine();
+
+    }
 
 
     public static void clanList (List<Clan> clans){
@@ -38,7 +59,9 @@ public class ClanDetailUI {
         printHeaders("Clan List");
 
         for (int i = 0; i < clans.size(); i ++){
+
             Clan c = clans.get(i);
+
             System.out.printf("  [%d] %-20s | Coders: %d%n | TL: %s%n" ,
                     (i + 1), c.getName(),
                     c.getCoders().size(),
@@ -64,6 +87,25 @@ public class ClanDetailUI {
                 -------------------------------------
                 | 1) Edit clan information (name/desc)
                 | 2) manage member (Coder/Tls)
+                -------------------------------------
+                """.formatted(clan.getName());
+
+        System.out.println(update);
+
+    }
+
+    public static void clanMemberUpdate (Clan clan) {
+
+        String update = """
+                -------------------------------------
+                |     Updater of Members, Clan:
+                |                 %s
+                -------------------------------------
+                | 1) Add coder
+                | 2) Get out Coder
+                | 3) Add Tl
+                | 4) Get out TL
+                | 0) Back
                 -------------------------------------
                 """.formatted(clan.getName());
 
