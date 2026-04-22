@@ -8,6 +8,7 @@ import com.management.jupiter.repository.ai.GeminiProvider;
 import com.management.jupiter.repository.impl.AdminRepositoryImpl;
 import com.management.jupiter.repository.impl.CellRepositoryInterfaceImpl;
 import com.management.jupiter.repository.impl.ClanRepositoryImpl;
+import com.management.jupiter.repository.interfaces.CellRepositoryInterface;
 import com.management.jupiter.security.LoginSession;
 import com.management.jupiter.security.UserSession;
 import com.management.jupiter.services.*;
@@ -34,7 +35,7 @@ public class Main {
         CoderRepository coderRepo = new CoderRepository();
         TeamLeaderRepository tlRepo = new TeamLeaderRepository(clanRepo);
 
-        CellRepositoryInterfaceImpl cellRepository = new CellRepositoryInterfaceImpl();
+        CellRepositoryInterface cellRepository = new CellRepositoryInterfaceImpl();
         AiProvider aiProvider = new GeminiProvider();
 
         //Services:

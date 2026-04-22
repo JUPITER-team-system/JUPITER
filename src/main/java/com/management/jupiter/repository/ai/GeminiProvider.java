@@ -27,7 +27,7 @@ public class GeminiProvider implements AiProvider {
             String jsonInput = """
                     {
                       "contents": [{
-                        "parts":[{"text": "Genera exactamente %d nombres de células con temática de %s. Los nombres deben ser canónicos, reales y comúnmente aceptados dentro de esa temática. No inventes palabras. No uses diminutivos. No uses sufijos creativos. No combines palabras. No agregues descripciones. Devuelve solo una lista en una sola línea, separada por comas."}]
+                        "parts":[{"text": "Genera exactamente %d nombres ALEATORIOS de células con temática de %s. Los nombres deben ser canónicos, reales y comúnmente aceptados dentro de esa temática. No inventes palabras. No uses diminutivos. No uses sufijos creativos. No combines palabras. No agregues descripciones. Devuelve solo una lista en una sola línea, separada por comas."}]
                       }]
                     }
                     """.formatted(total, theme);

@@ -1,24 +1,23 @@
 package com.management.jupiter.services;
 
 import com.management.jupiter.models.Cell;
-import com.management.jupiter.persistance.Handler;
+import com.management.jupiter.models.Tl;
 import com.management.jupiter.repository.CellRepository;
 import com.management.jupiter.repository.ai.AiProvider;
-import com.management.jupiter.repository.impl.CellRepositoryInterfaceImpl;
+import com.management.jupiter.repository.interfaces.CellRepositoryInterface;
 
-import javax.management.RuntimeErrorException;
 import java.util.List;
 
 public class CellServices {
     private final AiProvider aiProvider;
-    private final CellRepositoryInterfaceImpl cellRepository;
+    private final CellRepositoryInterface cellRepository;
 
-    public CellServices(AiProvider aiProvider, CellRepositoryInterfaceImpl cellRepository) {
+    public CellServices(AiProvider aiProvider, CellRepositoryInterface cellRepository) {
         this.aiProvider = aiProvider;
         this.cellRepository = cellRepository;
     }
 
-    public void createCell(int cellsQuantity, String theme) {
+    public void createCell(int cellsQuantity, String theme, Tl tl) {
         List<String> names = aiProvider.generateNames(cellsQuantity, theme);
         for (String name : names) {
             if (CellRepository.existsByName(name)) {
