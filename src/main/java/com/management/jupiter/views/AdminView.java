@@ -5,7 +5,7 @@ import com.management.jupiter.controllers.ClanController;
 import com.management.jupiter.models.*;
 import com.management.jupiter.models.Clan;
 import com.management.jupiter.models.enums.*;
-import com.management.jupiter.security.interfaces.LoginSession;
+import com.management.jupiter.security.LoginSession;
 import com.management.jupiter.ui.users.AdminUI;
 import com.management.jupiter.ui.users.ClanDetailUI;
 import com.management.jupiter.util.scanner.ScannerUtil;
