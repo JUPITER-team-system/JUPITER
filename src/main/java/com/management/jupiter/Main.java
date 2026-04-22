@@ -5,7 +5,7 @@ import com.management.jupiter.models.*;
 import com.management.jupiter.repository.*;
 import com.management.jupiter.repository.impl.*;
 import com.management.jupiter.repository.interfaces.*;
-import com.management.jupiter.security.interfaces.LoginSession;
+import com.management.jupiter.security.LoginSession;
 import com.management.jupiter.security.UserSession;
 import com.management.jupiter.services.*;
 import com.management.jupiter.util.scanner.ScannerUtil;
