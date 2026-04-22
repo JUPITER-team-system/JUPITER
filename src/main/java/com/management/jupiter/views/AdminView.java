@@ -44,7 +44,7 @@ public class AdminView {
 
             switch (dec) {
                 case 1:
-
+                    ClanDetailUI.coderList(adminController.getAll());
                     break;
                 case 2:
                     //Add Soon...
