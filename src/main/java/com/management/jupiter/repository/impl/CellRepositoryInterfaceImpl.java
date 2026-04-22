@@ -3,7 +3,7 @@ package com.management.jupiter.repository.impl;
 import com.management.jupiter.models.Cell;
 import com.management.jupiter.models.User;
 import com.management.jupiter.persistance.DatabaseConnection;
-import com.management.jupiter.repository.CellRepositoryInterface;
+import com.management.jupiter.repository.interfaces.CellRepositoryInterface;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,15 +18,15 @@ public class CellRepositoryInterfaceImpl implements CellRepositoryInterface {
     }
 
     @Override
-    public void save(Cell cell) {
+    public Void save(Cell cell) {
         String sql = "INSERT INTO \"Cohorte\".cells(name) VALUES (?)";
         try(PreparedStatement stmnt = getConnection().prepareStatement(sql)){
             stmnt.setString(1, cell.getName());
             stmnt.executeUpdate();
-            System.out.println("Cell created");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return null;
     }
 
     @Override
@@ -34,10 +34,6 @@ public class CellRepositoryInterfaceImpl implements CellRepositoryInterface {
         return List.of();
     }
 
-    @Override
-    public Optional findById(long id) {
-        return Optional.empty();
-    }
 
     @Override
     public void update(Cell cell) {
@@ -45,17 +41,7 @@ public class CellRepositoryInterfaceImpl implements CellRepositoryInterface {
     }
 
     @Override
-    public Optional<User> findById(String id) {
+    public Optional<Cell> findById(String id) {
         return Optional.empty();
-    }
-
-    @Override
-    public void delete(String id) {
-
-    }
-
-    @Override
-    public void insertCSV(List<String[]> data) {
-
     }
 }

@@ -2,6 +2,7 @@ package com.management.jupiter.repository.ai;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.cdimascio.dotenv.Dotenv;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -11,9 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GeminiProvider implements AiProvider {
-    private static final String API_KEY = "AIzaSyDkLRd1ayIICKZeWTYsJCyvp4bNRUQ1kl0";
-    private static final String ENDPOINT =
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=" + API_KEY;
+    private static final Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
+    private final String API_KEY = dotenv.get("API_GEMINI");
+    private final String ENDPOINT =
+            dotenv.get("ENDPOINT_GEMINI") + API_KEY;
 
     private final HttpClient client = HttpClient.newHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
@@ -48,7 +50,7 @@ public class GeminiProvider implements AiProvider {
             return parseResponse(response.body());
 
         } catch (Exception e) {
-            throw new RuntimeException("Error usando Gemini", e);
+            throw new RuntimeException("Error usando Gemini" + e.getMessage(), e);
         }
     }
 

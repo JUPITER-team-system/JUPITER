@@ -3,7 +3,10 @@ package com.management.jupiter;
 import com.management.jupiter.controllers.*;
 import com.management.jupiter.models.*;
 import com.management.jupiter.repository.*;
+import com.management.jupiter.repository.ai.AiProvider;
+import com.management.jupiter.repository.ai.GeminiProvider;
 import com.management.jupiter.repository.impl.AdminRepositoryImpl;
+import com.management.jupiter.repository.impl.CellRepositoryInterfaceImpl;
 import com.management.jupiter.repository.impl.ClanRepositoryImpl;
 import com.management.jupiter.security.LoginSession;
 import com.management.jupiter.security.UserSession;
@@ -31,10 +34,14 @@ public class Main {
         CoderRepository coderRepo = new CoderRepository();
         TeamLeaderRepository tlRepo = new TeamLeaderRepository(clanRepo);
 
+        CellRepositoryInterfaceImpl cellRepository = new CellRepositoryInterfaceImpl();
+        AiProvider aiProvider = new GeminiProvider();
+
         //Services:
         AssignmentService assignmentService = new AssignmentService(clanRepo, tlRepo, coderRepo);
         UserService userService = new UserService();
         AdminService adminService = new AdminService(userService, adminRepo);
+        CellServices cellServices = new CellServices(aiProvider, cellRepository);
 
 
         //Controllers:
@@ -42,6 +49,7 @@ public class Main {
         AdminController adminController = new AdminController(adminService);
         TlController tlController = new TlController();
         CoderController coderController = new CoderController();
+        CellController cellController = new CellController(cellServices);
 
         //Views:
         LoginView login = new LoginView(input, userController);
@@ -51,7 +59,7 @@ public class Main {
         LoginSession loggedUser = new UserSession(user);
 
         AdminView admin = new AdminView(input, adminController, loggedUser);
-        TlView tl = new TlView(input, tlController);
+        TlView tl = new TlView(input, tlController,cellController);
         CoderView coder = new CoderView(input, coderController);
 
         if(user instanceof Admin loggedAdmin){

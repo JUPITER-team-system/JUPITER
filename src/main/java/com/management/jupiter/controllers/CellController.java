@@ -7,13 +7,17 @@ import com.management.jupiter.repository.ai.GeminiProvider;
 import com.management.jupiter.services.CellServices;
 
 public class CellController {
-    AiProvider aiProvider = new GeminiProvider();
-    CellServices cellServices = new CellServices(aiProvider);
 
-    public void createCell() {
+    private final CellServices cellServices;
+
+    public CellController(CellServices cellServices) {
+        this.cellServices = cellServices;
+    }
+
+    public void createCell(int cellsQuantity, String theme) {
         try {
-            cellServices.createCell();
-            System.out.println("Clan created");
+            cellServices.createCell(cellsQuantity, theme);
+            System.out.println("Cells created");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

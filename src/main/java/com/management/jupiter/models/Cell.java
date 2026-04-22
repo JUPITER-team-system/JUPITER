@@ -6,10 +6,10 @@ import java.util.List;
 public class Cell {
     private int id;
     private final String name;
-    private final int clanId;
+    private int clanId;
     private List<Coder> members;
 
-    public Cell(String name, int clanId) {
+    public Cell(String name) {
         this.name = name.toUpperCase();
         this.clanId = clanId;
         //this.members = members;

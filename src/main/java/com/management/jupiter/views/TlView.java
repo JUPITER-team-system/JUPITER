@@ -1,4 +1,5 @@
 package com.management.jupiter.views;
+import com.management.jupiter.controllers.CellController;
 import com.management.jupiter.controllers.TlController;
 import com.management.jupiter.models.Tl;
 import com.management.jupiter.ui.users.TeamLeaderUI;
@@ -8,10 +9,12 @@ public class TlView {
 
     private final ScannerUtil input;
     private final TlController controller;
+    private final CellController cellController;
 
-    public TlView(ScannerUtil input, TlController controller){
+    public TlView(ScannerUtil input, TlController controller, CellController cellController){
         this.input = input;
         this.controller = controller;
+        this.cellController = cellController;
     }
 
     public void show (Tl tl){
@@ -62,6 +65,7 @@ public class TlView {
                     break;
                 case 3:
                     //Add Soon...
+                    cellController.createCell(4, "Planetas");
                     break;
                 case 4:
                     //Add Soon...
