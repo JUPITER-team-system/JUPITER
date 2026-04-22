@@ -3,9 +3,9 @@ package com.management.jupiter;
 import com.management.jupiter.controllers.*;
 import com.management.jupiter.models.*;
 import com.management.jupiter.repository.*;
-import com.management.jupiter.repository.impl.AdminRepositoryImpl;
-import com.management.jupiter.repository.impl.ClanRepositoryImpl;
-import com.management.jupiter.security.LoginSession;
+import com.management.jupiter.repository.impl.*;
+import com.management.jupiter.repository.interfaces.*;
+import com.management.jupiter.security.interfaces.LoginSession;
 import com.management.jupiter.security.UserSession;
 import com.management.jupiter.services.*;
 import com.management.jupiter.util.scanner.ScannerUtil;
@@ -18,30 +18,28 @@ public class Main {
 
     public static void main (String[] args){
 
-        //Interfaces:
-
-
         //Input:
         Scanner scanner = new Scanner(System.in);
         ScannerUtil input = new ScannerUtil(scanner);
 
         //Repositories:
-        AdminRepositoryImpl adminRepo = new AdminRepositoryImpl();
-        ClanRepositoryImpl clanRepo = new ClanRepositoryImpl();
+        UserRepository adminRepo = new AdminRepositoryImpl();
+        ClanRepository clanRepo = new ClanRepositoryImpl();
         CoderRepository coderRepo = new CoderRepository();
-        TeamLeaderRepository tlRepo = new TeamLeaderRepository(clanRepo);
+        TeamLeaderRepositoryImpl tlRepo = new TeamLeaderRepositoryImpl(clanRepo);
 
         //Services:
         AssignmentService assignmentService = new AssignmentService(clanRepo, tlRepo, coderRepo);
         UserService userService = new UserService();
         AdminService adminService = new AdminService(userService, adminRepo);
-
+        ClanService clanService = new ClanService(clanRepo);
 
         //Controllers:
         UserController userController = new UserController();
         AdminController adminController = new AdminController(adminService);
         TlController tlController = new TlController();
         CoderController coderController = new CoderController();
+        ClanController clanController = new ClanController(clanService);
 
         //Views:
         LoginView login = new LoginView(input, userController);
@@ -50,7 +48,7 @@ public class Main {
 
         LoginSession loggedUser = new UserSession(user);
 
-        AdminView admin = new AdminView(input, adminController, loggedUser);
+        AdminView admin = new AdminView(input, loggedUser, adminController, clanController);
         TlView tl = new TlView(input, tlController);
         CoderView coder = new CoderView(input, coderController);
 
