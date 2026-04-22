@@ -14,12 +14,10 @@ import java.util.*;
 
 
 public class AdminRepositoryImpl implements UserRepository {
-    //Gets database connection from DatabaseConnection
-    private Connection getConnection() throws SQLException{
-        return DatabaseConnection.getConnection();
-    }
-
-
+        //Gets database connection from DatabaseConnection
+        private Connection getConnection() throws SQLException{
+            return DatabaseConnection.getConnection();
+        }
      //*Saves a new user to the database
 
     @Override
@@ -54,7 +52,7 @@ public class AdminRepositoryImpl implements UserRepository {
     public List<User> getAll() {
         List<User> usersDB = new ArrayList<>();
         String sql = "SELECT * FROM \"Cohorte\".user";
-
+        
         try(PreparedStatement stmt = getConnection().prepareStatement(sql)){
             ResultSet rs = stmt.executeQuery();
             while (rs.next()){

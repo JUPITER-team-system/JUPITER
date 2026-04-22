@@ -3,8 +3,10 @@ package com.management.jupiter.views;
 import com.management.jupiter.controllers.AdminController;
 import com.management.jupiter.controllers.ClanController;
 import com.management.jupiter.models.*;
-import com.management.jupiter.models.Clan;
+import com.management.jupiter.controllers.CellController;
 import com.management.jupiter.models.enums.*;
+import com.management.jupiter.repository.CellRepositoryInterface;
+import com.management.jupiter.repository.impl.CellRepositoryInterfaceImpl;
 import com.management.jupiter.security.LoginSession;
 import com.management.jupiter.ui.users.AdminUI;
 import com.management.jupiter.ui.users.ClanDetailUI;
@@ -59,7 +61,6 @@ public class AdminView {
                     userManagement(admin);
                     break;
             }
-
         } while (dec != 0);
 
     }

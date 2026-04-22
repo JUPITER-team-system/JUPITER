@@ -13,6 +13,37 @@ public class Handler {
         if (!dir.exists()) dir.mkdirs();
     }
 
+    public static int nextId(String fileName) {
+        int maxId = 0;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.isBlank()) {
+                    continue;
+                }
+
+                String[] data = line.split(",");
+                if (data.length == 0) {
+                    continue;
+                }
+
+                try {
+                    int id = Integer.parseInt(data[0].trim());
+                    if (id > maxId) {
+                        maxId = id;
+                    }
+                } catch (NumberFormatException ignored) {
+                    // Compatibilidad con filas viejas sin ID al inicio.
+                }
+            }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return maxId + 1;
+    }
+
     // Leer CSV ignorando la primera línea (header)
     public List<String[]> read(String fileName) {
         List<String[]> dataList = new ArrayList<>();
@@ -56,6 +87,8 @@ public class Handler {
                     bw.write("name,email,password,role");
                 } else if (fileName.equals("clans.csv")) {
                     bw.write("id,clanName,teamLeader,members");
+                } else if (fileName.equals("cells.csv")) {
+                    bw.write("id,cellName");
                 }
                 bw.newLine();
             }
