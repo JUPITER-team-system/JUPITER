@@ -1,4 +1,4 @@
 package com.management.jupiter.services;
 
-public class TlService {
+public class TeamLeaderService {
 }
