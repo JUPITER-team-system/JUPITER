@@ -8,8 +8,8 @@ public class AdminUI {
 
         String adminUI = """
                 -----------------------------
-                |   Welcome To Admin Menu   |
-                |            %s             |
+                |   Welcome To Admin Menu:  |
+                |        %s                 |
                 -----------------------------
                 """.formatted(admin.getUsername())
                 ;
