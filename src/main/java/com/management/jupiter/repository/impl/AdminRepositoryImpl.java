@@ -10,11 +10,8 @@ import com.management.jupiter.models.enums.Role;
 import com.management.jupiter.security.PasswordHasher;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import static com.management.jupiter.persistance.DatabaseConnection.getConnection;
 
 public class AdminRepositoryImpl implements UserRepository {
     //Gets database connection from DatabaseConnection
