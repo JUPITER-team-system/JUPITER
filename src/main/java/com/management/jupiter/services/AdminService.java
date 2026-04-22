@@ -8,7 +8,7 @@ import com.management.jupiter.models.enums.Clan;
 import com.management.jupiter.models.enums.Role;
 import com.management.jupiter.models.enums.TlType;
 import com.management.jupiter.persistance.Handler;
-import com.management.jupiter.repository.impl.AdminRepositoryImpl;
+import com.management.jupiter.repository.interfaces.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +17,9 @@ import java.util.Optional;
 public class AdminService {
 
     private final UserService userService;
-    private final AdminRepositoryImpl adminRepository;
+    private final UserRepository adminRepository;
 
-    public AdminService (UserService userService, AdminRepositoryImpl adminRepository){
+    public AdminService (UserService userService, UserRepository adminRepository){
         this.adminRepository = adminRepository;
         this.userService = userService;
     }
