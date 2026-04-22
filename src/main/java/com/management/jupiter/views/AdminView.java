@@ -83,7 +83,7 @@ public class AdminView {
                     deleteClan();
                     break;
                 case 3:
-                    //Add Soon...
+                    updateClan();
                     break;
                 case  4:
                     //Add Soon...
@@ -116,6 +116,112 @@ public class AdminView {
         String value = input.readString("Enter an id or name to delete clan: ");
 
         clanController.deleteClan(value);
+
+    }
+
+    private void updateClan () {
+
+        ClanDetailUI.clanList(clanController.readAll());
+
+        String value = input.readString("Enter an id or name to edit clan: ");
+        Optional<Clan> clanOp = clanController.readIdOrName(value);
+
+        if (clanOp.isEmpty()){
+
+            System.out.println("Don't found Clan. Try again!");
+            return;
+
+        }
+
+        Clan clan = clanOp.get();
+
+        ClanDetailUI.clanUpdater(clan);
+
+        int op = input.readInt("what's your decision?: ");
+
+        if (op == 1) {
+
+            clan.setName(input.readString("What's the new name?: "));
+            clan.setDescription(input.readString("What's the new description?: "));
+
+        } else if (op == 2) {
+
+            managementClanMembers(clan);
+
+        }
+
+        clanController.updateClan(clan);
+
+    }
+
+    public void managementClanMembers(Clan clan){
+
+        ClanDetailUI.clanMemberUpdate(clan);
+
+        int op;
+
+        do {
+
+            op = input.readInt(">");
+
+            switch (op) {
+                case 1 -> {
+
+                    String id = input.readString("Id of coder to add: ");
+                    Optional<User> user = adminController.findById(id);
+
+                    user.ifPresent(u -> {
+
+                        if (u instanceof Coder coderFound){
+
+                            clan.getCoders().add(coderFound);
+                            System.out.println("The Coder:" + coderFound.getUsername() + "is found");
+
+                        }else {
+
+                            System.out.println("User found, but it's not a Coder");
+
+                        }
+
+                    });
+
+                }
+                case 2 -> {
+
+                    String id = input.readString("Id of coder to remove: ");
+                    clan.getCoders().removeIf(c -> c.getId().equals(id));
+
+                }
+                case 3 -> {
+
+                    String id = input.readString("Id of TL to add: ");
+                    Optional<User> user = adminController.findById(id);
+
+                    user.ifPresent(u ->{
+
+                        if (u instanceof Tl tlFound){
+
+                            clan.getTls().add(tlFound);
+                            System.out.println("The TL:" + tlFound.getUsername() + "is found");
+
+                        } else {
+
+                            System.out.println("User found, but it's not a TL");
+
+                        }
+
+                    });
+
+                }
+                case 4 -> {
+
+                    String id = input.readString("Id of TL to remove: ");
+                    clan.getTls().removeIf(t -> t.getId().equals(id));
+
+                }
+            }
+
+        } while (op != 0);
 
     }
 
