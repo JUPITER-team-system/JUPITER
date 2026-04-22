@@ -1,129 +1,101 @@
 package com.management.jupiter.services;
 
-import com.management.jupiter.models.*;
-import com.management.jupiter.persistance.DatabaseConnection;
+import com.management.jupiter.models.Clan;
 import com.management.jupiter.repository.ClanRepository;
+import com.management.jupiter.repository.impl.ClanRepositoryImpl;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Servicio de Clanes.
+ * La relación usuario↔clan se gestiona via user.clan_id (FK directa),
+ * NO con una tabla intermedia clan_members.
+ */
 public class ClanService {
 
-    private final ClanRepository clanRepo;
+    private final ClanRepositoryImpl impl;
 
-    public ClanService (ClanRepository clanRepo) {
-
-        this.clanRepo = clanRepo;
-
+    /** Constructor para controladores FX (reciben la fachada ClanRepository). */
+    public ClanService(ClanRepository facade) {
+        this.impl = new ClanRepositoryImpl();
     }
 
-    public List<Clan> readAll () {
+    /** Constructor de compatibilidad con código legado. */
+    public ClanService(ClanRepositoryImpl impl) {
+        this.impl = impl;
+    }
 
-        List<Clan> clanList = new ArrayList<>();
-
+    public List<Clan> readAll() {
         try {
-
-            clanList = clanRepo.findAll();
-
-        } catch (Exception err) {
-
-            System.err.println("Error to obtain clans: " + err.getMessage());
-
+            return impl.getAll();
+        } catch (Exception e) {
+            System.err.println("[ClanService] Error reading clans: " + e.getMessage());
+            return new ArrayList<>();
         }
-
-        return clanList;
-
     }
 
-    public void add (Clan clan) {
-
-        try(Connection conn = DatabaseConnection.getConnection()){
-
-            try {
-
-                conn.setAutoCommit(false);
-
-                UUID data = clanRepo.save(clan, conn);
-
-                for (User coder : clan.getCoders()){
-
-                    clanRepo.addUser(data, coder.getId(), conn);
-
-                }
-
-                for (User tl : clan.getTls()){
-
-                    clanRepo.addUser(data, tl.getId(), conn);
-
-                }
-
-                conn.commit();
-                System.out.println("Users added correctly");
-
-            }catch (SQLException err){
-
-                conn.rollback();
-                System.err.println("Revert transfer:" + err.getMessage());
-
+    /**
+     * Crea un nuevo clan (sin miembros inicialmente).
+     * Lanza RuntimeException con mensaje claro si falla.
+     */
+    public Clan add(Clan clan) {
+        try {
+            var id = impl.save(clan);
+            if (id != null) {
+                clan = new Clan(id.toString(), clan.getName(), clan.getDescription());
             }
-
-        }catch (Exception err){
-
-            System.err.println("Error to add Users: " + err.getMessage());
-
+            return clan;
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating clan: " + e.getMessage(), e);
         }
-
     }
 
-    public void delete (Clan clan) {
-
-        clanRepo.delete(clan.getId());
-
-    }
-
-    public void edit (Clan clan) {
-
-        try(Connection conn = DatabaseConnection.getConnection()){
-
-            try{
-
-                conn.setAutoCommit(false);
-
-                var clanId = clan.getId();
-
-                clanRepo.edit(clan, conn);
-
-                clanRepo.removeUser(clanId, conn);
-
-                for (User coder : clan.getCoders()){
-
-                    clanRepo.addUser(UUID.fromString(clanId), coder.getId(), conn);
-
-                }
-
-                for (User tl : clan.getTls()){
-
-                    clanRepo.addUser(UUID.fromString(clanId), tl.getId(), conn);
-
-                }
-
-                conn.commit();
-
-            }catch (SQLException err){
-
-                conn.rollback();
-                System.err.println("Revert transfer:" + err.getMessage());
-
-            }
-
-        }catch (Exception err){
-
-            System.err.println("Error to add Users: " + err.getMessage());
-
+    /**
+     * Elimina un clan y desvincula sus usuarios.
+     */
+    public void delete(Clan clan) {
+        try {
+            impl.delete(clan.getId());
+        } catch (Exception e) {
+            throw new RuntimeException("Error deleting clan: " + e.getMessage(), e);
         }
-
     }
 
+    /**
+     * Actualiza nombre y descripción del clan.
+     */
+    public void edit(Clan clan) {
+        try {
+            impl.update(clan);
+        } catch (Exception e) {
+            throw new RuntimeException("Error updating clan: " + e.getMessage(), e);
+        }
+    }
 
+    // ── Mensajes y Cells delegados al impl ──────────────────────────────────
+
+    public List<String[]> getMessagesByClan(String clanId) {
+        return impl.getMessagesByClan(clanId);
+    }
+
+    public String saveMessage(String clanId, String title, String message) {
+        return impl.saveMessage(clanId, title, message);
+    }
+
+    public void deleteMessage(String messageId) {
+        impl.deleteMessage(messageId);
+    }
+
+    public List<String[]> getCellsByClan(String clanId) {
+        return impl.getCellsByClan(clanId);
+    }
+
+    public String saveCell(String clanId, String name) {
+        return impl.saveCell(clanId, name);
+    }
+
+    public void deleteCell(String cellId) {
+        impl.deleteCell(cellId);
+    }
 }

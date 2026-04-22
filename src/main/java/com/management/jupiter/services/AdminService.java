@@ -7,69 +7,55 @@ import com.management.jupiter.models.User;
 import com.management.jupiter.models.enums.Clan;
 import com.management.jupiter.models.enums.Role;
 import com.management.jupiter.models.enums.TlType;
-import com.management.jupiter.persistance.Handler;
 import com.management.jupiter.repository.impl.AdminRepositoryImpl;
-
-import java.util.List;
 
 public class AdminService {
 
-    private final UserService userService;
-    private final AdminRepositoryImpl adminRepository;
+    private final UserService          userService;
+    private final AdminRepositoryImpl  adminRepository;
 
-    public AdminService (UserService userService, AdminRepositoryImpl adminRepository){
+    public AdminService(UserService userService, AdminRepositoryImpl adminRepository) {
+        this.userService     = userService;
         this.adminRepository = adminRepository;
-        this.userService = userService;
     }
 
-// I bring the entire NewUser object
-    public User createUser(String username, String email, String password, Role role, Clan clan, TlType tlType) throws Exception {
-        // Validate required fields
+    /**
+     * Crea un nuevo usuario.
+     * - ADMIN : sin clan (null).
+     * - TL    : clan null por defecto; se asigna después desde la vista de Clanes.
+     * - CODER : clan null por defecto; ídem.
+     */
+    public User createUser(String username, String email, String password,
+                           Role role, Clan clan, TlType tlType) throws Exception {
+
         if (username == null || username.isBlank() ||
-                email == null || email.isBlank() ||
-                password == null || password.isBlank() ||
-                role == null) {
-            throw new Exception("All fields are required");
+            email    == null || email.isBlank()    ||
+            password == null || password.isBlank() ||
+            role     == null) {
+            throw new Exception("Name, email, password and role are required.");
         }
 
-        // Check if email already exists using UserService
         if (userService.emailExists(email.trim())) {
-            throw new Exception("Email already exists");
+            throw new Exception("Email already exists: " + email.trim());
         }
 
         User user;
-        // Generate simple ID (temporary until robust ID system is implemented)
-        String nextId = String.valueOf(System.currentTimeMillis() % 10000);
-        if (role == Role.ADMIN) {
-            user = new Admin(nextId, username.trim(), email.trim(), password.trim(), role);
-        } else {
-            if (clan == null) {
-                throw new Exception("Clan is required for TL and CODER");
+        switch (role) {
+            case ADMIN -> user = new Admin(
+                    null,                          // id lo genera la BD
+                    username.trim(), email.trim(), password.trim(), role);
+            case TL -> {
+                TlType type = (tlType != null) ? tlType : TlType.PROGRAMACION;
+                user = new Tl(null, username.trim(), email.trim(), password.trim(), role, type);
             }
-
-            if (role == Role.TL) {
-                user = new Tl(nextId, username.trim(), email.trim(), password.trim(), role, tlType);
-            } else {
-                user = new Coder(nextId, username.trim(), email.trim(), password.trim(), role);
-            }
+            case CODER -> user = new Coder(
+                    null, username.trim(), email.trim(), password.trim(), role);
+            default -> throw new Exception("Unknown role: " + role);
         }
 
-        // Save user using UserRepositoryImpl
         adminRepository.save(user);
         return user;
     }
-//Show the users exist in to database
-    @Deprecated
-    public static void getUsersByRol(String role) {
-        var handler = new Handler();
-        List<String[]> users = handler.read("users.csv");
-        users.stream()
-                .filter(user -> user.length > 0 && user[4].equals(role))
-                .forEach(user -> {
-                    System.out.println("Name: " + user[1] + " Email: " + user[2] + " Role: " + user[4]);
-                });
-    }
-
 
     public void deleteUser(String value) {
         try {
@@ -79,10 +65,13 @@ public class AdminService {
         }
     }
 
-
+    /**
+     * Actualiza un campo específico de un usuario.
+     * @param idOrEmail  UUID o email del usuario.
+     * @param newValue   Nuevo valor.
+     * @param fieldName  "full_name" | "email" | "password"
+     */
     public static void updateUser(String idOrEmail, String newValue, String fieldName) {
-        // TODO: Implement update method using UserRepository
-        // This method needs to be implemented in the new architecture
-        throw new UnsupportedOperationException("Update user method not yet implemented in new architecture");
+        new AdminRepositoryImpl().updateField(idOrEmail, newValue, fieldName);
     }
 }

@@ -9,6 +9,10 @@ public class UserBlockedException extends Exception{
         this.timer = timer;
     }
 
+    public long getBlockedUntil() {
+        return timer;
+    }
+
     public long remaningTime() {
         long current = System.currentTimeMillis();
         long remaining = (timer - current) / 1000;

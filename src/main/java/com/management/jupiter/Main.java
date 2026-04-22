@@ -1,65 +1,28 @@
 package com.management.jupiter;
 
-import com.management.jupiter.controllers.*;
-import com.management.jupiter.models.*;
-import com.management.jupiter.repository.*;
-import com.management.jupiter.repository.impl.AdminRepositoryImpl;
-import com.management.jupiter.security.LoginSession;
-import com.management.jupiter.security.UserSession;
-import com.management.jupiter.services.*;
-import com.management.jupiter.util.scanner.ScannerUtil;
-import com.management.jupiter.views.*;
+import com.management.jupiter.util.ViewLoader;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
+/**
+ * Punto de entrada de la aplicación JUPITER con interfaz gráfica JavaFX.
+ * La lógica de negocio (servicios, repositorios, modelos) permanece intacta;
+ * aquí sólo se inicializa el Stage principal y se carga la vista de login.
+ */
+public class Main extends Application {
 
-import java.util.Scanner;
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setResizable(false);
+        ViewLoader.navigate(
+                primaryStage,
+                "/views/login.fxml",
+                "Jupiter – Management System",
+                900, 600
+        );
+    }
 
-public class Main {
-
-    public static void main (String[] args){
-
-        //Interfaces:
-
-
-        //Input:
-        Scanner scanner = new Scanner(System.in);
-        ScannerUtil input = new ScannerUtil(scanner);
-
-        //Repositories:
-        AdminRepositoryImpl adminRepo = new AdminRepositoryImpl();
-        ClanRepository clanRepo = new ClanRepository();
-        CoderRepository coderRepo = new CoderRepository();
-        TeamLeaderRepository tlRepo = new TeamLeaderRepository(clanRepo);
-
-        //Services:
-        AssignmentService assignmentService = new AssignmentService(clanRepo, tlRepo, coderRepo);
-        UserService userService = new UserService();
-        AdminService adminService = new AdminService(userService, adminRepo);
-
-
-        //Controllers:
-        UserController userController = new UserController();
-        AdminController adminController = new AdminController(adminService);
-        TlController tlController = new TlController();
-        CoderController coderController = new CoderController();
-
-        //Views:
-        LoginView login = new LoginView(input, userController);
-
-        User user = login.login();
-
-        LoginSession loggedUser = new UserSession(user);
-
-        AdminView admin = new AdminView(input, adminController, loggedUser);
-        TlView tl = new TlView(input, tlController);
-        CoderView coder = new CoderView(input, coderController);
-
-        if(user instanceof Admin loggedAdmin){
-            admin.show(loggedAdmin);
-        } else if (user instanceof Tl loggedTl) {
-            tl.show(loggedTl);
-        } else if (user instanceof Coder loggedCoder){
-            coder.show(loggedCoder);
-        }
-
+    public static void main(String[] args) {
+        launch(args);
     }
 }

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.String?>
+
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.management.jupiter.controllers.LoginController"
+           style="-fx-background-color: linear-gradient(to bottom right, #1e2533, #2d3a52);">
+    <stylesheets>
+        <String fx:value="/styles/jupiter.css"/>
+    </stylesheets>
+
+    <VBox alignment="CENTER" spacing="0" maxWidth="420" styleClass="login-card">
+        <padding><Insets top="48" right="44" bottom="44" left="44"/></padding>
+
+        <!-- Brand -->
+        <VBox alignment="CENTER" spacing="6">
+            <Label text="⬡  JUPITER" styleClass="login-title"/>
+            <Label text="Management System" styleClass="login-subtitle"/>
+        </VBox>
+
+        <!-- Divider -->
+        <Region prefHeight="1" maxHeight="1"
+                style="-fx-background-color: #e2e8f0;">
+            <VBox.margin><Insets top="24" bottom="28"/></VBox.margin>
+        </Region>
+
+        <!-- Email -->
+        <Label text="Email Address" styleClass="form-label"/>
+        <TextField fx:id="emailField" promptText="your@email.com"
+                   styleClass="jupiter-field" maxWidth="1.7976931348623157E308">
+            <VBox.margin><Insets bottom="14"/></VBox.margin>
+        </TextField>
+
+        <!-- Password -->
+        <Label text="Password" styleClass="form-label"/>
+        <PasswordField fx:id="passwordField" promptText="••••••••"
+                       styleClass="jupiter-field" maxWidth="1.7976931348623157E308">
+            <VBox.margin><Insets bottom="24"/></VBox.margin>
+        </PasswordField>
+
+        <!-- Error -->
+        <Label fx:id="errorLabel" text="" styleClass="login-error"
+               wrapText="true" maxWidth="1.7976931348623157E308" visible="false">
+            <VBox.margin><Insets bottom="14"/></VBox.margin>
+        </Label>
+
+        <!-- Buttons -->
+        <Button fx:id="loginButton" text="Sign In" onAction="#handleLogin"
+                styleClass="login-btn" maxWidth="1.7976931348623157E308"
+                defaultButton="true">
+            <VBox.margin><Insets bottom="10"/></VBox.margin>
+        </Button>
+        <Button text="Exit" onAction="#handleExit"
+                styleClass="exit-btn" maxWidth="1.7976931348623157E308"/>
+    </VBox>
+</StackPane>
