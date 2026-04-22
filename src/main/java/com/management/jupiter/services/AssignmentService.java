@@ -6,7 +6,7 @@ import com.management.jupiter.models.Tl;
 import com.management.jupiter.models.enums.TlType;
 import com.management.jupiter.repository.impl.ClanRepositoryImpl;
 import com.management.jupiter.repository.CoderRepository;
-import com.management.jupiter.repository.TeamLeaderRepository;
+import com.management.jupiter.repository.impl.TeamLeaderRepositoryImpl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,11 +22,11 @@ import java.util.stream.Collectors;
 public class AssignmentService {
 
     private final ClanRepositoryImpl clanRepositoryImpl;
-    private final TeamLeaderRepository  tlRepository;
+    private final TeamLeaderRepositoryImpl tlRepository;
     private final CoderRepository       coderRepository;
 
     public AssignmentService(ClanRepositoryImpl clanRepositoryImpl,
-                             TeamLeaderRepository tlRepository,
+                             TeamLeaderRepositoryImpl tlRepository,
                              CoderRepository coderRepository) {
 
         this.clanRepositoryImpl = clanRepositoryImpl;
