@@ -2,11 +2,15 @@ package com.management.jupiter.views;
 
 import com.management.jupiter.controllers.AdminController;
 import com.management.jupiter.controllers.ClanController;
-import com.management.jupiter.models.Admin;
+import com.management.jupiter.models.*;
+import com.management.jupiter.models.Clan;
 import com.management.jupiter.models.enums.*;
 import com.management.jupiter.security.interfaces.LoginSession;
 import com.management.jupiter.ui.users.AdminUI;
+import com.management.jupiter.ui.users.ClanDetailUI;
 import com.management.jupiter.util.scanner.ScannerUtil;
+
+import java.util.Optional;
 
 public class AdminView {
 
@@ -40,13 +44,13 @@ public class AdminView {
 
             switch (dec) {
                 case 1:
-                    //Add Soon...
+
                     break;
                 case 2:
                     //Add Soon...
                     break;
                 case 3:
-                    //Add Soon...
+                    ClanDetailUI.clanList(clanController.readAll());
                     break;
                 case  4:
                     clanManagement(admin);
@@ -73,10 +77,10 @@ public class AdminView {
 
             switch (dec) {
                 case 1:
-                    //Add Soon...
+                    createClan();
                     break;
                 case 2:
-                    //Add Soon...
+                    deleteClan();
                     break;
                 case 3:
                     //Add Soon...
@@ -93,6 +97,25 @@ public class AdminView {
             }
 
         } while (dec != 0);
+
+    }
+
+    private void createClan() {
+
+        String name = input.readString("Clan name: ");
+        String desc = input.readString("Clan description: ");
+
+        clanController.createClan(name, desc);
+
+    }
+
+    private void deleteClan () {
+
+        ClanDetailUI.clanList(clanController.readAll());
+
+        String value = input.readString("Enter an id or name to delete clan: ");
+
+        clanController.deleteClan(value);
 
     }
 
@@ -230,7 +253,6 @@ public class AdminView {
             System.err.println("Error to update user" + err.getMessage());
 
         }
-
 
     }
 }
