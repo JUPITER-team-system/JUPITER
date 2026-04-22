@@ -263,9 +263,9 @@ public class ClanRepositoryImpl implements ClanRepository {
     }
 
     @Override
-    public void delete (String id) {
+    public void delete (String value) {
 
-        String sql = "DELETE FROM \"Cohorte\".clan WHERE ID = ?";
+        String sql = "DELETE FROM \"Cohorte\".clan WHERE name = ? or id = ?";
 
         try {
 
@@ -273,8 +273,13 @@ public class ClanRepositoryImpl implements ClanRepository {
 
             try (PreparedStatement pstm = conn.prepareStatement(sql)){
 
+                pstm.setString(1, value);
 
-                pstm.setObject(1, UUID.fromString(id));
+                try {
+                    pstm.setObject(2, UUID.fromString(value));
+                }catch (IllegalArgumentException err){
+                    pstm.setObject(2, null);
+                }
 
                 int rows = pstm.executeUpdate();
 
