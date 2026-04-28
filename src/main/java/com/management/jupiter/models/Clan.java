@@ -39,6 +39,10 @@ public class Clan {
         this.name = name;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     // ── Gestión de Coders ────────────────────────────────────────────────────
 
     public List<Coder> getCoders() {
@@ -114,5 +118,13 @@ public class Clan {
                 ", totalCoders=" + coders.size() +
                 ", totalTLs=" + tls.size() +
                 '}';
+    }
+
+    public void setCoders(List<Coder> coders) {
+        this.coders = (coders != null) ? coders : new ArrayList<>();
+    }
+
+    public void setTls(List<Tl> tls) {
+        this.tls = (tls != null) ? tls : new ArrayList<>();
     }
 }

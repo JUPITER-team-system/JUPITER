@@ -1,10 +1,10 @@
-package com.management.jupiter.repository;
+package com.management.jupiter.repository.impl;
 
 import com.management.jupiter.models.Tl;
 import com.management.jupiter.models.Clan;
 import com.management.jupiter.models.enums.Role;
 import com.management.jupiter.models.enums.TlType;
-import com.management.jupiter.repository.impl.ClanRepositoryImpl;
+import com.management.jupiter.repository.interfaces.ClanRepository;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -20,12 +20,12 @@ import java.util.stream.Collectors;
 /**
  * Repositorio respaldado por users.csv para TLs.
  */
-public class TeamLeaderRepository {
+public class TeamLeaderRepositoryImpl {
 
     public static final String FILE_PATH = "data/users.csv";
-    private final ClanRepositoryImpl clanRepo;
+    private final ClanRepository clanRepo;
 
-    public TeamLeaderRepository (ClanRepositoryImpl clanRepo) {
+    public TeamLeaderRepositoryImpl(ClanRepository clanRepo) {
         this.clanRepo = clanRepo;
     }
 

@@ -3,7 +3,7 @@ package com.management.jupiter.security;
 import com.management.jupiter.models.User;
 import com.management.jupiter.models.enums.Role;
 
-public final class UserSession implements LoginSession{
+public final class UserSession implements LoginSession {
 
     private final User user;
 

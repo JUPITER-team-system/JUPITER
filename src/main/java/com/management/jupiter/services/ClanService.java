@@ -2,17 +2,16 @@ package com.management.jupiter.services;
 
 import com.management.jupiter.models.*;
 import com.management.jupiter.persistance.DatabaseConnection;
-import com.management.jupiter.repository.impl.ClanRepositoryImpl;
+import com.management.jupiter.repository.interfaces.ClanRepository;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
 public class ClanService {
 
-    private final ClanRepositoryImpl clanRepo;
+    private final ClanRepository clanRepo;
 
-    public ClanService (ClanRepositoryImpl clanRepo) {
+    public ClanService (ClanRepository clanRepo) {
 
         this.clanRepo = clanRepo;
 
@@ -33,6 +32,18 @@ public class ClanService {
         }
 
         return clanList;
+
+    }
+
+    public Optional<Clan> readIdOrName (String value) {
+
+        if (value == null || value.isBlank()){
+
+        throw new IllegalArgumentException("The name or id can't be empty");
+
+        }
+
+        return clanRepo.findByIdOrName(value);
 
     }
 
@@ -69,9 +80,9 @@ public class ClanService {
 
     }
 
-    public void delete (Clan clan) {
+    public void delete (String value) {
 
-        clanRepo.delete(clan.getId());
+        clanRepo.delete(value);
 
     }
 
@@ -100,6 +111,7 @@ public class ClanService {
                 }
 
                 DatabaseConnection.commit();
+                System.out.println("Clan and members updated correctly!");
 
             }catch (SQLException err){
 
