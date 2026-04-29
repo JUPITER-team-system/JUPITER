@@ -52,6 +52,9 @@ public class Tl extends User {
 
     @Override
     public String toString() {
-        return "id->[" + getId() + "] " + getUsername() + " (" + getRole() + " / " + tlType + ")";
+        return "Tl{" + "TLName " + getUsername() +
+                "tlType=" + tlType +
+                ", clans=" + clans +
+                '}';
     }
 }

@@ -2,19 +2,18 @@ package com.management.jupiter.models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Cell {
     private int id;
     private final String name;
-    private final int clanId;
-    private List<Coder> members;
+    private final UUID clanId;
+    private final List<Coder> members;
 
-    public Cell(String name, int clanId) {
+    public Cell(String name, UUID clanId) {
         this.name = name.toUpperCase();
         this.clanId = clanId;
-        //this.members = members;
         this.members = new ArrayList<>();
-
     }
 
     public int getId() {
@@ -25,7 +24,7 @@ public class Cell {
         return name;
     }
 
-    public int getClanId() {
+    public UUID getClanId() {
         return clanId;
     }
 

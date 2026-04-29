@@ -1,19 +1,20 @@
 package com.management.jupiter.controllers;
 
-import com.management.jupiter.models.Cell;
-import com.management.jupiter.persistance.Handler;
-import com.management.jupiter.repository.ai.AiProvider;
-import com.management.jupiter.repository.ai.GeminiProvider;
+import com.management.jupiter.models.Clan;
 import com.management.jupiter.services.CellServices;
 
 public class CellController {
-    AiProvider aiProvider = new GeminiProvider();
-    CellServices cellServices = new CellServices(aiProvider);
 
-    public void createCell() {
+    private final CellServices cellServices;
+
+    public CellController(CellServices cellServices) {
+        this.cellServices = cellServices;
+    }
+
+    public void createCell(int cellsQuantity, String theme, Clan clan) {
         try {
-            cellServices.createCell();
-            System.out.println("Clan created");
+            cellServices.createCell(cellsQuantity, theme, clan);
+            System.out.println("Cells created");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
