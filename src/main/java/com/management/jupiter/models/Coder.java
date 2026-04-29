@@ -12,6 +12,10 @@ public class Coder extends User {
         super(id, username, email, password, role, null);
     }
 
+public Coder(String username, String email) {
+        super(username, email);
+    }
+
     @Override
     public String toString() {
         return "id->[" + getId() + "] " + getUsername() + " (" + getRole() + ")";

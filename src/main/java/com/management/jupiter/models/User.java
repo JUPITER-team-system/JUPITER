@@ -31,6 +31,14 @@ public class User {
         this.clan_id = clanId;
     }
 
+    public User(String username, String email) {
+        this.username = username;
+        this.email = email;
+        this.password = null;
+        this.role = null;
+        this.clan_id = null;
+    }
+
     public String getId() { return id; }
     public String getUsername()  { return username; }
     public String getPassword()  { return password; }
