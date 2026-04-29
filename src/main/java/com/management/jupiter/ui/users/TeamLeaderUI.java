@@ -39,8 +39,8 @@ public class TeamLeaderUI {
 
         String coder = """
                 -----------------------------
-                | 1) Add Coder.             |
-                | 2) Delete coder           |
+                | 1) Add Existing Coder.    |
+                | 2) Remove Coder.          |
                 | 3) Add Scrum Team.        |
                 | 4) Delete Scrum Team      |
                 | 0) Exit                   |

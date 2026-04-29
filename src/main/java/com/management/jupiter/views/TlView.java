@@ -69,10 +69,10 @@ public class TlView {
 
             switch (dec) {
                 case 1:
-                    //Add Soon...
+                    addExistingCoderToManagedClan(tl);
                     break;
                 case 2:
-                    //Add Soon...
+                    removeCoderFromManagedClan(tl);
                     break;
                 case 3:
                     createCellsForManagedClan(tl);
@@ -96,6 +96,40 @@ public class TlView {
         int cellsQuantity = input.readInt("How many cells do you want to create?");
         String theme = input.readString("Which theme should be used for the cells?");
         cellController.createCell(cellsQuantity, theme, clan.get());
+    }
+
+    private void addExistingCoderToManagedClan(Tl tl) {
+        Optional<Clan> clan = selectManagedClan(tl);
+
+        if (clan.isEmpty()) {
+            return;
+        }
+
+        String coderEmailOrId = input.readString("Enter coder email or id:");
+
+        try {
+            Coder coder = controller.addExistingCoderToClan(coderEmailOrId, clan.get());
+            System.out.printf("Coder %s was added to clan %s.%n", coder.getUsername(), clan.get().getName());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void removeCoderFromManagedClan(Tl tl) {
+        Optional<Clan> clan = selectManagedClan(tl);
+
+        if (clan.isEmpty()) {
+            return;
+        }
+
+        String coderEmailOrId = input.readString("Enter coder email or id:");
+
+        try {
+            Coder coder = controller.removeCoderFromClan(coderEmailOrId, clan.get());
+            System.out.printf("Coder %s was removed from clan %s.%n", coder.getUsername(), clan.get().getName());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void viewTeam(Tl tl) {

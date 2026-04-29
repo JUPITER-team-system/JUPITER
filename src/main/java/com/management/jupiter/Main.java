@@ -42,6 +42,7 @@ public class Main {
         AssignmentService assignmentService = new AssignmentService(clanRepo, tlRepo, coderRepo);
         UserService userService = new UserService();
         AdminService adminService = new AdminService(userService, adminRepo);
+        TeamLeaderService teamLeaderService = new TeamLeaderService(coderRepo);
         ClanService clanService = new ClanService(clanRepo);
         CellServices cellServices = new CellServices(aiProvider,cellRepository);
         InformationService informationService = new InformationService(informationRepository);
@@ -49,7 +50,7 @@ public class Main {
         //Controllers:
         UserController userController = new UserController();
         AdminController adminController = new AdminController(adminService);
-        TlController tlController = new TlController();
+        TlController tlController = new TlController(teamLeaderService);
         CoderController coderController = new CoderController();
         ClanController clanController = new ClanController(clanService);
         CellController cellController = new CellController(cellServices);
