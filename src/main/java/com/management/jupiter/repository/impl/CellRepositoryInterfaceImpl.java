@@ -11,7 +11,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -75,6 +77,47 @@ public class CellRepositoryInterfaceImpl implements CellRepositoryInterface {
         }
 
         return coders;
+    }
+
+    @Override
+    public Map<String, List<Coder>> findCodersGroupedByCell(UUID clanId) {
+        Map<String, List<Coder>> codersByCell = new LinkedHashMap<>();
+        String sql = """
+                SELECT
+                    COALESCE(c.name, 'Without cell') AS cell_name,
+                    u.id,
+                    u.full_name,
+                    u.email,
+                    u.password
+                FROM "Cohorte"."user" u
+                LEFT JOIN "Cohorte".cells c ON c.id = u.cell_id
+                WHERE u.clan_id = ? AND UPPER(u.role) = ?
+                ORDER BY c.name NULLS LAST, u.full_name
+                """;
+
+        try (PreparedStatement stmnt = getConnection().prepareStatement(sql)) {
+            stmnt.setObject(1, clanId);
+            stmnt.setString(2, Role.CODER.name());
+
+            try (ResultSet rs = stmnt.executeQuery()) {
+                while (rs.next()) {
+                    String cellName = rs.getString("cell_name");
+                    Coder coder = new Coder(
+                            rs.getString("id"),
+                            rs.getString("full_name"),
+                            rs.getString("email"),
+                            rs.getString("password"),
+                            Role.CODER
+                    );
+
+                    codersByCell.computeIfAbsent(cellName, key -> new ArrayList<>()).add(coder);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return codersByCell;
     }
 
     @Override

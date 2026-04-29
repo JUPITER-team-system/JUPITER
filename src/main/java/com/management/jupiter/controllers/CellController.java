@@ -1,7 +1,11 @@
 package com.management.jupiter.controllers;
 
 import com.management.jupiter.models.Clan;
+import com.management.jupiter.models.Coder;
 import com.management.jupiter.services.CellServices;
+
+import java.util.List;
+import java.util.Map;
 
 public class CellController {
 
@@ -22,5 +26,9 @@ public class CellController {
 
     public void assignateCoderToCell() {
 
+    }
+
+    public Map<String, List<Coder>> getCodersGroupedByCell(Clan clan) {
+        return cellServices.getCodersGroupedByCell(clan);
     }
 }

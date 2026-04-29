@@ -10,6 +10,7 @@ import com.management.jupiter.repository.interfaces.CellRepositoryInterface;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class CellServices {
@@ -59,5 +60,13 @@ public class CellServices {
             UUID cellId = cellIds.get(i % cellIds.size());
             cellRepository.assignCoderToCell(coders.get(i).getId(), cellId, clanId);
         }
+    }
+
+    public Map<String, List<Coder>> getCodersGroupedByCell(Clan clan) {
+        if (clan == null || clan.getId() == null || clan.getId().isBlank()) {
+            throw new IllegalStateException("A valid clan is required to view the team.");
+        }
+
+        return cellRepository.findCodersGroupedByCell(UUID.fromString(clan.getId()));
     }
 }
