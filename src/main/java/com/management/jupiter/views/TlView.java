@@ -1,9 +1,11 @@
 package com.management.jupiter.views;
 
 import com.management.jupiter.controllers.CellController;
+import com.management.jupiter.controllers.InformationController;
 import com.management.jupiter.controllers.TlController;
 import com.management.jupiter.models.Clan;
 import com.management.jupiter.models.Coder;
+import com.management.jupiter.models.Information;
 import com.management.jupiter.models.Tl;
 import com.management.jupiter.ui.users.TeamLeaderUI;
 import com.management.jupiter.util.scanner.ScannerUtil;
@@ -17,11 +19,13 @@ public class TlView {
     private final ScannerUtil input;
     private final TlController controller;
     private final CellController cellController;
+    private final InformationController informationController;
 
-    public TlView(ScannerUtil input, TlController controller, CellController cellController) {
+    public TlView(ScannerUtil input, TlController controller, CellController cellController, InformationController informationController) {
         this.input = input;
         this.controller = controller;
         this.cellController = cellController;
+        this.informationController = informationController;
     }
 
     public void show(Tl tl) {
@@ -36,10 +40,10 @@ public class TlView {
 
             switch (dec) {
                 case 1:
-                    //Add Soon...
+                    createInformation(tl);
                     break;
                 case 2:
-                    //Add Soon...
+                    viewInformation(tl);
                     break;
                 case 3:
                     viewTeam(tl);
@@ -115,6 +119,49 @@ public class TlView {
                 System.out.printf("%d) %s%n", i + 1, coder.getUsername());
             }
         });
+        System.out.println();
+    }
+
+    private void createInformation(Tl tl) {
+        Optional<Clan> clan = selectManagedClan(tl);
+
+        if (clan.isEmpty()) {
+            return;
+        }
+
+        String title = input.readString("Information title (max 40 characters):");
+        String message = input.readString("Information message:");
+
+        try {
+            informationController.createInformation(title, message, clan.get());
+            System.out.println("Information created.");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void viewInformation(Tl tl) {
+        Optional<Clan> clan = selectManagedClan(tl);
+
+        if (clan.isEmpty()) {
+            return;
+        }
+
+        printInformation(informationController.findByClan(clan.get()), "Information for clan: " + clan.get().getName());
+    }
+
+    private void printInformation(List<Information> informationList, String header) {
+        if (informationList.isEmpty()) {
+            System.out.println("There is no information to show.");
+            return;
+        }
+
+        System.out.printf("%n%s%n", header);
+        for (int i = 0; i < informationList.size(); i++) {
+            Information information = informationList.get(i);
+            System.out.printf("%n%d) %s%n", i + 1, information.getTitle());
+            System.out.println(information.getMessage());
+        }
         System.out.println();
     }
 

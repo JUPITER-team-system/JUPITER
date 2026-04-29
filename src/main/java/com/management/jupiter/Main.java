@@ -35,6 +35,7 @@ public class Main {
 
         AiProvider aiProvider = new GeminiProvider();
         CellRepositoryInterface cellRepository = new CellRepositoryInterfaceImpl();
+        InformationRepository informationRepository = new InformationRepositoryImpl();
 
 
         //Services:
@@ -43,6 +44,7 @@ public class Main {
         AdminService adminService = new AdminService(userService, adminRepo);
         ClanService clanService = new ClanService(clanRepo);
         CellServices cellServices = new CellServices(aiProvider,cellRepository);
+        InformationService informationService = new InformationService(informationRepository);
 
         //Controllers:
         UserController userController = new UserController();
@@ -51,6 +53,7 @@ public class Main {
         CoderController coderController = new CoderController();
         ClanController clanController = new ClanController(clanService);
         CellController cellController = new CellController(cellServices);
+        InformationController informationController = new InformationController(informationService);
 
         //Views:
         LoginView login = new LoginView(input, userController);
@@ -60,8 +63,8 @@ public class Main {
         LoginSession loggedUser = new UserSession(user);
 
         AdminView admin = new AdminView(input, loggedUser, adminController, clanController);
-        TlView tl = new TlView(input, tlController, cellController);
-        CoderView coder = new CoderView(input, coderController);
+        TlView tl = new TlView(input, tlController, cellController, informationController);
+        CoderView coder = new CoderView(input, coderController, informationController);
 
         if(user instanceof Admin loggedAdmin){
             admin.show(loggedAdmin);
