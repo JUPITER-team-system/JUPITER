@@ -21,7 +21,7 @@ public class CodeRepositoryImpl implements Repository<Coder, UUID> {
     public List<Coder> getAll() {
         //Voy a la databse y realizo la consulta
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement psmt = conn.prepareStatement("SELECT * FROM clans WHERE id = ? == clan_id");
+             PreparedStatement psmt = conn.prepareStatement("SELECT * FROM clans WHERE id = ? = clan_id");
         ) {
 
         } catch (Exception e) {
