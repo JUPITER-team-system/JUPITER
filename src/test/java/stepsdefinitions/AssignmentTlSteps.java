@@ -4,7 +4,7 @@ import com.management.jupiter.models.Tl;
 import com.management.jupiter.models.enums.TlType;
 import com.management.jupiter.repository.impl.ClanRepositoryImpl;
 import com.management.jupiter.repository.CoderRepository;
-import com.management.jupiter.repository.TeamLeaderRepository;
+import com.management.jupiter.repository.impl.TeamLeaderRepositoryImpl;
 import com.management.jupiter.services.AssignmentService;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -28,7 +28,7 @@ public class AssignmentTlSteps {
 
     private String originalCsvContent;
     private AssignmentService assignmentService;
-    private TeamLeaderRepository teamLeaderRepository;
+    private TeamLeaderRepositoryImpl teamLeaderRepository;
     private Exception assignmentException;
     private ClanRepositoryImpl clanRepositoryImpl;
 
@@ -44,7 +44,7 @@ public class AssignmentTlSteps {
                 """);
 
         clanRepositoryImpl = new ClanRepositoryImpl();
-        teamLeaderRepository = new TeamLeaderRepository(clanRepositoryImpl);
+        teamLeaderRepository = new TeamLeaderRepositoryImpl(clanRepositoryImpl);
         assignmentService = new AssignmentService(
                 new ClanRepositoryImpl(),
                 teamLeaderRepository,

@@ -6,7 +6,8 @@ import com.management.jupiter.models.Tl;
 import com.management.jupiter.models.enums.TlType;
 import com.management.jupiter.repository.impl.ClanRepositoryImpl;
 import com.management.jupiter.repository.CoderRepository;
-import com.management.jupiter.repository.TeamLeaderRepository;
+import com.management.jupiter.repository.impl.TeamLeaderRepositoryImpl;
+import com.management.jupiter.repository.interfaces.ClanRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,15 +22,15 @@ import java.util.stream.Collectors;
  */
 public class AssignmentService {
 
-    private final ClanRepositoryImpl clanRepositoryImpl;
-    private final TeamLeaderRepository  tlRepository;
+    private final ClanRepository clanRepository;
+    private final TeamLeaderRepositoryImpl tlRepository;
     private final CoderRepository       coderRepository;
 
-    public AssignmentService(ClanRepositoryImpl clanRepositoryImpl,
-                             TeamLeaderRepository tlRepository,
+    public AssignmentService(ClanRepository clanRepository,
+                             TeamLeaderRepositoryImpl tlRepository,
                              CoderRepository coderRepository) {
 
-        this.clanRepositoryImpl = clanRepositoryImpl;
+        this.clanRepository = clanRepository;
         this.tlRepository    = tlRepository;
         this.coderRepository = coderRepository;
 
@@ -48,7 +49,7 @@ public class AssignmentService {
     public void clanTls(String tlId, String clanId) {
 
         Tl   tl   = tlRepository.findById(tlId);
-        Clan clan = clanRepositoryImpl.findByIdOrName(clanId).orElseThrow();
+        Clan clan = clanRepository.findByIdOrName(clanId).orElseThrow();
 
         // Verificar que el TL no esté ya asignado a este clan
         if (clan.hasTl(tl)) {
@@ -72,7 +73,7 @@ public class AssignmentService {
      */
     public void desasignarTlDeClan(String tlId, String clanId) {
         Tl   tl   = tlRepository.findById(tlId);
-        Clan clan = clanRepositoryImpl.findByIdOrName(clanId).orElseThrow();
+        Clan clan = clanRepository.findByIdOrName(clanId).orElseThrow();
 
         if (!clan.hasTl(tl)) {
             throw new IllegalStateException(
@@ -93,7 +94,7 @@ public class AssignmentService {
      */
     public void asignarCoderAClan(String coderId, String clanId) {
         Coder coder = coderRepository.findById(coderId);
-        Clan  clan  = clanRepositoryImpl.findByIdOrName(clanId).orElseThrow();
+        Clan  clan  = clanRepository.findByIdOrName(clanId).orElseThrow();
 
         clan.addCoder(coder);
     }
@@ -103,7 +104,7 @@ public class AssignmentService {
      */
     public void desasignarCoderDeClan(String coderId, String clanId) {
         Coder coder = coderRepository.findById(coderId);
-        Clan  clan  = clanRepositoryImpl.findByIdOrName(clanId).orElseThrow();
+        Clan  clan  = clanRepository.findByIdOrName(clanId).orElseThrow();
 
         clan.removeCoder(coder);
     }
@@ -116,7 +117,7 @@ public class AssignmentService {
      * Retorna la lista de TLs asignados a un clan.
      */
     public List<Tl> obtenerTlsDeClan(String clanId) {
-        Clan clan = clanRepositoryImpl.findByIdOrName(clanId).orElseThrow();
+        Clan clan = clanRepository.findByIdOrName(clanId).orElseThrow();
         return tlRepository.findAll().stream()
                 .filter(tl -> tl.isAssignedToClan(clan))
                 .collect(Collectors.toList());
@@ -126,7 +127,7 @@ public class AssignmentService {
      * Retorna la lista de Coders asignados a un clan.
      */
     public List<Coder> obtenerCodersDeClan(String clanId) {
-        return clanRepositoryImpl.findByIdOrName(clanId).orElseThrow().getCoders();
+        return clanRepository.findByIdOrName(clanId).orElseThrow().getCoders();
     }
 
     /**
@@ -140,7 +141,7 @@ public class AssignmentService {
      * Retorna los TLs de un tipo específico dentro de un clan.
      */
     public List<Tl> obtenerTlsDeClanPorTipo(String clanId, TlType tipo) {
-        return clanRepositoryImpl.findByIdOrName(clanId).orElseThrow().getTls().stream()
+        return clanRepository.findByIdOrName(clanId).orElseThrow().getTls().stream()
                 .filter(tl -> tl.getTlType() == tipo)
                 .collect(Collectors.toList());
     }

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.management.jupiter.fx.controllers.CoderDashboardController">
+   <top>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="1200.0" style="-fx-background-color: #4CAF50;">
+               <children>
+                  <Label fx:id="welcomeLabel" text="Bienvenido, Coder" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Button fx:id="logoutButton" mnemonicParsing="false" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" text="Cerrar Sesión">
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="1200.0" style="-fx-background-color: #f5f5f5; -fx-border-color: #ddd; -fx-border-width: 0 0 1 0;">
+               <children>
+                  <Button fx:id="refreshButton" mnemonicParsing="false" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" text="Actualizar">
+                     <HBox.margin>
+                        <Insets left="20.0" right="10.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Label text="Panel de Coder - JUPITER Management System">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <TabPane fx:id="mainTabPane" prefHeight="700.0" prefWidth="1200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+         <tabs>
+
+            <!-- ══════════════ TAB: INFORMACIÓN ══════════════ -->
+            <Tab fx:id="informationTab" text="Información">
+               <content>
+                  <VBox prefHeight="700.0" prefWidth="1200.0" spacing="10.0">
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                     <children>
+                        <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="1160.0" spacing="10.0">
+                           <children>
+                              <Region HBox.hgrow="ALWAYS" />
+                              <Label style="-fx-font-weight: bold; -fx-font-size: 14px;" text="Mensajes del Team Leader" />
+                           </children>
+                        </HBox>
+                        <TableView fx:id="informationTable" prefHeight="600.0" prefWidth="1160.0" VBox.vgrow="ALWAYS">
+                          <columns>
+                            <TableColumn fx:id="infoIdColumn" prefWidth="60.0" text="No." />
+                            <TableColumn fx:id="infoTitleColumn" prefWidth="280.0" text="Título" />
+                            <TableColumn fx:id="infoMessageColumn" prefWidth="380.0" text="Mensaje" />
+                            <TableColumn fx:id="infoTypeColumn" prefWidth="100.0" text="Tipo" />
+                            <TableColumn fx:id="infoDateColumn" prefWidth="180.0" text="Fecha" />
+                            <TableColumn fx:id="infoActionsColumn" prefWidth="120.0" text="Acciones" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+
+            <!-- ══════════════ TAB: MI EQUIPO ══════════════ -->
+            <Tab fx:id="teamTab" text="Mi Equipo">
+               <content>
+                  <VBox prefHeight="700.0" prefWidth="1200.0" spacing="10.0">
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                     <children>
+                        <Label style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #4CAF50;" text="Mi Equipo de Trabajo" />
+                        <TreeView fx:id="teamTreeView" prefHeight="620.0" prefWidth="1160.0" VBox.vgrow="ALWAYS" />
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+
+            <!-- ══════════════ TAB: MI PERFIL ══════════════ -->
+            <Tab fx:id="profileTab" text="Mi Perfil">
+               <content>
+                  <VBox prefHeight="700.0" prefWidth="1200.0" spacing="20.0">
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                     <children>
+                        <Label style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #4CAF50;" text="Información del Perfil" />
+                        <GridPane hgap="20.0" prefHeight="600.0" prefWidth="1160.0" vgap="20.0">
+                           <children>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0"
+                                    style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 3);"
+                                    GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                 <children>
+                                    <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;" text="Nombre de Usuario" />
+                                    <Label fx:id="usernameLabel" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #333;" text="" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0"
+                                    style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 3);"
+                                    GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                 <children>
+                                    <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;" text="Email" />
+                                    <Label fx:id="emailLabel" style="-fx-font-size: 16px; -fx-text-fill: #333;" text="" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0"
+                                    style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 3);"
+                                    GridPane.columnIndex="2" GridPane.rowIndex="0">
+                                 <children>
+                                    <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;" text="Clan" />
+                                    <Label fx:id="clanLabel" style="-fx-font-size: 16px; -fx-text-fill: #333;" text="" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0"
+                                    style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 3);"
+                                    GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                 <children>
+                                    <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #FF9800;" text="Célula" />
+                                    <Label fx:id="cellLabel" style="-fx-font-size: 16px; -fx-text-fill: #333;" text="Sin Célula" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0"
+                                    style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 3);"
+                                    GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <children>
+                                    <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;" text="Rol" />
+                                    <Label fx:id="roleLabel" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #333;" text="" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0"
+                                    style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 3);"
+                                    GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                 <children>
+                                    <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;" text="Total Mensajes" />
+                                    <Label fx:id="totalInfoLabel" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #333;" text="0" />
+                                 </children>
+                              </VBox>
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="100.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="100.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                        </GridPane>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+
+         </tabs>
+      </TabPane>
+   </center>
+</BorderPane>

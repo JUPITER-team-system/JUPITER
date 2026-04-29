@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.management.jupiter.fx.controllers.TlDashboardController">
+   <top>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="1200.0" style="-fx-background-color: #FF9800;">
+               <children>
+                  <Label fx:id="welcomeLabel" text="Bienvenido, Team Leader" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Button fx:id="logoutButton" mnemonicParsing="false" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" text="Cerrar Sesión">
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="1200.0" style="-fx-background-color: #f5f5f5; -fx-border-color: #ddd; -fx-border-width: 0 0 1 0;">
+               <children>
+                  <Button fx:id="refreshButton" mnemonicParsing="false" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" text="Actualizar">
+                     <HBox.margin>
+                        <Insets left="20.0" right="10.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Label text="Panel de Team Leader - JUPITER Management System">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
+   <center>
+      <TabPane fx:id="mainTabPane" prefHeight="700.0" prefWidth="1200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+         <tabs>
+            <Tab fx:id="cellsTab" text="Células">
+               <content>
+                  <VBox prefHeight="700.0" prefWidth="1200.0" spacing="10.0">
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                     <children>
+                        <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="1160.0" spacing="10.0">
+                           <children>
+                              <Button fx:id="createCellButton" mnemonicParsing="false" prefHeight="35.0" prefWidth="120.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" text="Crear Célula" />
+                              <Button fx:id="deleteCellButton" mnemonicParsing="false" prefHeight="35.0" prefWidth="120.0" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" text="Eliminar Célula" />
+                              <Region HBox.hgrow="ALWAYS" />
+                              <Label style="-fx-font-weight: bold; -fx-font-size: 14px;" text="Gestión de Células" />
+                           </children>
+                        </HBox>
+                        <TableView fx:id="cellsTable" prefHeight="600.0" prefWidth="1160.0" VBox.vgrow="ALWAYS">
+                          <columns>
+                            <TableColumn fx:id="cellIdColumn" prefWidth="100.0" text="No." />
+                            <TableColumn fx:id="cellNameColumn" prefWidth="300.0" text="Nombre de Célula" />
+                            <TableColumn fx:id="cellTypeColumn" prefWidth="200.0" text="Tipo" />
+                            <TableColumn fx:id="cellStatusColumn" prefWidth="150.0" text="Estado" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+            <Tab fx:id="informationTab" text="Información">
+               <content>
+                  <VBox prefHeight="700.0" prefWidth="1200.0" spacing="10.0">
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                     <children>
+                        <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="1160.0" spacing="10.0">
+                           <children>
+                              <Button fx:id="createInfoButton" mnemonicParsing="false" prefHeight="35.0" prefWidth="150.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" text="Crear Información" />
+                              <Button fx:id="deleteInfoButton" mnemonicParsing="false" prefHeight="35.0" prefWidth="150.0" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" text="Eliminar Información" />
+                              <Region HBox.hgrow="ALWAYS" />
+                              <Label style="-fx-font-weight: bold; -fx-font-size: 14px;" text="Gestión de Información" />
+                           </children>
+                        </HBox>
+                        <TableView fx:id="informationTable" prefHeight="600.0" prefWidth="1160.0" VBox.vgrow="ALWAYS">
+                          <columns>
+                            <TableColumn fx:id="infoIdColumn" prefWidth="100.0" text="No." />
+                            <TableColumn fx:id="infoTitleColumn" prefWidth="250.0" text="Título" />
+                            <TableColumn fx:id="infoMessageColumn" prefWidth="350.0" text="Mensaje" />
+                            <TableColumn fx:id="infoTypeColumn" prefWidth="100.0" text="Tipo" />
+                            <TableColumn fx:id="infoDateColumn" prefWidth="180.0" text="Fecha" />
+                            <TableColumn fx:id="infoActionsColumn" prefWidth="120.0" text="Acciones" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+            <Tab fx:id="teamTab" text="Equipo">
+               <content>
+                  <VBox prefHeight="700.0" prefWidth="1200.0" spacing="20.0">
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                     <children>
+                        <Label style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #FF9800;" text="Información del Equipo" />
+                        <GridPane hgap="20.0" prefHeight="600.0" prefWidth="1160.0" vgap="20.0">
+                           <children>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 3);" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                 <children>
+                                    <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #FF9800;" text="Tamaño del Equipo" />
+                                    <Label fx:id="teamSizeLabel" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #333;" text="0" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 3);" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                 <children>
+                                    <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #FF9800;" text="Clan" />
+                                    <Label fx:id="clanNameLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;" text="Sin Clan" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 3);" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                                 <children>
+                                    <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #FF9800;" text="Total Células" />
+                                    <Label fx:id="totalCellsLabel" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #333;" text="0" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 3);" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                 <children>
+                                    <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #FF9800;" text="Total Información" />
+                                    <Label fx:id="totalInfoLabel" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #333;" text="0" />
+                                 </children>
+                              </VBox>
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="100.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="100.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                        </GridPane>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+            <Tab fx:id="codersTab" text="Coders">
+               <content>
+                  <VBox prefHeight="700.0" prefWidth="1200.0" spacing="10.0">
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                     <children>
+                        <Label style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #1976D2;" text="Visualizacion de Coders por Clan y Celula" />
+                        <HBox alignment="CENTER_LEFT" prefHeight="40.0" spacing="10.0">
+                           <children>
+                              <Label text="Filtrar por Clan:" />
+                              <ComboBox fx:id="coderClanFilterCombo" prefWidth="200.0" promptText="Seleccionar clan" />
+                              <Button fx:id="filterCodersButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" text="Filtrar" />
+                              <Button fx:id="showAllCodersButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #607D8B; -fx-text-fill: white; -fx-background-radius: 5; -fx-font-weight: bold;" text="Ver Todos" />
+                           </children>
+                        </HBox>
+                        <TreeView fx:id="codersTreeView" prefHeight="600.0" prefWidth="1160.0" VBox.vgrow="ALWAYS" />
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+         </tabs>
+      </TabPane>
+   </center>
+</BorderPane>
