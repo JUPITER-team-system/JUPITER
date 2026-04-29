@@ -4,9 +4,11 @@ import com.management.jupiter.models.User;
 import com.management.jupiter.models.Coder;
 import com.management.jupiter.models.Tl;
 import com.management.jupiter.models.Admin;
+import com.management.jupiter.models.Clan;
 import com.management.jupiter.persistance.DatabaseConnection;
 import com.management.jupiter.repository.interfaces.UserRepository;
 import com.management.jupiter.models.enums.Role;
+import com.management.jupiter.models.enums.TlType;
 import com.management.jupiter.security.PasswordHasher;
 
 import java.sql.*;
@@ -22,7 +24,7 @@ public class AdminRepositoryImpl implements UserRepository {
 
     @Override
     public Void save(User user) {
-        String sql = "INSERT INTO \"Cohorte\".user(email, password, full_name, role, clan_id) VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO \"Cohorte\".user(email, password, full_name, role, clan_id, specialty) VALUES (?,?,?,?,?,?)";
         try(PreparedStatement stmt = getConnection().prepareStatement(sql)){
             stmt.setString(1, user.getEmail());
             //Hasheamos la password
@@ -32,9 +34,14 @@ public class AdminRepositoryImpl implements UserRepository {
             stmt.setString(3, user.getUsername());
             stmt.setString(4, user.getRole().toString());
             if (user.getClan_id() != null){
-                stmt.setString(5, user.getClan_id().getId());
+                stmt.setObject(5, UUID.fromString(user.getClan_id().getId()));
             } else {
-                stmt.setNull(5, Types.BIGINT);
+                stmt.setNull(5, Types.OTHER);
+            }
+            if (user instanceof Tl tl) {
+                stmt.setString(6, tl.getTlType() != null ? tl.getTlType().name() : TlType.PROGRAMACION.name());
+            } else {
+                stmt.setNull(6, Types.VARCHAR);
             }
 
             stmt.executeUpdate();
@@ -72,7 +79,7 @@ public class AdminRepositoryImpl implements UserRepository {
         String sql = "SELECT * FROM \"Cohorte\".user WHERE id = ?";
 
         try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
-            stmt.setString(1, id);
+            stmt.setObject(1, UUID.fromString(id));
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
@@ -82,6 +89,8 @@ public class AdminRepositoryImpl implements UserRepository {
         } catch (SQLException e) {
             System.out.println("[ERROR]: Error to search user by Id: " + e.getMessage());
             throw new RuntimeException(e);
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
         }
 
         return Optional.empty();
@@ -223,9 +232,57 @@ public class AdminRepositoryImpl implements UserRepository {
             case CODER:
                 return new Coder(id, username, email, password, role);
             case TL:
-                return new Tl(id, username, email, password, role, null);
+                Tl tl = new Tl(id, username, email, password, role, mapTlType(rs));
+                loadAssignedClan(tl, getNullableString(rs, "clan_id"));
+                return tl;
             default:
                 return new User(id, username, email, password, role, null);
+        }
+    }
+
+    private TlType mapTlType(ResultSet rs) {
+        String specialty = getNullableString(rs, "specialty");
+        if (specialty == null || specialty.isBlank()) {
+            return TlType.PROGRAMACION;
+        }
+
+        try {
+            return TlType.valueOf(specialty.trim().toUpperCase());
+        } catch (IllegalArgumentException ignored) {
+            return TlType.PROGRAMACION;
+        }
+    }
+
+    private void loadAssignedClan(Tl tl, String clanId) throws SQLException {
+        if (clanId == null || clanId.isBlank()) {
+            return;
+        }
+
+        String sql = """
+                SELECT id, name, description
+                FROM "Cohorte".clan
+                WHERE id = ?
+                """;
+
+        try (PreparedStatement stmt = getConnection().prepareStatement(sql)) {
+            stmt.setObject(1, UUID.fromString(clanId));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    tl.addClan(new Clan(
+                            rs.getString("id"),
+                            rs.getString("name"),
+                            rs.getString("description")
+                    ));
+                }
+            }
+        }
+    }
+
+    private String getNullableString(ResultSet rs, String columnName) {
+        try {
+            return rs.getString(columnName);
+        } catch (SQLException ignored) {
+            return null;
         }
     }
 }
