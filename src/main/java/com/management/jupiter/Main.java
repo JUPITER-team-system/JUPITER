@@ -5,10 +5,8 @@ import com.management.jupiter.models.*;
 import com.management.jupiter.repository.*;
 import com.management.jupiter.repository.ai.AiProvider;
 import com.management.jupiter.repository.ai.GeminiProvider;
-import com.management.jupiter.repository.impl.AdminRepositoryImpl;
-import com.management.jupiter.repository.impl.CellRepositoryInterfaceImpl;
-import com.management.jupiter.repository.impl.ClanRepositoryImpl;
-import com.management.jupiter.repository.interfaces.CellRepositoryInterface;
+import com.management.jupiter.repository.impl.*;
+import com.management.jupiter.repository.interfaces.*;
 import com.management.jupiter.security.LoginSession;
 import com.management.jupiter.security.UserSession;
 import com.management.jupiter.services.*;
@@ -30,26 +28,28 @@ public class Main {
         ScannerUtil input = new ScannerUtil(scanner);
 
         //Repositories:
-        AdminRepositoryImpl adminRepo = new AdminRepositoryImpl();
-        ClanRepositoryImpl clanRepo = new ClanRepositoryImpl();
+        UserRepository adminRepo = new AdminRepositoryImpl();
+        ClanRepository clanRepo = new ClanRepositoryImpl();
         CoderRepository coderRepo = new CoderRepository();
-        TeamLeaderRepository tlRepo = new TeamLeaderRepository(clanRepo);
+        TeamLeaderRepositoryImpl tlRepo = new TeamLeaderRepositoryImpl(clanRepo);
 
-        CellRepositoryInterface cellRepository = new CellRepositoryInterfaceImpl();
         AiProvider aiProvider = new GeminiProvider();
+        CellRepositoryInterface cellRepository = new CellRepositoryInterfaceImpl();
+
 
         //Services:
         AssignmentService assignmentService = new AssignmentService(clanRepo, tlRepo, coderRepo);
         UserService userService = new UserService();
         AdminService adminService = new AdminService(userService, adminRepo);
-        CellServices cellServices = new CellServices(aiProvider, cellRepository);
-
+        ClanService clanService = new ClanService(clanRepo);
+        CellServices cellServices = new CellServices(aiProvider,cellRepository);
 
         //Controllers:
         UserController userController = new UserController();
         AdminController adminController = new AdminController(adminService);
         TlController tlController = new TlController();
         CoderController coderController = new CoderController();
+        ClanController clanController = new ClanController(clanService);
         CellController cellController = new CellController(cellServices);
 
         //Views:
@@ -59,8 +59,8 @@ public class Main {
 
         LoginSession loggedUser = new UserSession(user);
 
-        AdminView admin = new AdminView(input, adminController, loggedUser);
-        TlView tl = new TlView(input, tlController,cellController);
+        AdminView admin = new AdminView(input, loggedUser, adminController, clanController);
+        TlView tl = new TlView(input, tlController, cellController);
         CoderView coder = new CoderView(input, coderController);
 
         if(user instanceof Admin loggedAdmin){

@@ -1,76 +1,69 @@
 package stepsdefinitions;
 
-//import com.management.jupiter.controllers.UserController;
-//import com.management.jupiter.models.User;
-//import com.management.jupiter.services.UserServices;
-//import com.management.jupiter.util.scanner.ScannerUtil;
-//import com.management.jupiter.views.LoginView;
-//import io.cucumber.java.en.Given;
-//import io.cucumber.java.en.Then;
-//import io.cucumber.java.en.When;
-//
-//import java.io.ByteArrayInputStream;
-//import java.io.InputStream;
-//import java.nio.charset.StandardCharsets;
-//import java.util.Scanner;
-//
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.junit.jupiter.api.Assertions.assertNotNull;
-//import static org.junit.jupiter.api.Assertions.assertNull;
-//
-//public class LoginSteps {
-//
-//    private String email;
-//    private String password;
-//    private User authenticatedUser;
-//    private Exception loginException;
-//
-//    @Given("the user enters the email {string}")
-//    public void theUserEntersTheEmail(String email) {
-//        this.email = email;
-//    }
-//
-//    @Given("the user enters the password {string}")
-//    public void theUserEntersThePassword(String password) {
-//        this.password = password;
-//    }
-//
-//    @When("the login is submitted")
-//    public void theLoginIsSubmitted() {
-//        authenticatedUser = null;
-//        loginException = null;
-//
-//        String simulatedInput = email + "\n" + password + "\n";
-//        UserController controller = new UserController();
-//        InputStream in = new ByteArrayInputStream(simulatedInput.getBytes());
-//
-//        ScannerUtil testInput = new ScannerUtil(new Scanner(in));
-//        LoginView loginView = new LoginView(testInput, controller);
-//
-//        try {
-//            authenticatedUser = loginView.login();
-//        } catch (Exception exception) {
-//            loginException = exception;
-//        }
-//    }
-//
-//    @Then("the login should authenticate the user")
-//    public void theLoginShouldAuthenticateTheUser() {
-//        assertNotNull(authenticatedUser);
-//        assertEquals(email, authenticatedUser.getEmail());
-//        assertNull(loginException);
-//    }
-//
-//    @Then("the login should be rejected due to invalid credentials")
-//    public void theLoginShouldBeRejectedDueToInvalidCredentials() {
-//        assertNull(authenticatedUser);
-//        assertNull(loginException);
-//    }
-//
-//    @Then("the login should fail with the message {string}")
-//    public void theLoginShouldFailWithTheMessage(String expectedMessage) {
-//        assertNull(authenticatedUser);
-//        assertNotNull(loginException);
-//        assertEquals(expectedMessage, loginException.getMessage());
-//    }
-//}
+import com.management.jupiter.controllers.UserController;
+import com.management.jupiter.models.Admin;
+import com.management.jupiter.models.User;
+import com.management.jupiter.models.enums.Role;
+import com.management.jupiter.services.UserService;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+public class LoginSteps {
+
+    private final UserService userService = mock(UserService.class);
+    private final UserController userController = new UserController(userService);
+
+    private User authenticatedUser;
+    private Exception loginException;
+
+    @Given("a registered user exists with email {string} and password {string}")
+    public void aRegisteredUserExistsWithEmailAndPassword(String email, String password) throws Exception {
+        User user = new Admin("test-admin-id", "Login Test User", email, password, Role.ADMIN);
+        when(userService.authenticate(email, password)).thenReturn(user);
+    }
+
+    @Given("no registered user exists with email {string}")
+    public void noRegisteredUserExistsWithEmail(String email) throws Exception {
+        when(userService.authenticate(email, "12345"))
+                .thenThrow(new Exception("User not found in the system"));
+    }
+
+    @Given("the password for email {string} is incorrect")
+    public void thePasswordForEmailIsIncorrect(String email) throws Exception {
+        when(userService.authenticate(email, "wrong-password"))
+                .thenThrow(new Exception("Incorrect password"));
+    }
+
+    @When("the user tries to log in with email {string} and password {string}")
+    public void theUserTriesToLogInWithEmailAndPassword(String email, String password) {
+        this.authenticatedUser = null;
+        this.loginException = null;
+
+        try {
+            authenticatedUser = userController.login(email, password);
+        } catch (Exception exception) {
+            loginException = exception;
+        }
+    }
+
+    @Then("the login should authenticate the user with email {string}")
+    public void theLoginShouldAuthenticateTheUserWithEmail(String expectedEmail) {
+        assertNotNull(authenticatedUser);
+        assertEquals(expectedEmail, authenticatedUser.getEmail());
+        assertNull(loginException);
+    }
+
+    @Then("the login should fail with the message {string}")
+    public void theLoginShouldFailWithTheMessage(String expectedMessage) {
+        assertNull(authenticatedUser);
+        assertNotNull(loginException);
+        assertEquals(expectedMessage, loginException.getMessage());
+    }
+}

@@ -10,9 +10,18 @@ public class UserController {
 
     private static final int MAX_ATTEMPTS = 3;
     private static final int SECONDS_BLOCK = 30;
+    private final UserService userService;
 
     // State per user (email)
     private final Map<String, Attempts> attemptsPerUser = new HashMap<>();
+
+    public UserController() {
+        this(new UserService());
+    }
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     public User login(String email, String password) throws UserBlockedException, Exception {
 
@@ -24,7 +33,7 @@ public class UserController {
 
         try {
 
-            User loggedUser = UserService.LoginService(email, password);
+            User loggedUser = userService.authenticate(email, password);
             attempts.reset();
             attemptsPerUser.put(email, attempts);
             return loggedUser;

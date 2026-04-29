@@ -12,7 +12,9 @@ public class DatabaseConnection {
     private static final String USER = dotenv.get("DB_USER");
     private static final String PASS = dotenv.get("DB_PASS");
     private static final ThreadLocal<Connection>  threadConnection = new ThreadLocal<>();
+
     //Constructor privado para que nadie acceda a la db
+    private DatabaseConnection () {}
 
     public static Connection getConnection() throws SQLException {
 
@@ -22,7 +24,9 @@ public class DatabaseConnection {
 
         }
 
-        return DriverManager.getConnection(URL, USER, PASS);
+        Connection conn = DriverManager.getConnection(URL, USER, PASS);
+        threadConnection.set(conn);
+        return conn;
 
     }
 

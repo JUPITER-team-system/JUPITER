@@ -1,24 +1,35 @@
 package com.management.jupiter.views;
 
 import com.management.jupiter.controllers.AdminController;
+import com.management.jupiter.controllers.ClanController;
+import com.management.jupiter.models.*;
 import com.management.jupiter.controllers.CellController;
-import com.management.jupiter.models.Admin;
-import com.management.jupiter.models.Cell;
+import com.management.jupiter.models.Clan;
 import com.management.jupiter.models.enums.*;
 import com.management.jupiter.security.LoginSession;
 import com.management.jupiter.ui.users.AdminUI;
+import com.management.jupiter.ui.users.ClanDetailUI;
 import com.management.jupiter.util.scanner.ScannerUtil;
+
+import java.util.Optional;
 
 public class AdminView {
 
     private final ScannerUtil input;
-    private final AdminController controller;
     private final LoginSession session;
+    private final AdminController adminController;
+    private final ClanController clanController;
 
-    public AdminView (ScannerUtil input, AdminController controller, LoginSession session) {
+
+    public AdminView (ScannerUtil input,
+                      LoginSession session,
+                      AdminController adminController,
+                      ClanController clanController) {
+
         this.input = input;
-        this.controller = controller;
         this.session = session;
+        this.adminController = adminController;
+        this.clanController = clanController;
     }
 
     public void show (Admin admin) {
@@ -34,13 +45,13 @@ public class AdminView {
 
             switch (dec) {
                 case 1:
-                    //Add Soon...
+                    ClanDetailUI.coderList(adminController.getAll());
                     break;
                 case 2:
                     //Add Soon...
                     break;
                 case 3:
-                    //Add Soon...
+                    ClanDetailUI.clanList(clanController.readAll());
                     break;
                 case  4:
                     clanManagement(admin);
@@ -66,13 +77,13 @@ public class AdminView {
 
             switch (dec) {
                 case 1:
-                    //Add Soon...
+                    createClan();
                     break;
                 case 2:
-                    //Add Soon...
+                    deleteClan();
                     break;
                 case 3:
-                    //Add Soon...
+                    updateClan();
                     break;
                 case  4:
                     //Add Soon...
@@ -86,6 +97,131 @@ public class AdminView {
             }
 
         } while (dec != 0);
+
+    }
+
+    private void createClan() {
+
+        String name = input.readString("Clan name: ");
+        String desc = input.readString("Clan description: ");
+
+        clanController.createClan(name, desc);
+
+    }
+
+    private void deleteClan () {
+
+        ClanDetailUI.clanList(clanController.readAll());
+
+        String value = input.readString("Enter an id or name to delete clan: ");
+
+        clanController.deleteClan(value);
+
+    }
+
+    private void updateClan () {
+
+        ClanDetailUI.clanList(clanController.readAll());
+
+        String value = input.readString("Enter an id or name to edit clan: ");
+        Optional<Clan> clanOp = clanController.readIdOrName(value);
+
+        if (clanOp.isEmpty()){
+
+            System.out.println("Don't found Clan. Try again!");
+            return;
+
+        }
+
+        Clan clan = clanOp.get();
+
+        ClanDetailUI.clanUpdater(clan);
+
+        int op = input.readInt("what's your decision?: ");
+
+        if (op == 1) {
+
+            clan.setName(input.readString("What's the new name?: "));
+            clan.setDescription(input.readString("What's the new description?: "));
+
+        } else if (op == 2) {
+
+            managementClanMembers(clan);
+
+        }
+
+        clanController.updateClan(clan);
+
+    }
+
+    public void managementClanMembers(Clan clan){
+
+        ClanDetailUI.clanMemberUpdate(clan);
+
+        int op;
+
+        do {
+
+            op = input.readInt(">");
+
+            switch (op) {
+                case 1 -> {
+
+                    String id = input.readString("Id of coder to add: ");
+                    Optional<User> user = adminController.findById(id);
+
+                    user.ifPresent(u -> {
+
+                        if (u instanceof Coder coderFound){
+
+                            clan.getCoders().add(coderFound);
+                            System.out.println("The Coder:" + coderFound.getUsername() + "is found");
+
+                        }else {
+
+                            System.out.println("User found, but it's not a Coder");
+
+                        }
+
+                    });
+
+                }
+                case 2 -> {
+
+                    String id = input.readString("Id of coder to remove: ");
+                    clan.getCoders().removeIf(c -> c.getId().equals(id));
+
+                }
+                case 3 -> {
+
+                    String id = input.readString("Id of TL to add: ");
+                    Optional<User> user = adminController.findById(id);
+
+                    user.ifPresent(u ->{
+
+                        if (u instanceof Tl tlFound){
+
+                            clan.getTls().add(tlFound);
+                            System.out.println("The TL:" + tlFound.getUsername() + "is found");
+
+                        } else {
+
+                            System.out.println("User found, but it's not a TL");
+
+                        }
+
+                    });
+
+                }
+                case 4 -> {
+
+                    String id = input.readString("Id of TL to remove: ");
+                    clan.getTls().removeIf(t -> t.getId().equals(id));
+
+                }
+            }
+
+        } while (op != 0);
 
     }
 
@@ -157,7 +293,7 @@ public class AdminView {
                 }
             }
 
-            controller.createUser(name, email, password, role, null ,tl);
+            adminController.createUser(name, email, password, role, null ,tl);
 
         }
 
@@ -174,7 +310,7 @@ public class AdminView {
 
         }
 
-        controller.deleteUser(value);
+        adminController.deleteUser(value);
 
     }
 
@@ -214,12 +350,15 @@ public class AdminView {
         String newValue = input.readString("Enter the new value of " + fieldName + ": ");
 
         try {
-            controller.updateUser(idOrEmail, newValue, fieldName);
-            System.out.println("User updated correctly");
-        }catch (RuntimeException err){
-            System.err.println("Error to update user" + err.getMessage());
-        }
 
+            adminController.updateUser(idOrEmail, newValue, fieldName);
+            System.out.println("User updated correctly");
+
+        }catch (RuntimeException err){
+
+            System.err.println("Error to update user" + err.getMessage());
+
+        }
 
     }
 }
