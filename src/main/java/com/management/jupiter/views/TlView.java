@@ -2,9 +2,12 @@ package com.management.jupiter.views;
 
 import com.management.jupiter.controllers.CellController;
 import com.management.jupiter.controllers.TlController;
+import com.management.jupiter.models.Clan;
 import com.management.jupiter.models.Tl;
 import com.management.jupiter.ui.users.TeamLeaderUI;
 import com.management.jupiter.util.scanner.ScannerUtil;
+
+import java.util.Optional;
 
 public class TlView {
 
@@ -65,8 +68,7 @@ public class TlView {
                     //Add Soon...
                     break;
                 case 3:
-                    //Add Soon...
-                    cellController.createCell(4, "Planetas", tl);
+                    createCellsForManagedClan(tl);
                     break;
                 case 4:
                     //Add Soon...
@@ -75,6 +77,40 @@ public class TlView {
 
         } while (dec != 0);
 
+    }
+
+    private void createCellsForManagedClan(Tl tl) {
+        Optional<Clan> clan = selectManagedClan(tl);
+
+        if (clan.isEmpty()) {
+            return;
+        }
+
+        int cellsQuantity = input.readInt("How many cells do you want to create?");
+        String theme = input.readString("Which theme should be used for the cells?");
+        cellController.createCell(cellsQuantity, theme, clan.get());
+    }
+
+    private Optional<Clan> selectManagedClan(Tl tl) {
+        System.out.println(tl.toString());
+        if (tl.getClans().isEmpty()) {
+            System.out.println("You do not have assigned clans to manage.");
+            return Optional.empty();
+        }
+
+        System.out.println("Select the clan to manage:");
+        for (int i = 0; i < tl.getClans().size(); i++) {
+            Clan clan = tl.getClans().get(i);
+            System.out.printf("%d) %s [%s]%n", i + 1, clan.getName(), clan.getId());
+        }
+
+        int selectedOption = input.readInt("Choose a clan number");
+        if (selectedOption < 1 || selectedOption > tl.getClans().size()) {
+            System.out.println("Invalid clan option.");
+            return Optional.empty();
+        }
+
+        return Optional.of(tl.getClans().get(selectedOption - 1));
     }
 
 }

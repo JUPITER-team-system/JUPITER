@@ -1,7 +1,6 @@
 package com.management.jupiter.repository.impl;
 
 import com.management.jupiter.models.Cell;
-import com.management.jupiter.models.User;
 import com.management.jupiter.persistance.DatabaseConnection;
 import com.management.jupiter.repository.interfaces.CellRepositoryInterface;
 
@@ -19,9 +18,10 @@ public class CellRepositoryInterfaceImpl implements CellRepositoryInterface {
 
     @Override
     public Void save(Cell cell) {
-        String sql = "INSERT INTO \"Cohorte\".cells(name) VALUES (?)";
+        String sql = "INSERT INTO \"Cohorte\".cells(name, clan_id) VALUES (?, ?)";
         try(PreparedStatement stmnt = getConnection().prepareStatement(sql)){
             stmnt.setString(1, cell.getName());
+            stmnt.setObject(2, cell.getClanId());
             stmnt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
